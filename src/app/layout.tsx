@@ -1,26 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
+import { Inter, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 
-const sans = localFont({
-  src: [
-    { path: "./fonts/inter-400.woff2", weight: "400", style: "normal" },
-    { path: "./fonts/inter-500.woff2", weight: "500", style: "normal" },
-    { path: "./fonts/inter-600.woff2", weight: "600", style: "normal" },
-    { path: "./fonts/inter-700.woff2", weight: "700", style: "normal" },
-  ],
-  variable: "--font-sans",
-  display: "swap",
-});
-
-const serif = localFont({
-  src: [
-    { path: "./fonts/sourceserif-600.woff2", weight: "600", style: "normal" },
-    { path: "./fonts/sourceserif-700.woff2", weight: "700", style: "normal" },
-  ],
-  variable: "--font-serif",
-  display: "swap",
-});
+const sans = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-sans", display: "swap" });
+const serif = Source_Serif_4({ subsets: ["latin"], weight: ["600", "700"], variable: "--font-serif", display: "swap" });
 
 export const metadata: Metadata = {
   title: {
