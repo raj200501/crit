@@ -1,0 +1,247 @@
+.main {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 28px 24px 64px;
+  display: grid;
+  gap: 20px;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 36px;
+  margin: 6px 0 10px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.meta button {
+  border: 0;
+  cursor: pointer;
+}
+
+.topActions {
+  display: flex;
+  gap: 8px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 20px;
+  align-items: start;
+}
+
+.treeCard {
+  padding: 18px 20px 22px;
+  display: grid;
+  gap: 18px;
+}
+
+.treeHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.treeHint {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.addRow {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.legend {
+  padding-top: 4px;
+}
+
+.side {
+  display: grid;
+  gap: 16px;
+  position: sticky;
+  top: 76px;
+}
+
+.h2 {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.overview {
+  padding: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.steps {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 8px;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+
+.todo {
+  display: grid;
+  gap: 8px;
+}
+
+.todoTitle {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.todoList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.todoList button {
+  border: 0;
+  cursor: pointer;
+}
+
+.flagNote {
+  font-size: 13.5px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: #9a3412;
+}
+
+.reset {
+  display: grid;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+}
+
+.resetButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.startForm {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.activity {
+  padding: 18px 20px;
+}
+
+.activity ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.activity li {
+  display: flex;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+
+.activity small {
+  display: block;
+  color: var(--faint);
+  font-size: 12px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 6px;
+  background: var(--line-strong);
+  flex: none;
+}
+
+.dotRecord {
+  background: var(--verified);
+}
+
+.addForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+
+.addForm b {
+  grid-column: 1 / -1;
+  font-size: 14px;
+}
+
+.addActions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.visit {
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  max-width: 520px;
+}
+
+@media (max-width: 1040px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .side {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .main {
+    padding: 20px 16px 48px;
+  }
+  .title {
+    font-size: 28px;
+  }
+  .treeCard {
+    padding: 14px 12px 18px;
+  }
+  .addForm,
+  .visit {
+    grid-template-columns: 1fr;
+  }
+}

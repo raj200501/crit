@@ -1,0 +1,235 @@
+.wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.canvas {
+  position: absolute;
+  left: 50%;
+  top: 4px;
+  transform-origin: top center;
+  translate: -50% 0;
+}
+
+.edges {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+.edges path {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px 12px 12px;
+  text-align: center;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.node:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+.selected {
+  box-shadow:
+    0 0 0 3px rgba(194, 65, 12, 0.25),
+    var(--shadow);
+}
+
+.name {
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.2;
+  color: var(--ink);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.deceased {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--faint);
+}
+
+.sub {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--faint);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.known {
+  border: 2px solid var(--known);
+}
+.known .sub {
+  color: var(--known);
+}
+
+.conflicting {
+  border: 2px solid var(--conflict);
+  background: var(--conflict-soft);
+}
+.conflicting .sub {
+  color: var(--conflict-ink);
+}
+
+.unknown {
+  border: 2px dashed var(--unknown);
+}
+.unknown .name {
+  color: #475569;
+}
+.unknown .sub {
+  color: var(--muted);
+}
+
+.declined {
+  background: var(--declined-soft);
+  border-color: var(--line-strong);
+}
+.declined .name,
+.declined .sub {
+  color: var(--declined);
+}
+
+.finding {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.finding .name,
+.finding .sub,
+.finding .deceased {
+  color: #fff;
+}
+
+.self {
+  background: var(--navy);
+  border-color: var(--navy);
+}
+.self .name {
+  color: #fff;
+}
+.self .sub {
+  color: #cbd5e1;
+}
+
+.heart {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  color: var(--accent);
+  border: 1.5px solid #fed7aa;
+}
+
+.verified {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  translate: -50% 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  font-size: 10.5px;
+  font-weight: 600;
+  border-radius: 99px;
+  background: var(--verified-soft);
+  color: var(--verified);
+  border: 1px solid #99f6e4;
+  white-space: nowrap;
+}
+
+.badge {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  translate: -50% 0;
+  padding: 2px 8px;
+  font-size: 10.5px;
+  font-weight: 600;
+  border-radius: 99px;
+  background: #fff;
+  color: var(--conflict-ink);
+  border: 1px solid #fcd34d;
+  white-space: nowrap;
+}
+
+.lock {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: var(--declined);
+}
+
+.legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  justify-content: center;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  background: #fff;
+}
+.dKnown {
+  border: 2px solid var(--known);
+}
+.dConf {
+  border: 2px solid var(--conflict);
+}
+.dUnknown {
+  border: 2px dashed var(--unknown);
+}
+.dDeclined {
+  background: var(--declined-soft);
+  border: 2px solid var(--line-strong);
+}
+.dFinding {
+  background: var(--accent);
+  border-radius: 3px;
+}
