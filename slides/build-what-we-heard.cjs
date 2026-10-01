@@ -24,51 +24,48 @@ pres.defineSlideMaster({
 
 const s = pres.addSlide({ masterName: "Team 709 Content" });
 s.addText("WHAT WE HEARD", { placeholder: "title" });
-s.addText([
-  { text: "21 interviews: ", options: { bold: true, color: C.text1 } },
-  { text: "15 patients, 2 PAs, an ER doctor, a genetics counselor, an internist and an RN." },
-], { x: 0.5, y: 1.2, w: 9, h: 0.4, fontSize: 14, color: C.text2, margin: 0, isTextBox: true, objectName: "Subtitle" });
 
+// Left: headline stat
+s.addText("30", { x: 0.5, y: 1.95, w: 2.2, h: 1.0, fontFace: "Cambria", bold: true, fontSize: 72, color: C.accent1,
+  margin: 0, valign: "bottom", isTextBox: true, objectName: "Stat number" });
+s.addText("interviews", { x: 0.5, y: 3.0, w: 2.2, h: 0.35, fontSize: 18, bold: true, color: C.text1, margin: 0,
+  isTextBox: true, objectName: "Stat label" });
+s.addText("with patients and clinicians", { x: 0.5, y: 3.35, w: 2.3, h: 0.6, fontSize: 14, color: C.text2, margin: 0,
+  valign: "top", isTextBox: true, objectName: "Stat breakdown" });
+
+// Right: one headline per voice
 const cards = [
-  { who: "15 PATIENTS", head: "It runs in the family. But who?",
-    body: "One only learned of an uncle’s young-onset arrhythmia after calling relatives.",
-    quote: null, src: "ID007 + 14 more" },
-  { who: "2 PHYSICIAN ASSISTANTS", head: "They rebuild the story every visit.",
-    body: null,
-    quote: "“A result can be technically available but still not be useful until someone puts it into context.”", src: "ID009 · ID014" },
-  { who: "1 EMERGENCY DOCTOR", head: "Only a few red flags matter.",
-    body: "Chest pain, fainting, a young relative’s sudden death. A flagged summary is more realistic than a full chart.",
-    quote: null, src: "ID010" },
-  { who: "1 GENETICS COUNSELOR", head: "Builds every pedigree by hand.",
-    body: "Retypes each relative from Epic, chatbots and paper into Progeny, one at a time.",
-    quote: null, src: "D021" },
+  { who: "PATIENTS", head: "\u201CIt runs in the family.\u201D But who?" },
+  { who: "PHYSICIAN ASSISTANTS", head: "They rebuild the\nstory every visit." },
+  { who: "ER DOCTOR", head: "Red flags,\nnot a full chart." },
+  { who: "GENETICS COUNSELOR", head: "Every pedigree\nbuilt by hand." },
 ];
-const X0 = 0.5, W = 2.1, GAP = 0.2, Y = 1.75, H = 2.55;
+const X0 = 3.0, Y0 = 1.5, W = 3.15, H = 1.45, GAP = 0.2;
 cards.forEach((c, i) => {
-  const x = X0 + i * (W + GAP);
-  s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y: Y, w: W, h: H, rectRadius: 0.08,
+  const x = X0 + (i % 2) * (W + GAP), y = Y0 + Math.floor(i / 2) * (H + GAP);
+  s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w: W, h: H, rectRadius: 0.08,
     fill: { color: C.background2 }, line: { color: C.accent5, width: 1 }, objectName: `Card ${i + 1}` });
-  s.addText(c.who, { x: x + 0.15, y: Y + 0.15, w: W - 0.3, h: 0.22, fontSize: 9, bold: true, charSpacing: 1,
+  s.addText(c.who, { x: x + 0.22, y: y + 0.2, w: W - 0.44, h: 0.25, fontSize: 10, bold: true, charSpacing: 1,
     color: C.accent1, margin: 0, isTextBox: true, objectName: `Card ${i + 1} label` });
-  s.addText(c.head, { x: x + 0.15, y: Y + 0.4, w: W - 0.3, h: 0.75, fontFace: "Cambria", bold: true, fontSize: 15,
+  s.addText(c.head, { x: x + 0.22, y: y + 0.5, w: W - 0.44, h: 0.8, fontFace: "Cambria", bold: true, fontSize: 18,
     color: C.text1, margin: 0, valign: "top", isTextBox: true, objectName: `Card ${i + 1} heading` });
-  const runs = c.body ? [{ text: c.body, options: { color: C.text2 } }] : [{ text: c.quote, options: { italic: true, color: C.text1 } }];
-  s.addText(runs, { x: x + 0.15, y: Y + 1.2, w: W - 0.3, h: 1.0, fontSize: 12, margin: 0, valign: "top",
-    lineSpacingMultiple: 0.95, isTextBox: true, objectName: `Card ${i + 1} body` });
-  s.addText(c.src, { x: x + 0.15, y: Y + H - 0.28, w: W - 0.3, h: 0.2, fontSize: 8.5, color: C.accent4, margin: 0,
-    isTextBox: true, objectName: `Card ${i + 1} source` });
 });
 
-s.addText([
-  { text: "+ ", options: { color: C.accent1, bold: true } },
-  { text: "What it changed: ", options: { bold: true, color: C.text1 } },
-  { text: "guided questions · keep who said what · a one-page summary" },
-], { x: 0.5, y: 4.65, w: 9, h: 0.3, fontSize: 14, color: C.text2, margin: 0, isTextBox: true, objectName: "Takeaway" });
-s.addText("Research · 21 interviews", { x: 7.0, y: 5.25, w: 2.5, h: 0.22, fontSize: 9, color: "9CA3AF",
+s.addText("Research", { x: 7.0, y: 5.22, w: 2.5, h: 0.22, fontSize: 9, color: "9CA3AF",
   align: "right", margin: 0, isTextBox: true, objectName: "Footer" });
-s.addText("IDs refer to our Team Hub interview logs", { x: 0.5, y: 5.25, w: 4, h: 0.22, fontSize: 9, color: "9CA3AF",
-  margin: 0, isTextBox: true, objectName: "Source note" });
-s.addNotes("21 interviews: 15 patients (ID001, 003-007, 011-013, 015-020) and 6 clinicians: internal medicine physician (ID002), RN (ID008), PAs (ID009, ID014), emergency medicine doctor (ID010), genetics counselor (D021). Genetics counselor: family history from Epic, an Ambry Care chatbot and paper questionnaires is entered by hand into Progeny, a desktop pedigree tool, one relative at a time; only ~20% of patients return the pre-visit questionnaire.");
+s.addNotes([
+  "30 interviews with patients and clinicians. Logged in Team Hub so far: 15 patients, 2 PAs, an ER doctor, a genetics counselor, an internist and an RN.",
+  "",
+  "PATIENTS: They know heart problems run in the family, not who, what, or at what age. ID007 only learned an uncle had a young-onset arrhythmia after the cardiologist sent them to ask relatives. ID006 said no family history until the GI doctor asked specifically; they would have answered differently if asked: \u201CHas anyone in your family had long-term stomach problems or autoimmune disease?\u201D",
+  "",
+  "PHYSICIAN ASSISTANTS (ID009, ID014): They reconstruct what happened at the first visit before deciding the next step, and wait on outside specialists to send results back. ID009: \u201CA result can be technically available but still not be useful until someone puts it into context.\u201D",
+  "",
+  "ER DOCTOR (ID010): Family history only matters for a few red flags: chest pain, fainting, sudden unexplained death in a young first-degree relative. A full chart review is unlikely in the ED; a flagged, scannable summary is more realistic. Bigger value in primary care.",
+  "",
+  "GENETICS COUNSELOR (D021): Family history comes from Epic, an Ambry Care chatbot and paper questionnaires, and she enters it by hand into Progeny, a desktop pedigree tool, one relative at a time. Only ~20% of patients return the pre-visit questionnaire. She expects patients building their own tree would put relatives on the wrong side, so the tool has to guide them. \u201CThere has to be a human in the loop to make the judgment about what matters.\u201D",
+  "",
+  "What it changed: guided questions, keep who said what, a one-page summary.",
+].join("\n"));
 
 (async () => {
   const out = path.join(__dirname, "what-we-heard.pptx");
