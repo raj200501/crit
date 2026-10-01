@@ -26,36 +26,34 @@ const s = pres.addSlide({ masterName: "Team 709 Content" });
 s.addText("WHAT WE HEARD", { placeholder: "title" });
 s.addText([
   { text: "21 interviews: ", options: { bold: true, color: C.text1 } },
-  { text: "15 patients and 6 clinicians. Families have the history, but not in a form a clinician can act on." },
+  { text: "15 patients, 2 PAs, an ER doctor, a genetics counselor, an internist and an RN." },
 ], { x: 0.5, y: 1.2, w: 9, h: 0.4, fontSize: 14, color: C.text2, margin: 0, isTextBox: true, objectName: "Subtitle" });
 
 const cards = [
-  { who: "15 PATIENTS", head: "They know it runs in the family. Not who.",
-    body: "One patient only learned of an uncle’s young-onset arrhythmia after calling relatives. Another said “no family history” until the GI doctor asked specifically.",
-    quote: null, src: "ID006 · ID007 + 13 more" },
-  { who: "2 PHYSICIAN ASSISTANTS", head: "They rebuild the story at every follow-up.",
-    body: "They reconstruct what happened at the first visit and wait on outside specialists for results.",
+  { who: "15 PATIENTS", head: "It runs in the family. But who?",
+    body: "One only learned of an uncle’s young-onset arrhythmia after calling relatives.",
+    quote: null, src: "ID007 + 14 more" },
+  { who: "2 PHYSICIAN ASSISTANTS", head: "They rebuild the story every visit.",
+    body: null,
     quote: "“A result can be technically available but still not be useful until someone puts it into context.”", src: "ID009 · ID014" },
-  { who: "1 EMERGENCY DOCTOR", head: "Only a few red flags matter, and fast.",
-    body: "Chest pain, fainting, a young relative’s sudden death. No time for a full chart; a flagged, scannable summary would get used. Bigger value in primary care.",
+  { who: "1 EMERGENCY DOCTOR", head: "Only a few red flags matter.",
+    body: "Chest pain, fainting, a young relative’s sudden death. A flagged summary is more realistic than a full chart.",
     quote: null, src: "ID010" },
-  { who: "1 GENETICS COUNSELOR", head: "Family history is retyped by hand.",
-    body: "Epic, a chatbot and paper forms are typed into Progeny one relative at a time; ~20% answer the questionnaire. Patients put relatives on the wrong side, so guide them.",
-    quote: "“There has to be a human in the loop.”", src: "ID021" },
+  { who: "1 GENETICS COUNSELOR", head: "Builds every pedigree by hand.",
+    body: "Retypes each relative from Epic, chatbots and paper into Progeny, one at a time.",
+    quote: null, src: "D021" },
 ];
-const X0 = 0.5, W = 2.1, GAP = 0.2, Y = 1.72, H = 2.9;
+const X0 = 0.5, W = 2.1, GAP = 0.2, Y = 1.75, H = 2.55;
 cards.forEach((c, i) => {
   const x = X0 + i * (W + GAP);
   s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y: Y, w: W, h: H, rectRadius: 0.08,
     fill: { color: C.background2 }, line: { color: C.accent5, width: 1 }, objectName: `Card ${i + 1}` });
   s.addText(c.who, { x: x + 0.15, y: Y + 0.15, w: W - 0.3, h: 0.22, fontSize: 9, bold: true, charSpacing: 1,
     color: C.accent1, margin: 0, isTextBox: true, objectName: `Card ${i + 1} label` });
-  s.addText(c.head, { x: x + 0.15, y: Y + 0.4, w: W - 0.3, h: 0.52, fontFace: "Cambria", bold: true, fontSize: 13,
+  s.addText(c.head, { x: x + 0.15, y: Y + 0.4, w: W - 0.3, h: 0.75, fontFace: "Cambria", bold: true, fontSize: 15,
     color: C.text1, margin: 0, valign: "top", isTextBox: true, objectName: `Card ${i + 1} heading` });
-  const runs = [{ text: c.body, options: { color: C.text2 } }];
-  if (c.quote) runs.push({ text: c.quote, options: { italic: true, color: C.text1, breakLine: false, paraSpaceBefore: 5 } });
-  if (c.quote) runs[0].options.breakLine = true;
-  s.addText(runs, { x: x + 0.15, y: Y + 0.98, w: W - 0.3, h: 1.55, fontSize: 10.5, margin: 0, valign: "top",
+  const runs = c.body ? [{ text: c.body, options: { color: C.text2 } }] : [{ text: c.quote, options: { italic: true, color: C.text1 } }];
+  s.addText(runs, { x: x + 0.15, y: Y + 1.2, w: W - 0.3, h: 1.0, fontSize: 12, margin: 0, valign: "top",
     lineSpacingMultiple: 0.95, isTextBox: true, objectName: `Card ${i + 1} body` });
   s.addText(c.src, { x: x + 0.15, y: Y + H - 0.28, w: W - 0.3, h: 0.2, fontSize: 8.5, color: C.accent4, margin: 0,
     isTextBox: true, objectName: `Card ${i + 1} source` });
@@ -64,13 +62,13 @@ cards.forEach((c, i) => {
 s.addText([
   { text: "+ ", options: { color: C.accent1, bold: true } },
   { text: "What it changed: ", options: { bold: true, color: C.text1 } },
-  { text: "guided questions · keep who said what, and how sure · a one-page summary a clinician can scan" },
-], { x: 0.5, y: 4.8, w: 9, h: 0.3, fontSize: 12.5, color: C.text2, margin: 0, isTextBox: true, objectName: "Takeaway" });
+  { text: "guided questions · keep who said what · a one-page summary" },
+], { x: 0.5, y: 4.65, w: 9, h: 0.3, fontSize: 14, color: C.text2, margin: 0, isTextBox: true, objectName: "Takeaway" });
 s.addText("Research · 21 interviews", { x: 7.0, y: 5.25, w: 2.5, h: 0.22, fontSize: 9, color: "9CA3AF",
   align: "right", margin: 0, isTextBox: true, objectName: "Footer" });
 s.addText("IDs refer to our Team Hub interview logs", { x: 0.5, y: 5.25, w: 4, h: 0.22, fontSize: 9, color: "9CA3AF",
   margin: 0, isTextBox: true, objectName: "Source note" });
-s.addNotes("21 interviews: 15 patients (ID001, 003-007, 011-013, 015-020) and 6 clinicians: internal medicine physician (ID002), RN (ID008), PAs (ID009, ID014), emergency medicine doctor (ID010), genetics counselor (ID021).");
+s.addNotes("21 interviews: 15 patients (ID001, 003-007, 011-013, 015-020) and 6 clinicians: internal medicine physician (ID002), RN (ID008), PAs (ID009, ID014), emergency medicine doctor (ID010), genetics counselor (D021). Genetics counselor: family history from Epic, an Ambry Care chatbot and paper questionnaires is entered by hand into Progeny, a desktop pedigree tool, one relative at a time; only ~20% of patients return the pre-visit questionnaire.");
 
 (async () => {
   const out = path.join(__dirname, "what-we-heard.pptx");
