@@ -89,7 +89,7 @@ test("aortic disease, cardiac arrest survivors and inherited rhythm conditions a
   const got = titles(t);
   assert.ok(got.includes("Aortic aneurysm or dissection in the family"));
   assert.ok(got.includes("Survived cardiac arrest or has a defibrillator"));
-  assert.ok(got.includes("Worth asking about an inherited heart condition"));
+  assert.ok(got.includes("Inherited heart condition reported in the family"));
   assert.ok(!got.some((x) => x.toLowerCase().includes("cholesterol")));
   assert.ok(!got.some((x) => x.toLowerCase().includes("fainting")));
 });

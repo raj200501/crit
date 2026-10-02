@@ -65,7 +65,10 @@ export default function SummaryDocument({ tree, audience = "patient" }: { tree: 
       </header>
 
       <section className={styles.section}>
-        <h2 className={styles.h2}>Worth discussing</h2>
+        <h2 className={styles.h2}>For clinician review</h2>
+        <p className={styles.criteriaNote}>
+          Family-history criteria named in cardiology guidelines, matched to what was reported. For the clinician to interpret; not a diagnosis or a risk score.
+        </p>
         {flags.length ? (
           <ul className={styles.flags}>
             {flags.map((f, i) => (
@@ -78,7 +81,7 @@ export default function SummaryDocument({ tree, audience = "patient" }: { tree: 
             ))}
           </ul>
         ) : (
-          <p className={styles.none}>Nothing in the reported history matches the usual cardiology red flags. Gaps below may still matter.</p>
+          <p className={styles.none}>No guideline family-history criteria matched what was reported. Gaps below may still matter.</p>
         )}
       </section>
 

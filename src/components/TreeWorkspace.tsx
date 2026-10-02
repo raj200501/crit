@@ -198,7 +198,7 @@ function Overview({
       ) : null}
       {flagsCount ? (
         <p className={styles.flagNote}>
-          {flagsCount} thing{flagsCount === 1 ? "" : "s"} worth raising at your visit. See the summary.
+          Your summary lists {flagsCount} item{flagsCount === 1 ? "" : "s"} for your clinician to review.
         </p>
       ) : null}
       <div className={styles.reset}>

@@ -109,7 +109,7 @@ export function flagsFor(tree: FamilyTree, views: PersonView[]): Flag[] {
       } else if (has(name, "cardiac arrest", "heart stopped", "resuscitat", "defibrillator", "icd")) {
         add("Survived cardiac arrest or has a defibrillator", line);
       } else if (has(name, "cardiomyopathy", "long qt", "brugada", "cpvt", "inherited rhythm")) {
-        add("Worth asking about an inherited heart condition", line);
+        add("Inherited heart condition reported in the family", line);
       } else if (has(name, "aort", "dissection", "marfan")) {
         add("Aortic aneurysm or dissection in the family", line);
       } else if (has(name, "faint", "syncope", "passed out")) {

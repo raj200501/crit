@@ -74,7 +74,7 @@ export default function Home() {
         <div>
           <span className={styles.num}>04</span>
           <h3>Walk in prepared</h3>
-          <p>A one-page summary you review, with red flags first. Print it, show a QR code, or export it as FHIR for the practice&rsquo;s EHR.</p>
+          <p>A one-page summary you review, with guideline-matched items listed first for the clinician. Print it, show a QR code, or export it as FHIR for the practice&rsquo;s EHR.</p>
         </div>
       </section>
 
