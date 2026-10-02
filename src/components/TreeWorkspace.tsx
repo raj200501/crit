@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { flagsFor, stillToConfirm } from "@/lib/clinical";
 import { actions, useTree } from "@/lib/store";
 import { counts, viewTree, type PersonView } from "@/lib/status";
-import type { Person, Relation } from "@/lib/types";
+import type { FamilyTree, Person, Relation } from "@/lib/types";
 import PersonPanel from "./PersonPanel";
 import TreeView, { Legend } from "./TreeView";
 import { Arrow, Plus } from "./icons";
@@ -96,7 +96,18 @@ export default function TreeWorkspace() {
 
         <aside className={styles.side}>
           {selectedView ? (
-            <PersonPanel key={selectedView.person.id} view={selectedView} tree={tree} onClose={() => setSelected(undefined)} />
+            <PersonPanel
+              key={selectedView.person.id}
+              view={selectedView}
+              tree={tree}
+              focusOnOpen
+              onClose={() => {
+                const id = selectedView.person.id;
+                setSelected(undefined);
+                // Return keyboard focus to the relative the panel was opened from.
+                requestAnimationFrame(() => document.querySelector<HTMLElement>(`[data-person-id="${id}"]`)?.focus());
+              }}
+            />
           ) : (
             <Overview
               views={views}
@@ -197,6 +208,7 @@ function Overview({
             className={styles.startForm}
             onSubmit={(e) => {
               e.preventDefault();
+              if (!confirmReplace(tree)) return;
               actions.startBlank(name);
               onCancelStart();
             }}
@@ -220,14 +232,23 @@ function Overview({
             <button className="btn btn-secondary btn-sm" onClick={onStart}>
               Start my own tree
             </button>
-            <button className="btn btn-ghost btn-sm" onClick={() => actions.loadDemo()}>
-              Reset demo family
+            <button className="btn btn-ghost btn-sm" onClick={() => confirmReplace(tree) && actions.loadDemo()}>
+              {tree.id === "demo" ? "Reset demo family" : "Load the demo family"}
             </button>
           </div>
         )}
       </div>
       <span className="visually-hidden">{views.length} people in tree</span>
     </section>
+  );
+}
+
+/** The tree lives only in this browser, so replacing it is permanent: ask first unless it is the demo. */
+function confirmReplace(tree: FamilyTree) {
+  if (tree.id === "demo") return true;
+  const pending = tree.invites.filter((i) => !i.answeredAt).length;
+  return window.confirm(
+    `This replaces your tree in this browser (${tree.people.length} people, ${tree.reports.length} answers${pending ? `, ${pending} pending invites` : ""}). It can't be undone, and replies to earlier invites won't import. Continue?`,
   );
 }
 

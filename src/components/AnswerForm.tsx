@@ -52,6 +52,7 @@ export default function AnswerForm({ subject, self, allowDecline, submitLabel = 
     setAlt(a);
     setPicked({});
     setOther({ on: false, text: "", age: "", approx: false });
+    if (a === "declined") setNote(""); // a decline carries nothing else
     setError(null);
   };
 
@@ -64,7 +65,7 @@ export default function AnswerForm({ subject, self, allowDecline, submitLabel = 
     e.preventDefault();
     const trimmedNote = note.trim() || undefined;
     if (alt) {
-      onSubmit([{ kind: alt === "none" ? "no-history" : alt, note: trimmedNote }]);
+      onSubmit([{ kind: alt === "none" ? "no-history" : alt, note: alt === "declined" ? undefined : trimmedNote }]);
       return;
     }
     if (!anyPicked) {

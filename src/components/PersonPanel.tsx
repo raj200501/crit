@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { buildInvite, inviteUrl } from "@/lib/share";
-import { actions } from "@/lib/store";
+import { actions, deviceId } from "@/lib/store";
 import { formatCondition, type PersonView } from "@/lib/status";
 import type { FamilyTree, Relation, Report } from "@/lib/types";
 import AnswerForm, { type Answer } from "./AnswerForm";
@@ -29,10 +29,31 @@ const STATUS_TEXT = {
   declined: "Declined",
 } as const;
 
-export default function PersonPanel({ view, tree, onClose }: { view: PersonView; tree: FamilyTree; onClose: () => void }) {
+export default function PersonPanel({
+  view,
+  tree,
+  onClose,
+  focusOnOpen,
+}: {
+  view: PersonView;
+  tree: FamilyTree;
+  onClose: () => void;
+  /** Move focus here (and scroll into view on narrow screens) when opened by the user. */
+  focusOnOpen?: boolean;
+}) {
   const p = view.person;
   const isSelf = p.relation === "self";
   const [mode, setMode] = useState<"view" | "answer" | "invite" | "edit">("view");
+  const heading = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    if (!focusOnOpen || !heading.current) return;
+    heading.current.focus({ preventScroll: true });
+    if (window.matchMedia("(max-width: 1040px)").matches) {
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      heading.current.closest("section")?.scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
+    }
+  }, [focusOnOpen]);
 
   const save = (answers: Answer[]) => {
     const now = new Date().toISOString();
@@ -54,7 +75,7 @@ export default function PersonPanel({ view, tree, onClose }: { view: PersonView;
       <header className={styles.head}>
         <div>
           <p className={styles.rel}>{RELATION_TEXT[p.relation]}</p>
-          <h2 className={styles.name}>
+          <h2 className={styles.name} ref={heading} tabIndex={-1}>
             {p.label}
             {p.deceased ? <span className={styles.dagger}> † deceased</span> : null}
           </h2>
@@ -92,13 +113,14 @@ export default function PersonPanel({ view, tree, onClose }: { view: PersonView;
       ) : (
         <>
           <div className={styles.section}>
-            <h3 className={styles.h3}>What we know</h3>
+            <h3 className={styles.h3}>{isSelf ? "Your own heart history" : "What we know"}</h3>
+            {isSelf ? <p className={styles.tip}>Shown on your summary under &ldquo;Your own history&rdquo;.</p> : null}
             {view.reports.length === 0 ? (
               <p className="muted">Nothing yet.</p>
             ) : (
               <ul className={styles.reports}>
                 {view.reports.map((r) => (
-                  <ReportRow key={r.id} r={r} canRemove={r.source === "patient"} />
+                  <ReportRow key={r.id} r={r} canRemove={r.source === "patient" || (r.source === "self" && r.reportedById === "self")} />
                 ))}
               </ul>
             )}
@@ -152,7 +174,7 @@ function ReportRow({ r, canRemove }: { r: Report; canRemove: boolean }) {
       <div className={styles.reportMain}>
         <b>{what}</b>
         {r.kind === "declined" ? <Lock size={12} className={styles.lockIcon} /> : null}
-        {r.note ? <q className={styles.note}>{r.note}</q> : null}
+        {r.note && r.kind !== "declined" ? <q className={styles.note}>{r.note}</q> : null}
         <small>
           {r.source === "record" ? <Check size={11} /> : null} {from} · {new Date(r.reportedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
           {r.record?.recordedDate ? ` · recorded ${r.record.recordedDate.slice(0, 4)}` : ""}
@@ -169,16 +191,16 @@ function ReportRow({ r, canRemove }: { r: Report; canRemove: boolean }) {
 
 function InviteBox({ tree, view, onDone }: { tree: FamilyTree; view: PersonView; onDone: () => void }) {
   const p = view.person;
-  const [url] = useState(() => inviteUrl(window.location.origin, buildInvite(tree, p)));
-  useEffect(() => {
-    actions.createInvite(p.id);
-  }, [p.id]);
+  const [url] = useState(() => inviteUrl(window.location.origin, buildInvite(tree, p, deviceId())));
   const [copied, setCopied] = useState(false);
+  // Only mark someone as invited once the link has actually left this screen.
+  const markSent = () => actions.createInvite(p.id);
   const message = `Hi! I'm getting ready for a ${tree.visit?.specialty.toLowerCase() ?? "doctor's"} visit and I'm putting together our family's heart history. Could you answer a few quick questions? It takes about 2 minutes: ${url}`;
 
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(message);
+      markSent();
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -190,6 +212,7 @@ function InviteBox({ tree, view, onDone }: { tree: FamilyTree; view: PersonView;
     if (navigator.share) {
       try {
         await navigator.share({ title: "Family heart history", text: message });
+        markSent();
       } catch {
         /* user cancelled */
       }
@@ -212,7 +235,7 @@ function InviteBox({ tree, view, onDone }: { tree: FamilyTree; view: PersonView;
         <button className="btn btn-secondary" onClick={copy}>
           {copied ? "Copied" : "Copy message"}
         </button>
-        <a className="btn btn-ghost" href={url} target="_blank" rel="noopener noreferrer">
+        <a className="btn btn-ghost" href={url} target="_blank" rel="noopener noreferrer" onClick={markSent}>
           Preview as {shortName(p.label)}
         </a>
       </div>

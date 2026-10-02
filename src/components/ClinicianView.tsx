@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { unpackJson } from "@/lib/compress";
+import { cleanTree } from "@/lib/sanitize";
 import type { FamilyTree } from "@/lib/types";
 import { useHash } from "@/lib/useHash";
 import { Logo } from "./icons";
@@ -15,8 +16,8 @@ export default function ClinicianView() {
   useEffect(() => {
     if (!hash) return;
     let live = true;
-    unpackJson<FamilyTree>(hash).then((t) => {
-      if (live) setUnpacked({ hash, tree: t && Array.isArray(t.people) && Array.isArray(t.reports) ? t : null });
+    unpackJson<unknown>(hash).then((t) => {
+      if (live) setUnpacked({ hash, tree: cleanTree(t) });
     });
     return () => {
       live = false;

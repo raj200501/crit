@@ -5,6 +5,8 @@
 
 import { useSyncExternalStore } from "react";
 import { blankTree, demoTree } from "./demo";
+import { cleanReport, cleanTree } from "./sanitize";
+import { askAbout, type ReplyPayload } from "./share";
 import type { FamilyTree, Invite, Person, Relation, Report } from "./types";
 
 const KEY = "fht:tree:v1";
@@ -23,9 +25,12 @@ function read(): FamilyTree {
   if (raw && raw === cacheRaw && cache) return cache;
   if (raw) {
     try {
-      cache = JSON.parse(raw) as FamilyTree;
-      cacheRaw = raw;
-      return cache;
+      const clean = cleanTree(JSON.parse(raw));
+      if (clean) {
+        cache = clean;
+        cacheRaw = raw;
+        return cache;
+      }
     } catch {
       // fall through to demo
     }
@@ -71,6 +76,33 @@ export function getTree(): FamilyTree {
   return read();
 }
 
+/** True only when this browser actually saved a tree (not the in-memory demo fallback). */
+export function hasSavedTree(): boolean {
+  try {
+    return window.localStorage.getItem(KEY) != null;
+  } catch {
+    return false;
+  }
+}
+
+const DEVICE_KEY = "fht:device";
+
+/** A random per-browser id, used to tell whether an invite is opened in the patient's own browser. */
+export function deviceId(): string | null {
+  try {
+    let id = window.localStorage.getItem(DEVICE_KEY);
+    if (!id) {
+      id = `d-${crypto.randomUUID()}`;
+      window.localStorage.setItem(DEVICE_KEY, id);
+    }
+    return id;
+  } catch {
+    return null;
+  }
+}
+
+export type ImportResult = { added: number; error?: "different-tree" | "not-invited" };
+
 const uid = (p: string) => `${p}-${Math.random().toString(36).slice(2, 9)}${Date.now().toString(36).slice(-3)}`;
 
 export const actions = {
@@ -113,12 +145,47 @@ export const actions = {
       reviewedAt: undefined,
     });
   },
+  /** Reports the patient enters themself (about a relative, or about their own history). */
   addReports(reports: Omit<Report, "id">[]) {
     const t = read();
     const known = new Set(t.people.map((p) => p.id));
-    const withIds = reports.filter((r) => known.has(r.personId)).map((r) => ({ ...r, id: uid("r") }));
+    const withIds = reports
+      .map(cleanReport)
+      .filter((r): r is Omit<Report, "id"> => !!r && known.has(r.personId))
+      .map((r) => ({ ...r, id: uid("r") }));
     write({ ...t, reports: [...t.reports, ...withIds], reviewedAt: undefined });
     return withIds.length;
+  },
+  /**
+   * A relative's answers, from a reply link or the same-browser demo. Only an invited person can
+   * reply, only about themself and the relatives they were asked about. Their newest answers about
+   * a person replace their older ones.
+   */
+  importReply(reply: ReplyPayload): ImportResult {
+    const t = read();
+    if (reply.t !== t.id) return { added: 0, error: "different-tree" };
+    const invitee = t.people.find((p) => p.id === reply.p);
+    if (!invitee || !t.invites.some((i) => i.personId === invitee.id)) return { added: 0, error: "not-invited" };
+    const allowed = new Set([invitee.id, ...askAbout(t, invitee).map((a) => a.id)]);
+    const at = new Date().toISOString();
+    const incoming = (Array.isArray(reply.reports) ? reply.reports : [])
+      .map(cleanReport)
+      .filter((r): r is Omit<Report, "id"> => !!r && allowed.has(r.personId))
+      .flatMap((r): Omit<Report, "id">[] => {
+        const aboutSelf = r.personId === invitee.id;
+        if (!aboutSelf && r.kind === "declined") return []; // only the person themself can decline
+        const source = aboutSelf ? (r.source === "record" && r.record ? "record" : "self") : "relative";
+        return [{ ...r, source, record: source === "record" ? r.record : undefined, reportedBy: invitee.label, reportedById: invitee.id, reportedAt: at }];
+      });
+    const touched = new Set(incoming.map((r) => r.personId));
+    const kept = t.reports.filter((r) => !(r.reportedById === invitee.id && r.source !== "patient" && touched.has(r.personId)));
+    write({
+      ...t,
+      reports: [...kept, ...incoming.map((r) => ({ ...r, id: uid("r") }))],
+      invites: t.invites.map((i) => (i.personId === invitee.id && !i.answeredAt ? { ...i, answeredAt: at } : i)),
+      reviewedAt: undefined,
+    });
+    return { added: incoming.length };
   },
   removeReport(id: string) {
     const t = read();

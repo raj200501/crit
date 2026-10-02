@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { HEART_CHOICES } from "@/lib/clinical";
 import { decodePayload, replyUrl, type InvitePayload, type ReplyPayload } from "@/lib/share";
 import { useHash } from "@/lib/useHash";
 import { clearPortalResult, peekPortalResult, SANDBOX_LABEL, startMyChartConnect, type PortalResult } from "@/lib/smart";
-import { actions, getTree } from "@/lib/store";
+import { actions, deviceId, getTree, hasSavedTree } from "@/lib/store";
 import type { Report } from "@/lib/types";
 import AnswerForm, { type Answer } from "./AnswerForm";
 import { Check, Heart, Lock, Logo } from "./icons";
@@ -19,6 +18,10 @@ interface Saved {
   step: Step;
   drafts: Draft[];
   done: string[];
+  /** The reply link, kept so a reload of the thank-you step can still send it. */
+  link?: string;
+  /** Whether the answers were written straight into the patient's tree in this browser. */
+  sameBrowser?: boolean;
 }
 
 const keyFor = (p: InvitePayload) => `fht:invite:${p.t}:${p.p}`;
@@ -47,20 +50,18 @@ export default function InviteFlow() {
 }
 
 /** Progress survives the round trip to the MyChart sandbox via sessionStorage. */
-function restore(payload: InvitePayload): Saved & { portal: PortalResult | null } {
+function restore(payload: InvitePayload): Required<Saved> & { portal: PortalResult | null } {
   let saved: Saved | null = null;
   try {
     saved = JSON.parse(sessionStorage.getItem(keyFor(payload)) || "null") as Saved | null;
   } catch {
     saved = null;
   }
-  const portal = peekPortalResult();
-  return {
-    step: portal ? "portal" : (saved?.step ?? "welcome"),
-    drafts: saved?.drafts ?? [],
-    done: saved?.done ?? [],
-    portal,
-  };
+  const portal = peekPortalResult(keyFor(payload));
+  const link = saved?.link ?? "";
+  let step: Step = portal ? "portal" : (saved?.step ?? "welcome");
+  if (step === "sent" && !link) step = "review"; // never show the thank-you step without a link to send
+  return { step, drafts: saved?.drafts ?? [], done: saved?.done ?? [], link, sameBrowser: !!saved?.sameBrowser, portal };
 }
 
 function InviteSession({ payload }: { payload: InvitePayload }) {
@@ -71,12 +72,13 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
   const [portal, setPortal] = useState<PortalResult | null>(init.portal);
   const [connecting, setConnecting] = useState(false);
   const [connectError, setConnectError] = useState<string | null>(null);
-  const [replyLink, setReplyLink] = useState("");
+  const [replyLink, setReplyLink] = useState(init.link);
+  const [sameBrowser, setSameBrowser] = useState(init.sameBrowser);
 
   useEffect(() => {
-    const saved: Saved = { step, drafts, done };
+    const saved: Saved = { step, drafts, done, link: replyLink, sameBrowser };
     sessionStorage.setItem(keyFor(payload), JSON.stringify(saved));
-  }, [payload, step, drafts, done]);
+  }, [payload, step, drafts, done, replyLink, sameBrowser]);
 
   const me = payload.l;
   const asker = payload.n;
@@ -99,7 +101,7 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
     setConnecting(true);
     setConnectError(null);
     try {
-      await startMyChartConnect(window.location.href);
+      await startMyChartConnect(window.location.href, keyFor(payload));
     } catch (e) {
       setConnecting(false);
       setConnectError(e instanceof Error ? e.message : "Could not reach the sandbox.");
@@ -107,13 +109,12 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
   };
 
   const send = () => {
-    const reply: ReplyPayload = { v: 1, t: payload.t, p: payload.p, b: me, at: now(), reports: drafts };
-    // Same browser as the patient (the demo): drop the answers straight into their tree.
-    const local = getTree();
-    if (local.id === payload.t) {
-      actions.addReports(drafts);
-      actions.markInviteAnswered(payload.p);
-    }
+    const at = now();
+    const reply: ReplyPayload = { v: 1, t: payload.t, p: payload.p, b: me, at, reports: drafts.map((d) => ({ ...d, reportedAt: at })) };
+    // Only when this is the patient's own browser (the demo) do the answers go straight into their tree.
+    const same = !!payload.d && payload.d === deviceId() && hasSavedTree() && getTree().id === payload.t;
+    const imported = same ? actions.importReply(reply) : null;
+    setSameBrowser(!!imported && !imported.error);
     setReplyLink(replyUrl(window.location.origin, reply));
     setStep("sent");
   };
@@ -240,6 +241,7 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
                       <Check size={11} /> from record
                     </span>
                   ) : null}
+                  {d.note && d.kind !== "declined" ? <q className={styles.reviewNote}>{d.note}</q> : null}
                 </span>
               </li>
             ))}
@@ -260,7 +262,7 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
         </section>
       ) : null}
 
-      {step === "sent" ? <Sent asker={asker} link={replyLink} sameBrowser={getTree().id === payload.t} /> : null}
+      {step === "sent" ? <Sent asker={asker} link={replyLink} sameBrowser={sameBrowser} /> : null}
     </Frame>
   );
 }
@@ -434,7 +436,7 @@ function Sent({ asker, link, sameBrowser }: { asker: string; link: string; sameB
           {copied ? "Copied" : `Send my answers to ${asker}`}
         </button>
       </div>
-      <p className={styles.small}>{HEART_CHOICES.length} heart questions · made with Family Health Tree, a student prototype (Team 709)</p>
+      <p className={styles.small}>Family Health Tree · a student prototype by Team 709</p>
     </section>
   );
 }

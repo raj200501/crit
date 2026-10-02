@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { packJson } from "@/lib/compress";
 import { toFhirBundle } from "@/lib/fhir";
+import { shareableTree } from "@/lib/redact";
 import { actions, useTree } from "@/lib/store";
 import { Back, Check, Doc, Lock } from "./icons";
 import SummaryDocument from "./SummaryDocument";
@@ -22,7 +23,7 @@ export default function SummaryPage() {
 
   const makeLink = async () => {
     const key = contentKey;
-    const packed = await packJson(tree);
+    const packed = await packJson(shareableTree(tree));
     const url = `${window.location.origin}/view#${packed}`;
     let code: string | null = null;
     if (url.length < 2300) {

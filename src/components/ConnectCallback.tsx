@@ -13,9 +13,10 @@ export default function ConnectCallback() {
     if (started) return;
     started = true;
     completeMyChartConnect()
-      .then(({ result, returnTo }) => {
-        stashPortalResult(result);
-        window.location.replace(returnTo);
+      .then(({ result, returnTo, owner }) => {
+        stashPortalResult(result, owner);
+        const target = new URL(returnTo, window.location.origin);
+        window.location.replace(target.origin === window.location.origin ? target.href : "/");
       })
       .catch((e: unknown) => setError(e instanceof Error ? e.message : String(e)));
   }, []);

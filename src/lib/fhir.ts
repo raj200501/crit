@@ -57,7 +57,8 @@ export function toFhirBundle(tree: FamilyTree) {
           coding: [{ system: "http://terminology.hl7.org/CodeSystem/history-absent-reason", code: "unable-to-obtain", display: "Unable To Obtain" }],
         };
       }
-      const conditions = v.reports.filter((r) => r.kind === "condition");
+      // v.conditions already leaves out secondhand reports about someone who declined.
+      const conditions = v.conditions;
       if (conditions.length) {
         resource.condition = conditions.map((r) => ({
           code: r.record?.code
@@ -73,11 +74,11 @@ export function toFhirBundle(tree: FamilyTree) {
       }
       const notes: { text: string }[] = [];
       if (v.status === "conflicting") notes.push({ text: `Reports disagree (${v.reason}). All reports kept.` });
-      v.reports
+      (v.status === "declined" ? [] : v.reports)
         .filter((r) => r.kind === "no-history")
         .forEach((r) => notes.push({ text: `${r.reportedBy} reported no heart history on ${r.reportedAt.slice(0, 10)}.` }));
       if (notes.length) resource.note = notes;
-      return { fullUrl: `urn:uuid:fmh-${p.id}`, resource: JSON.parse(JSON.stringify(resource)) };
+      return { fullUrl: `urn:uuid:${crypto.randomUUID()}`, resource: JSON.parse(JSON.stringify(resource)) };
     });
   return {
     resourceType: "Bundle",

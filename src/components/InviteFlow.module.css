@@ -286,3 +286,11 @@
     gap: 2px;
   }
 }
+
+.reviewNote {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--ink-2);
+}

@@ -83,6 +83,7 @@ export default function TreeView({ views, selectedId, onSelect, pendingIds, maxS
               return (
                 <button
                   key={n.id}
+                  data-person-id={n.id}
                   type="button"
                   className={cls}
                   style={{ left: n.x, top: n.y, width: NODE_W, height: NODE_H }}

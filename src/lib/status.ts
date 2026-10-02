@@ -12,7 +12,8 @@ export interface PersonView {
   verified: boolean;
   /** Any report mentions a heart condition. */
   cardiac: boolean;
-  /** The condition reports that drove the status. */
+  /** Every condition report that should reach the summary and red flags (all of them, except
+   *  secondhand reports about someone who declined). */
   conditions: Report[];
 }
 
@@ -45,8 +46,12 @@ const CARDIAC_TERMS = [
   "stent",
   "qt",
   "brugada",
-  "sudden death",
+  "sudden",
+  "unexplained death",
   "died suddenly",
+  "cardiac arrest",
+  "aort",
+  "marfan",
   "faint",
   "syncope",
   "cholesterol",
@@ -76,6 +81,8 @@ function capitalize(s: string) {
   return s ? s[0].toUpperCase() + s.slice(1) : s;
 }
 
+const FIRSTHAND = new Set(["self", "record"]);
+
 /** Derive what the tree should say about one person from everything reported about them. */
 export function viewPerson(tree: FamilyTree, person: Person): PersonView {
   const reports = tree.reports.filter((r) => r.personId === person.id).sort(byTime);
@@ -85,90 +92,89 @@ export function viewPerson(tree: FamilyTree, person: Person): PersonView {
     return { ...base, status: "known", headline: tree.visit ? `${tree.visit.specialty} visit` : "You" };
   }
 
-  // Only the person themself can decline; respect their latest word.
-  const own = reports.filter((r) => r.source === "self" || r.source === "record");
+  // Only the person themself can decline; respect their latest word. What the patient already
+  // knows stays on their summary, but other relatives' reports about this person do not.
+  const own = reports.filter((r) => FIRSTHAND.has(r.source));
   const latestOwn = own[own.length - 1];
   if (latestOwn?.kind === "declined") {
-    return { ...base, status: "declined", headline: "Declined to share" };
+    const mine = reports.filter((r) => r.kind === "condition" && r.source === "patient");
+    return {
+      ...base,
+      status: "declined",
+      headline: "Declined to share",
+      conditions: mine,
+      cardiac: mine.some((r) => isCardiac(r.condition)),
+      reason: mine.length ? "Declined; you added what you know" : undefined,
+    };
   }
 
   const conditions = reports.filter((r) => r.kind === "condition");
   const noHistory = reports.filter((r) => r.kind === "no-history");
   const cardiac = conditions.some((r) => isCardiac(r.condition));
   const records = conditions.filter((r) => r.source === "record");
+  const withAll = { ...base, cardiac, conditions, verified: records.length > 0 };
 
   if (conditions.length === 0 && noHistory.length === 0) {
     const askedAround = reports.some((r) => r.kind === "dont-know");
     return { ...base, status: "unknown", headline: askedAround ? "No one knows yet" : "Not asked yet" };
   }
 
-  // A portal record is the strongest source; show it as known and keep the rest as context.
-  if (records.length > 0) {
+  // --- Does anything disagree? ---------------------------------------------------------
+  const reasons: string[] = [];
+  const firsthandAnswers = reports.filter((r) => FIRSTHAND.has(r.source) && (r.kind === "condition" || r.kind === "no-history"));
+  const latestFirst = firsthandAnswers[firsthandAnswers.length - 1];
+
+  // "No heart history" vs a reported condition. A firsthand "none" contradicts anyone's condition;
+  // a secondhand "none" only contradicts other secondhand reports (a record or the person outranks it).
+  if (latestFirst?.kind === "no-history" && conditions.length) reasons.push(`${latestFirst.reportedBy} says no heart history`);
+  if (!latestFirst) {
+    const noneBy = new Set(noHistory.map((r) => r.reportedBy));
+    if (conditions.some((r) => !noneBy.has(r.reportedBy)) && noHistory.length) reasons.push("no history vs. a reported condition");
+  }
+
+  // Two reporters whose condition lists share nothing (Mom: heart attack, Uncle: angina). A portal
+  // record shows only the facts someone chose to share, so it never counts as a contradiction.
+  const sets = new Map<string, Set<string>>();
+  for (const r of conditions.filter((x) => x.source !== "record")) {
+    if (!sets.has(r.reportedBy)) sets.set(r.reportedBy, new Set());
+    sets.get(r.reportedBy)!.add(normalizeCondition(r.condition));
+  }
+  const lists = [...sets.values()];
+  const disjoint = lists.some((a, i) => lists.slice(i + 1).some((b) => ![...a].some((x) => b.has(x))));
+  if (disjoint) reasons.push("different conditions reported");
+
+  // Same condition, ages more than 2 years apart.
+  const byName = new Map<string, number[]>();
+  for (const r of conditions) {
+    if (r.ageAtOnset == null) continue;
+    const k = normalizeCondition(r.condition);
+    byName.set(k, [...(byName.get(k) ?? []), r.ageAtOnset]);
+  }
+  if ([...byName.values()].some((a) => a.length > 1 && Math.max(...a) - Math.min(...a) > 2)) reasons.push("ages differ");
+
+  const reporters = new Set([...conditions, ...noHistory].map((r) => r.reportedBy));
+
+  if (reasons.length) {
+    const lead = conditions.find((r) => FIRSTHAND.has(r.source)) ?? conditions[0];
+    const headline = lead ? `${capitalize(formatCondition(lead).replace(/, (about )?age /, " at "))}?` : "Reports disagree";
+    return { ...withAll, status: "conflicting", headline, reason: `${reporters.size} reports disagree` };
+  }
+
+  // --- Agreement: pick the strongest source for the headline. -----------------------------
+  if (records.length) {
     const r = records[records.length - 1];
+    return { ...withAll, status: "known", headline: formatCondition(r), reason: `From ${r.record?.system ?? "a patient portal"}` };
+  }
+  if (conditions.length) {
+    const lead = [...conditions].reverse().find((r) => r.source === "self") ?? conditions[conditions.length - 1];
     return {
-      ...base,
+      ...withAll,
       status: "known",
-      verified: true,
-      cardiac,
-      conditions: records,
-      headline: formatCondition(r),
-      reason: `From ${r.record?.system ?? "a patient portal"}`,
+      headline: formatCondition(lead),
+      reason: reporters.size > 1 ? `${reporters.size} relatives agree` : `Reported by ${lead.reportedBy}`,
     };
   }
-
-  // Firsthand answers outrank secondhand ones.
-  const firsthand = reports.filter((r) => r.source === "self" && (r.kind === "condition" || r.kind === "no-history"));
-  const pool = firsthand.length > 0 ? firsthand : [...conditions, ...noHistory];
-  const poolConditions = pool.filter((r) => r.kind === "condition");
-  const poolNoHistory = pool.filter((r) => r.kind === "no-history");
-
-  const reporters = new Set(pool.map((r) => r.reportedBy));
-  const names = new Set(poolConditions.map((r) => normalizeCondition(r.condition)));
-  const ages = poolConditions.map((r) => r.ageAtOnset).filter((a): a is number => a != null);
-  const ageSpread = ages.length > 1 ? Math.max(...ages) - Math.min(...ages) : 0;
-
-  // Disagreement = different reporters say different things (not one reporter listing two conditions).
-  const perReporter = new Map<string, Set<string>>();
-  for (const r of pool) {
-    const key = r.kind === "no-history" ? "__none__" : normalizeCondition(r.condition);
-    if (!perReporter.has(r.reportedBy)) perReporter.set(r.reportedBy, new Set());
-    perReporter.get(r.reportedBy)!.add(key);
-  }
-  const reporterSets = [...perReporter.values()].map((s) => [...s].sort().join("|"));
-  const reportersDisagree = reporters.size > 1 && new Set(reporterSets).size > 1;
-  const conflicting = (poolConditions.length > 0 && poolNoHistory.length > 0) || reportersDisagree || (names.size === 1 && ageSpread > 2);
-
-  if (conflicting) {
-    const first = poolConditions[0];
-    const headline = first ? `${capitalize(formatCondition(first).replace(/, (about )?age /, " at "))}?` : "Reports disagree";
-    return {
-      ...base,
-      status: "conflicting",
-      cardiac,
-      conditions: poolConditions,
-      headline,
-      reason: `${pool.length} reports disagree`,
-    };
-  }
-
-  if (poolConditions.length > 0) {
-    const latest = poolConditions[poolConditions.length - 1];
-    return {
-      ...base,
-      status: "known",
-      cardiac,
-      conditions: poolConditions,
-      headline: formatCondition(latest),
-      reason: reporters.size > 1 ? `${reporters.size} relatives agree` : `Reported by ${latest.reportedBy}`,
-    };
-  }
-
-  return {
-    ...base,
-    status: "known",
-    headline: "No heart history",
-    reason: `Reported by ${poolNoHistory[poolNoHistory.length - 1].reportedBy}`,
-  };
+  return { ...withAll, status: "known", headline: "No heart history", reason: `Reported by ${noHistory[noHistory.length - 1].reportedBy}` };
 }
 
 export function viewTree(tree: FamilyTree): PersonView[] {

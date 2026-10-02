@@ -17,6 +17,8 @@ export interface InvitePayload {
   s?: string;
   /** Other relatives the invitee can speak about: id, label from the invitee's point of view. */
   a: { id: string; l: string }[];
+  /** Random id of the patient's browser, so the demo can tell "same browser" apart from another device. */
+  d?: string;
 }
 
 export interface ReplyPayload {
@@ -57,56 +59,64 @@ export function decodePayload<T>(hash: string): T | null {
   }
 }
 
+/** How an invitee would describe each other relation (from their point of view). */
+const ROLE: Partial<Record<Relation, Partial<Record<Relation, string>>>> = {
+  "paternal-aunt-uncle": {
+    father: "your sibling",
+    "paternal-grandfather": "your father",
+    "paternal-grandmother": "your mother",
+    "paternal-aunt-uncle": "your sibling",
+  },
+  "maternal-aunt-uncle": {
+    mother: "your sibling",
+    "maternal-grandfather": "your father",
+    "maternal-grandmother": "your mother",
+    "maternal-aunt-uncle": "your sibling",
+  },
+  father: {
+    "paternal-grandfather": "your father",
+    "paternal-grandmother": "your mother",
+    "paternal-aunt-uncle": "your sibling",
+    mother: "{pn}'s mother",
+  },
+  mother: {
+    "maternal-grandfather": "your father",
+    "maternal-grandmother": "your mother",
+    "maternal-aunt-uncle": "your sibling",
+    father: "{pn}'s father",
+  },
+  "paternal-grandfather": { father: "your child", "paternal-aunt-uncle": "your child", "paternal-grandmother": "your spouse" },
+  "paternal-grandmother": { father: "your child", "paternal-aunt-uncle": "your child", "paternal-grandfather": "your spouse" },
+  "maternal-grandfather": { mother: "your child", "maternal-aunt-uncle": "your child", "maternal-grandmother": "your spouse" },
+  "maternal-grandmother": { mother: "your child", "maternal-aunt-uncle": "your child", "maternal-grandfather": "your spouse" },
+  sibling: {
+    father: "your father",
+    mother: "your mother",
+    sibling: "your sibling",
+    "paternal-grandfather": "your grandfather",
+    "paternal-grandmother": "your grandmother",
+    "maternal-grandfather": "your grandfather",
+    "maternal-grandmother": "your grandmother",
+    "paternal-aunt-uncle": "your aunt or uncle",
+    "maternal-aunt-uncle": "your aunt or uncle",
+  },
+};
+
 /** How the invited relative would describe another person in the tree. */
 export function labelFor(invitee: Relation, other: Person, patientName: string): string {
-  const pn = patientName;
-  const rel = other.relation;
-  const map: Partial<Record<Relation, Partial<Record<Relation, string>>>> = {
-    "paternal-aunt-uncle": {
-      father: "your sibling",
-      "paternal-grandfather": "your father",
-      "paternal-grandmother": "your mother",
-      "paternal-aunt-uncle": "your sibling",
-    },
-    "maternal-aunt-uncle": {
-      mother: "your sibling",
-      "maternal-grandfather": "your father",
-      "maternal-grandmother": "your mother",
-      "maternal-aunt-uncle": "your sibling",
-    },
-    father: {
-      "paternal-grandfather": "your father",
-      "paternal-grandmother": "your mother",
-      "paternal-aunt-uncle": "your sibling",
-      mother: `${pn}'s mother`,
-    },
-    mother: {
-      "maternal-grandfather": "your father",
-      "maternal-grandmother": "your mother",
-      "maternal-aunt-uncle": "your sibling",
-      father: `${pn}'s father`,
-    },
-    "paternal-grandfather": { father: "your child", "paternal-aunt-uncle": "your child", "paternal-grandmother": "your spouse" },
-    "paternal-grandmother": { father: "your child", "paternal-aunt-uncle": "your child", "paternal-grandfather": "your spouse" },
-    "maternal-grandfather": { mother: "your child", "maternal-aunt-uncle": "your child", "maternal-grandmother": "your spouse" },
-    "maternal-grandmother": { mother: "your child", "maternal-aunt-uncle": "your child", "maternal-grandfather": "your spouse" },
-    sibling: { father: "your father", mother: "your mother", sibling: "your sibling" },
-  };
-  const role = map[invitee]?.[rel];
+  const role = ROLE[invitee]?.[other.relation]?.replace("{pn}", patientName);
   return role ? `${other.label} (${role})` : other.label;
 }
 
-/** People an invitee is likely to know about: their own close family in the tree. */
+/** People an invitee is likely to know about: anyone they have a direct family role to. */
 export function askAbout(tree: FamilyTree, invitee: Person): { id: string; l: string }[] {
-  const sideOf = (r: Relation) => (r.startsWith("paternal") || r === "father" ? "paternal" : r.startsWith("maternal") || r === "mother" ? "maternal" : "both");
-  const side = sideOf(invitee.relation);
+  const roles = ROLE[invitee.relation] ?? {};
   return tree.people
-    .filter((p) => p.id !== invitee.id && p.relation !== "self" && p.relation !== "sibling")
-    .filter((p) => side === "both" || sideOf(p.relation) === side)
+    .filter((p) => p.id !== invitee.id && p.relation !== "self" && roles[p.relation] !== undefined)
     .map((p) => ({ id: p.id, l: labelFor(invitee.relation, p, tree.patientName) }));
 }
 
-export function buildInvite(tree: FamilyTree, person: Person): InvitePayload {
+export function buildInvite(tree: FamilyTree, person: Person, device?: string | null): InvitePayload {
   return {
     v: 1,
     t: tree.id,
@@ -116,6 +126,7 @@ export function buildInvite(tree: FamilyTree, person: Person): InvitePayload {
     r: person.relation,
     s: tree.visit ? `${tree.visit.specialty.toLowerCase()} visit` : undefined,
     a: askAbout(tree, person),
+    d: device ?? undefined,
   };
 }
 

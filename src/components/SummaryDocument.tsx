@@ -34,6 +34,7 @@ export default function SummaryDocument({ tree, audience = "patient" }: { tree: 
   const rows = views.filter((v) => v.person.relation !== "self").sort((a, b) => order(a) - order(b));
   const flags = flagsFor(tree, views);
   const todo = stillToConfirm(views);
+  const own = views.find((v) => v.person.relation === "self")?.reports.filter((r) => r.kind !== "declined") ?? [];
   const visitDate = tree.visit?.date
     ? new Date(`${tree.visit.date}T12:00:00`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
     : null;
@@ -81,6 +82,20 @@ export default function SummaryDocument({ tree, audience = "patient" }: { tree: 
         )}
       </section>
 
+      {own.length ? (
+        <section className={styles.section}>
+          <h2 className={styles.h2}>Your own history</h2>
+          <ul className={styles.items}>
+            {own.map((r) => (
+              <li key={r.id}>
+                {r.kind === "condition" ? formatCondition(r) : r.kind === "no-history" ? "No heart history" : "Not sure"}
+                {r.note ? <q className={styles.note}>{r.note}</q> : null}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
       <section className={styles.section}>
         <h2 className={styles.h2}>By relative</h2>
         <table className={styles.table}>
@@ -94,31 +109,46 @@ export default function SummaryDocument({ tree, audience = "patient" }: { tree: 
           </thead>
           <tbody>
             {rows.map((v) => {
-              const conds = v.reports.filter((r) => r.kind === "condition");
-              const none = v.reports.filter((r) => r.kind === "no-history");
+              const declined = v.status === "declined";
+              const conds = v.conditions;
+              const none = declined ? [] : v.reports.filter((r) => r.kind === "no-history");
+              const attribute = v.status === "conflicting" || new Set([...conds, ...none].map((r) => r.reportedBy)).size > 1;
+              const shownSources = declined ? [...v.reports.filter((r) => r.kind === "declined"), ...conds] : v.reports;
               return (
-                <tr key={v.person.id} className={v.cardiac && v.status !== "declined" ? styles.heartRow : undefined}>
+                <tr key={v.person.id} className={v.cardiac ? styles.heartRow : undefined}>
                   <th scope="row">
                     {v.person.label}
                     {v.person.deceased ? " †" : ""}
                     <small>{REL[v.person.relation]}</small>
                   </th>
                   <td>
-                    {v.status === "declined" ? (
-                      <span className={styles.muted}>
-                        <Lock size={11} /> Declined to share
-                      </span>
+                    {declined ? (
+                      <>
+                        <span className={styles.muted}>
+                          <Lock size={11} /> Declined to share
+                        </span>
+                        {conds.length ? (
+                          <ul className={styles.items}>
+                            {conds.map((r) => (
+                              <li key={r.id}>
+                                {formatCondition(r)}
+                                <span className={styles.by}> (patient&rsquo;s own knowledge)</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : null}
+                      </>
                     ) : conds.length || none.length ? (
                       <ul className={styles.items}>
                         {conds.map((r) => (
                           <li key={r.id}>
                             {formatCondition(r)}
-                            {v.status === "conflicting" ? <span className={styles.by}> ({r.reportedBy})</span> : null}
+                            {attribute ? <span className={styles.by}> ({r.reportedBy})</span> : null}
                             {r.note ? <q className={styles.note}>{r.note}</q> : null}
                           </li>
                         ))}
                         {none.map((r) => (
-                          <li key={r.id}>No heart history{v.status === "conflicting" ? <span className={styles.by}> ({r.reportedBy})</span> : null}</li>
+                          <li key={r.id}>No heart history{attribute ? <span className={styles.by}> ({r.reportedBy})</span> : null}</li>
                         ))}
                       </ul>
                     ) : (
@@ -128,7 +158,7 @@ export default function SummaryDocument({ tree, audience = "patient" }: { tree: 
                   <td>
                     <span className={`${styles.status} ${styles[v.status]}`}>{v.status}</span>
                   </td>
-                  <td className={styles.src}>{v.reports.length ? [...new Set(v.reports.map(source))].join(", ") : "—"}</td>
+                  <td className={styles.src}>{shownSources.length ? [...new Set(shownSources.map(source))].join(", ") : "—"}</td>
                 </tr>
               );
             })}

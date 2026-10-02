@@ -11,6 +11,7 @@ const SANDBOX = "https://launch.smarthealthit.org/v/r4";
 export const DEMO_PATIENT = "7099b4c5-6f47-4293-9690-f2afb23b9dd6";
 export const SANDBOX_LABEL = "MyChart (SMART sandbox)";
 const RETURN_KEY = "fht:smart:return";
+const OWNER_KEY = "fht:smart:owner";
 
 function b64url(s: string) {
   return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -22,8 +23,10 @@ function sandboxIss() {
   return `${SANDBOX}/sim/${b64url(JSON.stringify(sim))}/fhir`;
 }
 
-export async function startMyChartConnect(returnTo: string) {
+/** `owner` ties the fetched record to the invite that asked for it. */
+export async function startMyChartConnect(returnTo: string, owner: string) {
   sessionStorage.setItem(RETURN_KEY, returnTo);
+  sessionStorage.setItem(OWNER_KEY, owner);
   const { authorize } = await import("fhirclient/browser");
   await authorize({
     iss: sandboxIss(),
@@ -68,7 +71,7 @@ function ageAt(birth: string | undefined, when: string | undefined) {
 }
 
 /** Finish the OAuth redirect and read the patient's own conditions. */
-export async function completeMyChartConnect(): Promise<{ result: PortalResult; returnTo: string }> {
+export async function completeMyChartConnect(): Promise<{ result: PortalResult; returnTo: string; owner: string }> {
   const { ready } = await import("fhirclient/browser");
   const client = await ready();
   const patient = (await client.patient.read()) as { birthDate?: string; name?: { given?: string[]; family?: string }[] };
@@ -95,25 +98,30 @@ export async function completeMyChartConnect(): Promise<{ result: PortalResult; 
   conditions.sort((a, b) => Number(b.cardiac) - Number(a.cardiac) || a.display.localeCompare(b.display));
   const n = patient.name?.[0];
   const returnTo = sessionStorage.getItem(RETURN_KEY) || "/invite";
+  const owner = sessionStorage.getItem(OWNER_KEY) || "";
   sessionStorage.removeItem(RETURN_KEY);
-  return { result: { patientName: [n?.given?.join(" "), n?.family].filter(Boolean).join(" ") || "Sandbox patient", conditions }, returnTo };
+  sessionStorage.removeItem(OWNER_KEY);
+  return { result: { patientName: [n?.given?.join(" "), n?.family].filter(Boolean).join(" ") || "Sandbox patient", conditions }, returnTo, owner };
 }
 
 const RESULT_KEY = "fht:smart:result";
 
-export function stashPortalResult(r: PortalResult) {
-  sessionStorage.setItem(RESULT_KEY, JSON.stringify(r));
+export function stashPortalResult(r: PortalResult, owner: string) {
+  sessionStorage.setItem(RESULT_KEY, JSON.stringify({ owner, r }));
 }
 
-/** Read (without consuming) the conditions fetched on the callback page. */
-export function peekPortalResult(): PortalResult | null {
+/** Read (without consuming) the conditions fetched for this invite; anything else is discarded. */
+export function peekPortalResult(owner: string): PortalResult | null {
   const raw = sessionStorage.getItem(RESULT_KEY);
   if (!raw) return null;
   try {
-    return JSON.parse(raw) as PortalResult;
+    const parsed = JSON.parse(raw) as { owner?: string; r?: PortalResult };
+    if (parsed.owner === owner && parsed.r && Array.isArray(parsed.r.conditions)) return parsed.r;
   } catch {
-    return null;
+    /* fall through */
   }
+  sessionStorage.removeItem(RESULT_KEY);
+  return null;
 }
 
 export function clearPortalResult() {
