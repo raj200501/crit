@@ -1,6 +1,6 @@
 # Family Health Tree
 
-Team 709 · Product Studio prototype.
+Team 709 · Product Studio prototype. **Live demo: https://family-health-tree-raj-s-projects12.vercel.app**
 
 Turn "heart problems run in the family" into **who, what, and at what age**, before the cardiology visit. A patient builds a three-generation family health tree, relatives fill in their own branches, every answer keeps its source and its uncertainty, and the patient walks in with a one-page summary the clinician can act on.
 
@@ -54,9 +54,12 @@ Stack: Next.js 16 (App Router), React 19, TypeScript, CSS modules, `fhirclient`,
 
 ## Deploy (free, Vercel Hobby)
 
-1. Install the Vercel GitHub app on this repo: https://github.com/apps/vercel/installations/new
+Deployed as the Vercel project `family-health-tree` at https://family-health-tree-raj-s-projects12.vercel.app. Every push to `claude/platform-demo-gif-mnpouw` (the production branch) redeploys. Vercel Authentication covers preview deployments only, so the production URL stays public for relatives and practices opening links.
+
+To set it up again elsewhere:
+
+1. Install the Vercel GitHub app on the repo: https://github.com/apps/vercel/installations/new
 2. Import the repo at https://vercel.com/new. The framework is detected as Next.js and needs no settings or environment variables.
-3. Every push redeploys.
 
 Vercel Hobby is for non-commercial use and has no BAA. That is fine for this synthetic-data prototype and not fine for real patient data.
 
