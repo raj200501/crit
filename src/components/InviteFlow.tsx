@@ -118,7 +118,6 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
     setStep("sent");
   };
 
-
   return (
     <Frame asker={asker}>
       {step === "welcome" ? (
@@ -127,7 +126,10 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
           <h1 className={styles.h1}>
             {asker} is getting ready for a {payload.s ?? "doctor’s visit"} and asked about the family&rsquo;s heart health.
           </h1>
-          <p className={styles.lead}>A few questions about you{payload.a.length ? ` and ${payload.a.length === 1 ? "one other relative" : "a few relatives"} you might know about` : ""}. About 2 minutes. Skip anything you don&rsquo;t know.</p>
+          <p className={styles.lead}>
+            A few questions about you{payload.a.length ? ` and ${payload.a.length === 1 ? "one other relative" : "a few relatives"} you might know about` : ""}.
+            About 2 minutes. Skip anything you don&rsquo;t know.
+          </p>
           <ul className={styles.promises}>
             <li>
               <Lock size={14} /> Your answers go only to {asker}. Nothing is stored on our servers.
@@ -275,6 +277,9 @@ function PortalPicker({ portal, onShare, onCancel }: { portal: PortalResult; onS
   const rest = portal.conditions.filter((c) => !c.cardiac);
   const [picked, setPicked] = useState<Set<string>>(() => new Set(heart.map((c) => c.id)));
   const [showRest, setShowRest] = useState(false);
+  const [ages, setAges] = useState<Record<string, string>>(() =>
+    Object.fromEntries(portal.conditions.map((c) => [c.id, c.ageAtOnset != null ? String(c.ageAtOnset) : ""])),
+  );
   const toggle = (id: string) =>
     setPicked((s) => {
       const n = new Set(s);
@@ -283,24 +288,39 @@ function PortalPicker({ portal, onShare, onCancel }: { portal: PortalResult; onS
       return n;
     });
   const row = (c: PortalResult["conditions"][number]) => (
-    <label key={c.id} className={`${styles.portalRow} ${picked.has(c.id) ? styles.portalOn : ""}`}>
-      <input type="checkbox" checked={picked.has(c.id)} onChange={() => toggle(c.id)} />
-      <span>
-        <b>{c.display}</b>
-        <small>
-          {c.ageAtOnset != null ? `Started at age ${c.ageAtOnset}` : "Start date not in record"}
-          {c.onset ? ` · ${c.onset.slice(0, 4)}` : ""}
-        </small>
-      </span>
-      {c.cardiac ? <span className="chip chip-accent">heart</span> : null}
-    </label>
+    <div key={c.id} className={`${styles.portalRow} ${picked.has(c.id) ? styles.portalOn : ""}`}>
+      <label className={styles.portalMain}>
+        <input type="checkbox" checked={picked.has(c.id)} onChange={() => toggle(c.id)} />
+        <span>
+          <b>{c.display}</b>
+          <small>
+            {c.onset ? `In the record since ${c.onset.slice(0, 4)}` : "No date in the record"}
+            {c.ageAtOnset != null ? ` (age ${c.ageAtOnset})` : ""}
+          </small>
+        </span>
+        {c.cardiac ? <span className="chip chip-accent">heart</span> : null}
+      </label>
+      {picked.has(c.id) ? (
+        <label className={styles.portalAge}>
+          How old were you when it started?
+          <input
+            className="input"
+            inputMode="numeric"
+            value={ages[c.id] ?? ""}
+            onChange={(e) => setAges((a) => ({ ...a, [c.id]: e.target.value.replace(/\D/g, "").slice(0, 3) }))}
+            aria-label={`Age when ${c.display} started`}
+          />
+        </label>
+      ) : null}
+    </div>
   );
   return (
     <section className={styles.stack}>
       <p className="kicker">From your record</p>
       <h1 className={styles.h2}>Pick what to share</h1>
       <p className={styles.lead}>
-        Connected to {SANDBOX_LABEL} as <b>{portal.patientName}</b> (a made-up sandbox patient). Only what you tick is shared. Nothing else from the chart leaves this page.
+        Connected to {SANDBOX_LABEL} as <b>{portal.patientName}</b> (a made-up sandbox patient). Only what you tick is shared. Nothing else from the chart
+        leaves this page.
       </p>
       <div className={styles.portalList}>{heart.length ? heart.map(row) : <p className="muted">No heart-related conditions in this record.</p>}</div>
       {rest.length ? (
@@ -309,7 +329,23 @@ function PortalPicker({ portal, onShare, onCancel }: { portal: PortalResult; onS
         </button>
       ) : null}
       {showRest ? <div className={styles.portalList}>{rest.map(row)}</div> : null}
-      <button className="btn btn-primary btn-block" disabled={picked.size === 0} onClick={() => onShare(portal.conditions.filter((c) => picked.has(c.id)))}>
+      <p className={styles.hintSmall}>
+        A record date is often when a problem was added to the list, not when it was diagnosed. Fix the age if you know better.
+      </p>
+      <button
+        className="btn btn-primary btn-block"
+        disabled={picked.size === 0}
+        onClick={() =>
+          onShare(
+            portal.conditions
+              .filter((c) => picked.has(c.id))
+              .map((c) => {
+                const n = Number.parseInt(ages[c.id] ?? "", 10);
+                return { ...c, ageAtOnset: Number.isFinite(n) && n >= 0 && n < 130 ? n : undefined };
+              }),
+          )
+        }
+      >
         Share {picked.size} {picked.size === 1 ? "fact" : "facts"}
       </button>
       <button className="btn btn-ghost btn-block" onClick={onCancel}>
@@ -375,7 +411,9 @@ function Sent({ asker, link, sameBrowser }: { asker: string; link: string; sameB
           </Link>
         </>
       ) : (
-        <p className={styles.lead}>Send this link back to {asker}. Opening it adds your answers to their tree. The answers are inside the link itself; nothing is stored on a server.</p>
+        <p className={styles.lead}>
+          Send this link back to {asker}. Opening it adds your answers to their tree. The answers are inside the link itself; nothing is stored on a server.
+        </p>
       )}
       <div className={styles.replyBox}>
         <button
@@ -396,9 +434,7 @@ function Sent({ asker, link, sameBrowser }: { asker: string; link: string; sameB
           {copied ? "Copied" : `Send my answers to ${asker}`}
         </button>
       </div>
-      <p className={styles.small}>
-        {HEART_CHOICES.length} heart questions · made with Family Health Tree, a student prototype (Team 709)
-      </p>
+      <p className={styles.small}>{HEART_CHOICES.length} heart questions · made with Family Health Tree, a student prototype (Team 709)</p>
     </section>
   );
 }

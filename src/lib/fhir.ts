@@ -21,8 +21,10 @@ const ROLE: Record<Relation, { code: string; display: string } | null> = {
 function roleFor(p: Person) {
   const r = ROLE[p.relation];
   if (!r) return null;
-  if (p.relation === "paternal-aunt-uncle" && p.sex !== "unknown") return p.sex === "male" ? { code: "PUNCLE", display: "paternal uncle" } : { code: "PAUNT", display: "paternal aunt" };
-  if (p.relation === "maternal-aunt-uncle" && p.sex !== "unknown") return p.sex === "male" ? { code: "MUNCLE", display: "maternal uncle" } : { code: "MAUNT", display: "maternal aunt" };
+  if (p.relation === "paternal-aunt-uncle" && p.sex !== "unknown")
+    return p.sex === "male" ? { code: "PUNCLE", display: "paternal uncle" } : { code: "PAUNT", display: "paternal aunt" };
+  if (p.relation === "maternal-aunt-uncle" && p.sex !== "unknown")
+    return p.sex === "male" ? { code: "MUNCLE", display: "maternal uncle" } : { code: "MAUNT", display: "maternal aunt" };
   if (p.relation === "sibling" && p.sex !== "unknown") return p.sex === "male" ? { code: "BRO", display: "brother" } : { code: "SIS", display: "sister" };
   return r;
 }
@@ -43,14 +45,13 @@ export function toFhirBundle(tree: FamilyTree) {
         date: tree.updatedAt.slice(0, 10),
         name: p.label,
         relationship: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/v3-RoleCode", code: role.code, display: role.display }], text: role.display },
-        sex:
-          p.sex === "unknown"
-            ? undefined
-            : { coding: [{ system: "http://hl7.org/fhir/administrative-gender", code: p.sex, display: p.sex }] },
+        sex: p.sex === "unknown" ? undefined : { coding: [{ system: "http://hl7.org/fhir/administrative-gender", code: p.sex, display: p.sex }] },
         deceasedBoolean: p.deceased ? true : undefined,
       };
       if (v.status === "declined") {
-        resource.dataAbsentReason = { coding: [{ system: "http://terminology.hl7.org/CodeSystem/history-absent-reason", code: "withheld", display: "Information Withheld" }] };
+        resource.dataAbsentReason = {
+          coding: [{ system: "http://terminology.hl7.org/CodeSystem/history-absent-reason", code: "withheld", display: "Information Withheld" }],
+        };
       } else if (v.status === "unknown") {
         resource.dataAbsentReason = {
           coding: [{ system: "http://terminology.hl7.org/CodeSystem/history-absent-reason", code: "unable-to-obtain", display: "Unable To Obtain" }],

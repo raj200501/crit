@@ -26,7 +26,9 @@ export default function ReplyImport() {
 
   const nameOf = (id: string) => tree.people.find((p) => p.id === id)?.label ?? "Someone not in your tree";
   const matches = reply ? reply.t === tree.id : false;
-  const already = reply ? reply.reports.every((r) => tree.reports.some((x) => x.personId === r.personId && x.reportedAt === r.reportedAt && x.kind === r.kind)) : false;
+  const already = reply
+    ? reply.reports.every((r) => tree.reports.some((x) => x.personId === r.personId && x.reportedAt === r.reportedAt && x.kind === r.kind))
+    : false;
 
   return (
     <main style={{ maxWidth: 640, margin: "0 auto", padding: "32px 20px 64px", display: "grid", gap: 16 }}>
@@ -43,7 +45,17 @@ export default function ReplyImport() {
           <h1 style={{ fontSize: 30 }}>{reply.b} answered your questions</h1>
           <ul className="card" style={{ listStyle: "none", margin: 0, padding: 0 }}>
             {reply.reports.map((r, i) => (
-              <li key={i} style={{ display: "grid", gridTemplateColumns: "160px 1fr", gap: 12, padding: "12px 16px", borderBottom: "1px solid var(--line)", fontSize: 15 }}>
+              <li
+                key={i}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "160px 1fr",
+                  gap: 12,
+                  padding: "12px 16px",
+                  borderBottom: "1px solid var(--line)",
+                  fontSize: 15,
+                }}
+              >
                 <b>{nameOf(r.personId)}</b>
                 <span>{describe(r)}</span>
               </li>

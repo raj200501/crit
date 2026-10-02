@@ -34,7 +34,9 @@ export default function SummaryDocument({ tree, audience = "patient" }: { tree: 
   const rows = views.filter((v) => v.person.relation !== "self").sort((a, b) => order(a) - order(b));
   const flags = flagsFor(tree, views);
   const todo = stillToConfirm(views);
-  const visitDate = tree.visit?.date ? new Date(`${tree.visit.date}T12:00:00`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) : null;
+  const visitDate = tree.visit?.date
+    ? new Date(`${tree.visit.date}T12:00:00`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+    : null;
 
   return (
     <article className={styles.paper} aria-label="Pre-visit family history summary">
@@ -43,7 +45,9 @@ export default function SummaryDocument({ tree, audience = "patient" }: { tree: 
           <p className={styles.kicker}>Pre-visit summary · Family heart history</p>
           <h1 className={styles.title}>{tree.patientName === "You" ? "Family history" : tree.patientName}</h1>
           <p className={styles.sub}>
-            {tree.visit ? `${tree.visit.specialty}${visitDate ? ` · ${visitDate}` : ""}${tree.visit.practice ? ` · ${tree.visit.practice}` : ""}` : "Upcoming visit"}
+            {tree.visit
+              ? `${tree.visit.specialty}${visitDate ? ` · ${visitDate}` : ""}${tree.visit.practice ? ` · ${tree.visit.practice}` : ""}`
+              : "Upcoming visit"}
             {" · "}3 generations · {rows.length} relatives
           </p>
         </div>
@@ -114,9 +118,7 @@ export default function SummaryDocument({ tree, audience = "patient" }: { tree: 
                           </li>
                         ))}
                         {none.map((r) => (
-                          <li key={r.id}>
-                            No heart history{v.status === "conflicting" ? <span className={styles.by}> ({r.reportedBy})</span> : null}
-                          </li>
+                          <li key={r.id}>No heart history{v.status === "conflicting" ? <span className={styles.by}> ({r.reportedBy})</span> : null}</li>
                         ))}
                       </ul>
                     ) : (
@@ -126,9 +128,7 @@ export default function SummaryDocument({ tree, audience = "patient" }: { tree: 
                   <td>
                     <span className={`${styles.status} ${styles[v.status]}`}>{v.status}</span>
                   </td>
-                  <td className={styles.src}>
-                    {v.reports.length ? [...new Set(v.reports.map(source))].join(", ") : "—"}
-                  </td>
+                  <td className={styles.src}>{v.reports.length ? [...new Set(v.reports.map(source))].join(", ") : "—"}</td>
                 </tr>
               );
             })}
@@ -152,11 +152,14 @@ export default function SummaryDocument({ tree, audience = "patient" }: { tree: 
 
       <footer className={styles.foot}>
         <p>
-          {audience === "clinician" ? "Shared by the patient, read-only. " : ""}Patient-reported family history to support the conversation. Not a diagnosis or a risk
-          score. &ldquo;Portal record&rdquo; items were retrieved from the relative&rsquo;s own patient portal with their consent; a record date can be when a problem was
-          listed, not when it was diagnosed.
+          {audience === "clinician" ? "Shared by the patient, read-only. " : ""}Patient-reported family history to support the conversation. Not a diagnosis or
+          a risk score. &ldquo;Portal record&rdquo; items were retrieved from the relative&rsquo;s own patient portal with their consent; a record date can be
+          when a problem was listed, not when it was diagnosed.
         </p>
-        <p>Family Health Tree · prototype by Team 709 · prepared {new Date(tree.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</p>
+        <p>
+          Family Health Tree · prototype by Team 709 · prepared{" "}
+          {new Date(tree.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+        </p>
       </footer>
     </article>
   );

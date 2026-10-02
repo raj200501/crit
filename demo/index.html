@@ -15,7 +15,7 @@ p{font:400 18px/1.45 I;color:#a7b1c2;margin:0}
 .tb i{width:11px;height:11px;border-radius:50%;display:block}
 .ab{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid #eef0f3;font:700 15px I;color:#1f2937}
 .pill{font:600 11.5px I;padding:5px 10px;border-radius:99px;background:#f1f5f9;color:#475569;margin-left:6px}
-.box{background:#0061d5;color:#fff}
+.box{background:#1f2937;color:#fff}
 .nd{width:150px;height:58px;border-radius:11px;border:1.5px solid #e2e8f0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font:600 14px I;color:#1f2937}
 .nd span{font:400 11px/1.3 I;color:#94a3b8;margin-top:2px;padding:0 8px}
 .lay{position:absolute;inset:-1.5px;border-radius:11px}
@@ -37,11 +37,11 @@ p{font:400 18px/1.45 I;color:#a7b1c2;margin:0}
  <div class="a cp" id="c1"><div class="k">01 · Build</div><h1>Build it in minutes.</h1><p>Three generations, guided questions, cardiac focus.</p></div>
  <div class="a cp" id="c2"><div class="k">02 · Connect</div><h1>Relatives fill in their own branch.</h1><p>One text. Your uncle links his MyChart and shares just the facts that matter.</p></div>
  <div class="a cp" id="c3"><div class="k">03 · Keep the uncertainty</div><h1>Known, unknown, declined, conflicting.</h1><p>Nothing gets flattened into a guess.</p></div>
- <div class="a cp" id="c4"><div class="k">04 · Walk in prepared</div><h1>One page the cardiologist can act on.</h1><p>Stored in a HIPAA-compliant Box vault under a BAA. You choose who sees it.</p></div>
+ <div class="a cp" id="c4"><div class="k">04 · Walk in prepared</div><h1>One page the cardiologist can act on.</h1><p>You review it first, then choose who sees it.</p></div>
 </div>
 <div class="a" id="win">
  <div class="tb"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
- <div class="ab"><span>Alex's family health tree</span><span><span class="pill">3 generations · cardiac</span><span class="pill box" id="boxpill">&#128274; Secured in Box · HIPAA</span></span></div>
+ <div class="ab"><span>Alex's family health tree</span><span><span class="pill">3 generations · cardiac</span><span class="pill box" id="boxpill">&#128274; Private by design</span></span></div>
  <div class="a" id="tree" style="left:0;top:88px;width:720px;height:452px">
   <svg class="a" id="lines" width="720" height="452" style="left:0;top:0"><g stroke="#cbd5e1" stroke-width="2" fill="none">
    <path id="p1" d="M360 116 V140 H540 V116"/><path id="p2" d="M360 140 V174 M540 140 V174"/><path id="p3" d="M180 232 V266 H360 V232 M270 266 V300"/></g></svg>
@@ -52,7 +52,7 @@ p{font:400 18px/1.45 I;color:#a7b1c2;margin:0}
  <div class="a" id="sheet">
   <div style="display:flex;justify-content:space-between"><span class="k" style="color:#c2410c">Pre-visit summary</span><span style="font:600 12px I;color:#64748b">Cardiology · Oct 14</span></div>
   <div style="font:400 12.5px I;color:#64748b;margin:6px 0 10px">Alex · cardiac family history · 3 generations</div>
-  <div class="row r"><b>Uncle</b>Atrial fibrillation, onset 34<em style="background:#fff1e8;color:#c2410c">MyChart verified</em></div>
+  <div class="row r"><b>Uncle</b>Atrial fibrillation, onset 34<em style="background:#fff1e8;color:#c2410c">from MyChart</em></div>
   <div class="row r"><b>Father</b>Heart attack ~60? Mom: 60 · Uncle: angina 58<em style="background:#fffbeb;color:#b45309">conflicting</em></div>
   <div class="row r"><b>Mother</b>No cardiac history<em style="background:#f0fdf4;color:#15803d">known</em></div>
   <div class="row r"><b>Grandfather</b>No one knows yet<em style="background:#f1f5f9;color:#64748b">unknown</em></div>
@@ -62,7 +62,7 @@ p{font:400 18px/1.45 I;color:#a7b1c2;margin:0}
    <div style="font:400 12.5px I;color:#15803d;flex:1">&#10003; Reviewed by Alex</div>
    <div style="position:relative;width:250px;height:40px"><div class="btn a" id="sh1" style="inset:0;background:#1f2937;color:#fff">Share with cardiology</div><div class="btn a" id="sh2" style="inset:0;background:#15803d;color:#fff">&#10003; Sent · read-only link</div></div>
   </div>
-  <div class="r" style="font:400 11px I;color:#94a3b8;margin-top:14px">Stored in Box (HIPAA, signed BAA) · encrypted · access logged · not a diagnosis</div>
+  <div class="r" style="font:400 11px I;color:#94a3b8;margin-top:14px">Shared read-only · you choose who sees it · not a diagnosis</div>
  </div>
 </div>
 <div class="a" id="phone"><div class="scr">
@@ -79,7 +79,7 @@ p{font:400 18px/1.45 I;color:#a7b1c2;margin:0}
    <div style="font:600 11px I;color:#c2410c;letter-spacing:.08em">FOUND IN YOUR RECORD</div><b>Atrial fibrillation</b><br>Diagnosed 2009 · age 34</div>
   <div style="font:400 11px/1.4 I;color:#64748b;margin:12px 0">Share only this fact with Alex. Your full chart stays private.</div>
   <div style="position:relative;height:40px"><div class="btn a" id="ps1" style="inset:0;background:#1f2937;color:#fff">Share with Alex</div><div class="btn a" id="ps2" style="inset:0;background:#15803d;color:#fff">&#10003; Shared</div></div>
-  <div style="font:600 10.5px I;color:#0061d5;text-align:center;margin-top:12px">&#128274; Stored in Box · HIPAA</div>
+  <div style="font:600 10.5px I;color:#15803d;text-align:center;margin-top:12px">&#128274; Only this fact is shared</div>
  </div>
  <div class="a" id="tap" style="width:34px;height:34px;border-radius:50%;background:rgba(15,23,42,.18);border:2px solid rgba(15,23,42,.25)"></div>
 </div></div>
@@ -90,7 +90,7 @@ p{font:400 18px/1.45 I;color:#a7b1c2;margin:0}
 <div class="a" id="end" style="inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center">
  <div style="font:700 72px S;color:#fff">Family Health Tree</div>
  <div style="font:400 24px I;color:#a7b1c2;margin:14px 0 22px">Who, what, and at what age, before the cardiology visit.</div>
- <div class="k">Free for patients · Cardiology practices pay · Secured in Box (HIPAA)</div></div>
+ <div class="k">Free for patients · Cardiology practices pay</div></div>
 </div>
 <script>
 const $=id=>document.getElementById(id),C=(x)=>x<0?0:x>1?1:x,o3=p=>1-(1-p)**3,io=p=>p<.5?4*p*p*p:1-((-2*p+2)**3)/2;
@@ -98,7 +98,7 @@ const P=(t,a,d,e=o3)=>e(C((t-a)/d)),V=(t,a,b,d=.35)=>P(t,a,d)*(1-P(t,b,d,io));
 function S(el,o,x=0,y=0,s=1){el.style.opacity=o.toFixed(3);el.style.transform=`translate(${x}px,${y}px) scale(${s})`}
 const N=[['gf','Grandfather',285,58,2.9,[[0,'','add details'],[9.6,'un','unknown']]],['gm','Grandmother',465,58,3.0,[[0,'','add details'],[9.3,'dc','declined to share']]],
 ['mo','Mother',105,174,2.6,[[0,'','add details'],[9.0,'kn','known · no cardiac history']]],['fa','Father',285,174,2.7,[[0,'','add details'],[8.7,'cf','conflicting · heart attack at 60?']]],
-['un','Uncle',465,174,2.8,[[0,'','add details'],[4.6,'','invited · waiting'],[7.5,'fd','AFib, onset 34 · MyChart ✓']]],['yo','You',195,300,2.5,[[0,'you','cardiology visit · Oct 14']]]];
+['un','Uncle',465,174,2.8,[[0,'','add details'],[4.6,'','invited · waiting'],[7.5,'fd','AFib at 34 · MyChart']]],['yo','You',195,300,2.5,[[0,'you','cardiology visit · Oct 14']]]];
 const tr=$('tree');N.forEach(n=>{const d=document.createElement('div');d.className='a';d.id=n[0];d.style.left=n[2]+'px';d.style.top=n[3]+'px';
 n[5].forEach((s,i)=>{const l=document.createElement('div');l.className='nd lay '+s[1];l.innerHTML=n[1]+'<span>'+s[2]+'</span>';d.appendChild(l)});tr.appendChild(d)});
 ['p1','p2','p3'].forEach(p=>{const e=$(p),L=e.getTotalLength();e.style.strokeDasharray=L;e._L=L});

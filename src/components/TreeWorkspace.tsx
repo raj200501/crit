@@ -24,9 +24,7 @@ export default function TreeWorkspace() {
   const flags = flagsFor(tree, views);
   const todo = stillToConfirm(views);
   const selectedView = views.find((v) => v.person.id === selected);
-  const generations = new Set(
-    tree.people.map((p) => (p.relation.includes("grand") ? 0 : p.relation === "self" || p.relation === "sibling" ? 2 : 1)),
-  ).size;
+  const generations = new Set(tree.people.map((p) => (p.relation.includes("grand") ? 0 : p.relation === "self" || p.relation === "sibling" ? 2 : 1))).size;
 
   const activity = [...tree.reports].sort((a, b) => b.reportedAt.localeCompare(a.reportedAt)).slice(0, 6);
   const nameOf = (id: string) => tree.people.find((p) => p.id === id)?.label ?? "Someone";
@@ -203,7 +201,13 @@ function Overview({
               onCancelStart();
             }}
           >
-            <input className="input" placeholder="Your first name" value={name} onChange={(e) => setName(e.target.value.slice(0, 40))} aria-label="Your first name" />
+            <input
+              className="input"
+              placeholder="Your first name"
+              value={name}
+              onChange={(e) => setName(e.target.value.slice(0, 40))}
+              aria-label="Your first name"
+            />
             <button className="btn btn-primary btn-sm" type="submit">
               Start
             </button>
@@ -230,7 +234,12 @@ function Overview({
 function AddRelative({ relation, onDone }: { relation: Relation; onDone: (id?: string) => void }) {
   const [label, setLabel] = useState("");
   const [sex, setSex] = useState<Person["sex"]>("unknown");
-  const title = relation === "sibling" ? "Add your brother or sister" : relation === "paternal-aunt-uncle" ? "Add your father’s brother or sister" : "Add your mother’s brother or sister";
+  const title =
+    relation === "sibling"
+      ? "Add your brother or sister"
+      : relation === "paternal-aunt-uncle"
+        ? "Add your father’s brother or sister"
+        : "Add your mother’s brother or sister";
   return (
     <form
       className={styles.addForm}
@@ -241,7 +250,14 @@ function AddRelative({ relation, onDone }: { relation: Relation; onDone: (id?: s
       }}
     >
       <b>{title}</b>
-      <input className="input" placeholder="What you call them, e.g. Aunt Priya" value={label} onChange={(e) => setLabel(e.target.value.slice(0, 40))} aria-label="Name" autoFocus />
+      <input
+        className="input"
+        placeholder="What you call them, e.g. Aunt Priya"
+        value={label}
+        onChange={(e) => setLabel(e.target.value.slice(0, 40))}
+        aria-label="Name"
+        autoFocus
+      />
       <select className="input" value={sex} onChange={(e) => setSex(e.target.value as Person["sex"])} aria-label="Sex">
         <option value="unknown">Sex (optional)</option>
         <option value="female">Female</option>

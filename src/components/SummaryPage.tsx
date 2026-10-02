@@ -89,8 +89,8 @@ export default function SummaryPage() {
                   </button>
                 </div>
                 <p className={styles.hint}>
-                  <Lock size={11} /> Read-only. The summary is packed into the link after the #, so it never reaches our server. A production version would use encrypted SMART
-                  Health Links.
+                  <Lock size={11} /> Read-only. The summary is packed into the link after the #, so it never reaches our server. A production version would use
+                  encrypted SMART Health Links.
                 </p>
               </div>
             ) : null}
@@ -106,12 +106,14 @@ export default function SummaryPage() {
               Send to practice&rsquo;s Box folder (pilot)
             </button>
             <p className={styles.hint}>
-              Box signs a HIPAA BAA only on Enterprise plans. In a paid pilot, summaries would go to the practice&rsquo;s BAA-covered storage. The prototype stores nothing.
+              Box signs a HIPAA BAA only on Enterprise plans. In a paid pilot, summaries would go to the practice&rsquo;s BAA-covered storage. The prototype
+              stores nothing.
             </p>
           </section>
           {tree.sharedAt ? (
             <p className={styles.sharedNote}>
-              <Check size={12} /> Link made {new Date(tree.sharedAt).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+              <Check size={12} /> Link made{" "}
+              {new Date(tree.sharedAt).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
             </p>
           ) : null}
         </aside>

@@ -28,7 +28,17 @@ export default function ClinicianView() {
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--surface-2)" }}>
-      <header className="no-print" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 24px", background: "#fff", borderBottom: "1px solid var(--line)" }}>
+      <header
+        className="no-print"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "12px 24px",
+          background: "#fff",
+          borderBottom: "1px solid var(--line)",
+        }}
+      >
         <Link href="/" style={{ display: "inline-flex", gap: 8, alignItems: "center", fontWeight: 700, textDecoration: "none" }}>
           <Logo size={20} /> Family Health Tree
         </Link>

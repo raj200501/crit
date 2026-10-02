@@ -10,8 +10,7 @@ export const metadata: Metadata = {
     default: "Family Health Tree",
     template: "%s · Family Health Tree",
   },
-  description:
-    "Turn “heart problems run in the family” into who, what, and at what age, before the cardiology visit. A Team 709 prototype.",
+  description: "Turn “heart problems run in the family” into who, what, and at what age, before the cardiology visit. A Team 709 prototype.",
   robots: { index: false, follow: false },
 };
 

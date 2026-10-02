@@ -136,8 +136,7 @@ export function viewPerson(tree: FamilyTree, person: Person): PersonView {
   }
   const reporterSets = [...perReporter.values()].map((s) => [...s].sort().join("|"));
   const reportersDisagree = reporters.size > 1 && new Set(reporterSets).size > 1;
-  const conflicting =
-    (poolConditions.length > 0 && poolNoHistory.length > 0) || reportersDisagree || (names.size === 1 && ageSpread > 2);
+  const conflicting = (poolConditions.length > 0 && poolNoHistory.length > 0) || reportersDisagree || (names.size === 1 && ageSpread > 2);
 
   if (conflicting) {
     const first = poolConditions[0];

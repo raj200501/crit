@@ -29,8 +29,8 @@ export default function Home() {
             Turn &ldquo;heart problems run in the family&rdquo; into <em>who, what, and at what age.</em>
           </h1>
           <p className={styles.lead}>
-            Build a three-generation family health tree before your cardiology visit. Relatives fill in their own branches. Every answer keeps who said it, and nothing
-            uncertain gets flattened into a guess.
+            Build a three-generation family health tree before your cardiology visit. Relatives fill in their own branches. Every answer keeps who said it, and
+            nothing uncertain gets flattened into a guess.
           </p>
           <div className={styles.ctas}>
             <Link href="/tree" className="btn btn-accent">
@@ -48,7 +48,7 @@ export default function Home() {
             <i />
             <span>Alex&rsquo;s family · cardiology visit Oct 14</span>
           </div>
-          <TreeView views={views} maxScale={0.8} />
+          <TreeView views={views} maxScale={0.8} minScale={0.3} />
           <div className={styles.heroLegend}>
             <Legend />
           </div>
@@ -108,8 +108,8 @@ export default function Home() {
           <p className="kicker">Privacy by design</p>
           <h2>In this prototype, nothing is stored on a server.</h2>
           <p>
-            Your tree lives in your browser. Invite links and replies carry their answers after the &ldquo;#&rdquo;, which browsers never send to a server. The MyChart demo
-            connects to the public SMART on FHIR sandbox with made-up patients.
+            Your tree lives in your browser. Invite links and replies carry their answers after the &ldquo;#&rdquo;, which browsers never send to a server. The
+            MyChart demo connects to the public SMART on FHIR sandbox with made-up patients.
           </p>
         </div>
         <ul>
@@ -130,7 +130,8 @@ export default function Home() {
 
       <footer className={styles.footer}>
         <span>
-          Family Health Tree · Team 709 (Raj Kashikar, Viha Srinivas, Unser Jaffry) · a student prototype, not a medical device and not for real health information.
+          Family Health Tree · Team 709 (Raj Kashikar, Viha Srinivas, Unser Jaffry) · a student prototype, not a medical device and not for real health
+          information.
         </span>
         <Link href="/how-it-works">Research, compliance and business model</Link>
       </footer>
