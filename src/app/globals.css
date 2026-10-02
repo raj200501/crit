@@ -264,3 +264,16 @@ p {
 .muted {
   color: var(--muted);
 }
+
+.print-only {
+  display: none;
+}
+
+@media print {
+  .print-only {
+    display: block !important;
+  }
+  .screen-only {
+    display: none !important;
+  }
+}

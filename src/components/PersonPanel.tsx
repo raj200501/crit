@@ -177,7 +177,7 @@ function ReportRow({ r, canRemove }: { r: Report; canRemove: boolean }) {
         {r.note && r.kind !== "declined" ? <q className={styles.note}>{r.note}</q> : null}
         <small>
           {r.source === "record" ? <Check size={11} /> : null} {from} · {new Date(r.reportedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-          {r.record?.recordedDate ? ` · recorded ${r.record.recordedDate.slice(0, 4)}` : ""}
+          {r.record?.recordedDate ? ` · on problem list since ${r.record.recordedDate.slice(0, 4)}` : ""}
         </small>
       </div>
       {canRemove ? (
@@ -254,13 +254,22 @@ function EditPerson({ view, onDone, onRemoved }: { view: PersonView; onDone: () 
   const [label, setLabel] = useState(p.label);
   const [sex, setSex] = useState(p.sex);
   const [deceased, setDeceased] = useState(!!p.deceased);
+  const [ageAtDeath, setAgeAtDeath] = useState(p.ageAtDeath != null ? String(p.ageAtDeath) : "");
+  const [cause, setCause] = useState(p.causeOfDeath ?? "");
   const removable = !["self", "mother", "father"].includes(p.relation);
   return (
     <form
       className={styles.edit}
       onSubmit={(e) => {
         e.preventDefault();
-        actions.updatePerson(p.id, { label: label.trim() || p.label, sex, deceased });
+        const age = Number.parseInt(ageAtDeath, 10);
+        actions.updatePerson(p.id, {
+          label: label.trim() || p.label,
+          sex,
+          deceased: deceased || undefined,
+          ageAtDeath: deceased && Number.isFinite(age) && age >= 0 && age < 130 ? age : undefined,
+          causeOfDeath: deceased ? cause.trim() || undefined : undefined,
+        });
         onDone();
       }}
     >
@@ -280,6 +289,25 @@ function EditPerson({ view, onDone, onRemoved }: { view: PersonView; onDone: () 
       <label className={styles.check}>
         <input type="checkbox" checked={deceased} onChange={(e) => setDeceased(e.target.checked)} /> Has passed away
       </label>
+      {deceased ? (
+        <div className={styles.deathRow}>
+          <label className="field">
+            <span className="field-label">Age at death</span>
+            <input
+              className="input"
+              inputMode="numeric"
+              placeholder="e.g. 66"
+              value={ageAtDeath}
+              onChange={(e) => setAgeAtDeath(e.target.value.replace(/\D/g, "").slice(0, 3))}
+            />
+          </label>
+          <label className="field">
+            <span className="field-label">Cause, if known</span>
+            <input className="input" placeholder="e.g. heart attack, sudden, cancer" value={cause} onChange={(e) => setCause(e.target.value.slice(0, 80))} />
+          </label>
+          <span className="field-hint">Was it sudden or unexpected? Say so in the cause; it matters to the cardiologist.</span>
+        </div>
+      ) : null}
       <div className={styles.inviteActions}>
         {removable ? (
           <button

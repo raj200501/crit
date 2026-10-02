@@ -1,4 +1,4 @@
-import { FIRST_DEGREE, flagsFor, stillToConfirm } from "@/lib/clinical";
+import { CRITERIA_FOOTNOTE, FIRST_DEGREE, reviewItems, stillToConfirm, type Flag, type Tier } from "@/lib/clinical";
 import { formatCondition, viewTree, type PersonView } from "@/lib/status";
 import type { FamilyTree, Report } from "@/lib/types";
 import { Alert, Check, Lock } from "./icons";
@@ -24,7 +24,7 @@ function order(v: PersonView) {
 }
 
 function source(r: Report) {
-  if (r.source === "record") return `Portal record${r.record?.recordedDate ? `, ${r.record.recordedDate.slice(0, 4)}` : ""}`;
+  if (r.source === "record") return `Portal record${r.record?.recordedDate ? ` (on problem list since ${r.record.recordedDate.slice(0, 4)})` : ""}`;
   if (r.source === "self") return "Self-reported";
   return r.reportedBy;
 }
@@ -32,7 +32,8 @@ function source(r: Report) {
 export default function SummaryDocument({ tree, audience = "patient" }: { tree: FamilyTree; audience?: "patient" | "clinician" }) {
   const views = viewTree(tree);
   const rows = views.filter((v) => v.person.relation !== "self").sort((a, b) => order(a) - order(b));
-  const flags = flagsFor(tree, views);
+  const items = audience === "clinician" ? reviewItems(tree, views) : [];
+  const tier = (t: Tier) => items.filter((i) => i.tier === t);
   const todo = stillToConfirm(views);
   const own = views.find((v) => v.person.relation === "self")?.reports.filter((r) => r.kind !== "declined") ?? [];
   const visitDate = tree.visit?.date
@@ -43,7 +44,7 @@ export default function SummaryDocument({ tree, audience = "patient" }: { tree: 
     <article className={styles.paper} aria-label="Pre-visit family history summary">
       <header className={styles.head}>
         <div>
-          <p className={styles.kicker}>Pre-visit summary · Family heart history</p>
+          <p className={styles.kicker}>{audience === "clinician" ? "Pre-visit summary for the care team" : "Your pre-visit summary"} · Family heart history</p>
           <h1 className={styles.title}>{tree.patientName === "You" ? "Family history" : tree.patientName}</h1>
           <p className={styles.sub}>
             {tree.visit
@@ -64,26 +65,23 @@ export default function SummaryDocument({ tree, audience = "patient" }: { tree: 
         </div>
       </header>
 
-      <section className={styles.section}>
-        <h2 className={styles.h2}>For clinician review</h2>
-        <p className={styles.criteriaNote}>
-          Family-history criteria named in cardiology guidelines, matched to what was reported. For the clinician to interpret; not a diagnosis or a risk score.
-        </p>
-        {flags.length ? (
-          <ul className={styles.flags}>
-            {flags.map((f, i) => (
-              <li key={i}>
-                <Alert size={14} />
-                <span>
-                  <b>{f.title}.</b> {f.detail}
-                </span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className={styles.none}>No guideline family-history criteria matched what was reported. Gaps below may still matter.</p>
-        )}
-      </section>
+      {audience === "clinician" ? (
+        <section className={styles.section}>
+          <h2 className={styles.h2}>For clinician review</h2>
+          <p className={styles.criteriaNote}>
+            Family-history criteria named in cardiology guidelines, matched to what was reported. For the clinician to interpret; not a diagnosis or a risk
+            score.
+          </p>
+          <TierList
+            title="Guideline family-history criteria matched"
+            items={tier("guideline")}
+            kind="guideline"
+            empty="No guideline family-history criteria matched what was reported. Gaps below may still matter."
+          />
+          {tier("noted").length ? <TierList title="Also noted (no guideline family-history criterion)" items={tier("noted")} kind="noted" /> : null}
+          {tier("clarify").length ? <TierList title="To clarify" items={tier("clarify")} kind="clarify" /> : null}
+        </section>
+      ) : null}
 
       {own.length ? (
         <section className={styles.section}>
@@ -123,6 +121,12 @@ export default function SummaryDocument({ tree, audience = "patient" }: { tree: 
                     {v.person.label}
                     {v.person.deceased ? " †" : ""}
                     <small>{REL[v.person.relation]}</small>
+                    {v.person.deceased && (v.person.ageAtDeath != null || v.person.causeOfDeath) ? (
+                      <small>
+                        Died{v.person.ageAtDeath != null ? ` at ${v.person.ageAtDeath}` : ""}
+                        {v.person.causeOfDeath ? `, ${v.person.causeOfDeath}` : ""}
+                      </small>
+                    ) : null}
                   </th>
                   <td>
                     {declined ? (
@@ -169,7 +173,7 @@ export default function SummaryDocument({ tree, audience = "patient" }: { tree: 
         </table>
       </section>
 
-      {todo.length ? (
+      {audience === "patient" && todo.length ? (
         <section className={styles.section}>
           <h2 className={styles.h2}>Still to confirm</h2>
           <p className={styles.todo}>
@@ -183,11 +187,26 @@ export default function SummaryDocument({ tree, audience = "patient" }: { tree: 
         </section>
       ) : null}
 
+      {audience === "patient" ? (
+        <section className={styles.section}>
+          <h2 className={styles.h2}>Questions you could ask your cardiologist</h2>
+          <ul className={styles.questions}>
+            <li>Does my family history change which tests I should have?</li>
+            <li>Should anyone else in my family be checked?</li>
+            <li>Would it help to see a genetic counselor?</li>
+            <li>Is there anything I should ask my relatives before my next visit?</li>
+          </ul>
+        </section>
+      ) : null}
+
       <footer className={styles.foot}>
         <p>
-          {audience === "clinician" ? "Shared by the patient, read-only. " : ""}Patient-reported family history to support the conversation. Not a diagnosis or
-          a risk score. &ldquo;Portal record&rdquo; items were retrieved from the relative&rsquo;s own patient portal with their consent; a record date can be
-          when a problem was listed, not when it was diagnosed.
+          {audience === "clinician"
+            ? "Shared by the patient, read-only. Patient-reported family history for clinician review. "
+            : "Patient-reported family history to support the conversation. "}
+          Not a diagnosis or a risk score. &ldquo;Portal record&rdquo; items were retrieved from the relative&rsquo;s own patient portal with their consent; a
+          record date can be when a problem was listed, not when it was diagnosed.
+          {audience === "clinician" ? ` Criteria: ${CRITERIA_FOOTNOTE}.` : ""}
         </p>
         <p>
           Family Health Tree · prototype by Team 709 · prepared{" "}
@@ -195,5 +214,28 @@ export default function SummaryDocument({ tree, audience = "patient" }: { tree: 
         </p>
       </footer>
     </article>
+  );
+}
+
+function TierList({ title, items, kind, empty }: { title: string; items: Flag[]; kind: Tier; empty?: string }) {
+  return (
+    <div className={styles.tier}>
+      <h3 className={styles.h3}>{title}</h3>
+      {items.length ? (
+        <ul className={`${styles.flags} ${styles[kind] ?? ""}`}>
+          {items.map((f, i) => (
+            <li key={i}>
+              {kind === "clarify" ? <span className={styles.dotClarify} aria-hidden /> : <Alert size={14} />}
+              <span>
+                <b>{f.title}.</b> {f.detail}
+                {f.basis && kind === "guideline" ? <small className={styles.basis}>Basis: {f.basis}</small> : null}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className={styles.none}>{empty}</p>
+      )}
+    </div>
   );
 }

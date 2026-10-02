@@ -153,3 +153,13 @@
   align-items: center;
   font-size: 14px;
 }
+
+.deathRow {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 10px;
+}
+
+.deathRow :global(.field-hint) {
+  grid-column: 1 / -1;
+}

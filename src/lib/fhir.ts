@@ -46,16 +46,26 @@ export function toFhirBundle(tree: FamilyTree) {
         name: p.label,
         relationship: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/v3-RoleCode", code: role.code, display: role.display }], text: role.display },
         sex: p.sex === "unknown" ? undefined : { coding: [{ system: "http://hl7.org/fhir/administrative-gender", code: p.sex, display: p.sex }] },
-        deceasedBoolean: p.deceased ? true : undefined,
+        deceasedBoolean: p.deceased && p.ageAtDeath == null ? true : undefined,
+        deceasedAge: p.deceased && p.ageAtDeath != null ? { value: p.ageAtDeath, unit: "a", system: "http://unitsofmeasure.org", code: "a" } : undefined,
       };
       if (v.status === "declined") {
         resource.dataAbsentReason = {
           coding: [{ system: "http://terminology.hl7.org/CodeSystem/history-absent-reason", code: "withheld", display: "Information Withheld" }],
         };
       } else if (v.status === "unknown") {
+        // An invite still waiting for an answer is "deferred"; otherwise nobody could say.
+        const pending = tree.invites.some((i) => i.personId === p.id && !i.answeredAt);
         resource.dataAbsentReason = {
-          coding: [{ system: "http://terminology.hl7.org/CodeSystem/history-absent-reason", code: "unable-to-obtain", display: "Unable To Obtain" }],
+          coding: [
+            pending
+              ? { system: "http://terminology.hl7.org/CodeSystem/history-absent-reason", code: "deferred", display: "Deferred" }
+              : { system: "http://terminology.hl7.org/CodeSystem/history-absent-reason", code: "unable-to-obtain", display: "Unable To Obtain" },
+          ],
         };
+      }
+      if (p.causeOfDeath) {
+        resource.note = [{ text: `Cause of death (reported): ${p.causeOfDeath}` }];
       }
       // v.conditions already leaves out secondhand reports about someone who declined.
       const conditions = v.conditions;
@@ -77,7 +87,7 @@ export function toFhirBundle(tree: FamilyTree) {
       (v.status === "declined" ? [] : v.reports)
         .filter((r) => r.kind === "no-history")
         .forEach((r) => notes.push({ text: `${r.reportedBy} reported no heart history on ${r.reportedAt.slice(0, 10)}.` }));
-      if (notes.length) resource.note = notes;
+      if (notes.length) resource.note = [...((resource.note as { text: string }[] | undefined) ?? []), ...notes];
       return { fullUrl: `urn:uuid:${crypto.randomUUID()}`, resource: JSON.parse(JSON.stringify(resource)) };
     });
   return {

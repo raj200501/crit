@@ -39,6 +39,8 @@ export interface RecordProvenance {
   /** SNOMED/ICD code if the record had one */
   code?: { system: string; code: string; display: string };
   recordedDate?: string;
+  /** When the relative pulled it from their portal. */
+  retrievedAt?: string;
 }
 
 export interface Report {

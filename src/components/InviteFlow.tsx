@@ -73,6 +73,8 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
   const [connecting, setConnecting] = useState(false);
   const [connectError, setConnectError] = useState<string | null>(null);
   const [replyLink, setReplyLink] = useState(init.link);
+  const [adult, setAdult] = useState(init.step !== "welcome");
+  const [confirmShare, setConfirmShare] = useState(false);
   const [sameBrowser, setSameBrowser] = useState(init.sameBrowser);
 
   useEffect(() => {
@@ -133,7 +135,7 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
           </p>
           <ul className={styles.promises}>
             <li>
-              <Lock size={14} /> Your answers go only to {asker}. Nothing is stored on our servers.
+              <Lock size={14} /> Your answers go to {asker}, who may share a summary with their cardiology team. Nothing is stored on our servers.
             </li>
             <li>
               <Check size={14} /> You choose what to share, and &ldquo;I&rsquo;d rather not&rdquo; is always an option.
@@ -142,7 +144,11 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
               <Heart size={14} /> This helps the doctor ask better questions. It doesn&rsquo;t diagnose anyone.
             </li>
           </ul>
-          <button className="btn btn-primary btn-block" onClick={() => setStep("self")}>
+          <label className={styles.confirm}>
+            <input type="checkbox" checked={adult} onChange={(e) => setAdult(e.target.checked)} />
+            <span>I&rsquo;m 18 or older.</span>
+          </label>
+          <button className="btn btn-primary btn-block" onClick={() => setStep("self")} disabled={!adult}>
             Start
           </button>
           <button
@@ -169,7 +175,21 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
             <button className="btn btn-accent" onClick={connect} disabled={connecting}>
               {connecting ? "Opening…" : "Connect MyChart"}
             </button>
-            {connectError ? <p className={styles.error}>{connectError}</p> : null}
+            {connectError ? (
+              <>
+                <p className={styles.error}>{connectError}</p>
+                <button
+                  className="btn btn-secondary"
+                  type="button"
+                  onClick={() => {
+                    setPortal(simulatedRecord());
+                    setStep("portal");
+                  }}
+                >
+                  Use a simulated record (sandbox offline)
+                </button>
+              </>
+            ) : null}
           </div>
           <p className={styles.or}>or answer yourself</p>
           <AnswerForm subject="you" self allowDecline submitLabel="Next" onSubmit={addSelf} />
@@ -188,7 +208,13 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
               ageAtOnset: c.ageAtOnset,
               source: "record",
               reportedAt: now(),
-              record: { system: SANDBOX_LABEL, reference: `Condition/${c.id}`, code: c.code, recordedDate: c.recordedDate?.slice(0, 10) },
+              record: {
+                system: portal.simulated ? "Simulated portal record" : SANDBOX_LABEL,
+                reference: `Condition/${c.id}`,
+                code: c.code,
+                recordedDate: c.recordedDate?.slice(0, 10),
+                retrievedAt: now(),
+              },
             }));
             setDrafts((d) => [...d.filter((x) => !(x.personId === payload.p && (x.source === "self" || x.source === "record"))), ...recs]);
             clearPortalResult();
@@ -246,7 +272,13 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
               </li>
             ))}
           </ul>
-          <button className="btn btn-primary btn-block" onClick={send} disabled={drafts.length === 0}>
+          {drafts.length ? (
+            <label className={styles.confirm}>
+              <input type="checkbox" checked={confirmShare} onChange={(e) => setConfirmShare(e.target.checked)} />
+              <span>Share these answers with {asker}.</span>
+            </label>
+          ) : null}
+          <button className="btn btn-primary btn-block" onClick={send} disabled={drafts.length === 0 || !confirmShare}>
             Send to {asker}
           </button>
           <button
@@ -296,7 +328,7 @@ function PortalPicker({ portal, onShare, onCancel }: { portal: PortalResult; onS
         <span>
           <b>{c.display}</b>
           <small>
-            {c.onset ? `In the record since ${c.onset.slice(0, 4)}` : "No date in the record"}
+            {c.onset ? `On the problem list since ${c.onset.slice(0, 4)}` : "No date in the record"}
             {c.ageAtOnset != null ? ` (age ${c.ageAtOnset})` : ""}
           </small>
         </span>
@@ -321,10 +353,24 @@ function PortalPicker({ portal, onShare, onCancel }: { portal: PortalResult; onS
       <p className="kicker">From your record</p>
       <h1 className={styles.h2}>Pick what to share</h1>
       <p className={styles.lead}>
-        Connected to {SANDBOX_LABEL} as <b>{portal.patientName}</b> (a made-up sandbox patient). Only what you tick is shared. Nothing else from the chart
-        leaves this page.
+        {portal.simulated ? (
+          <>
+            <b>Simulated record</b> (the sandbox is offline, so this is made-up data).
+          </>
+        ) : (
+          <>
+            Connected to {SANDBOX_LABEL} as <b>{portal.patientName}</b> (a made-up sandbox patient).
+          </>
+        )}{" "}
+        Only what you tick is shared. Nothing else from the chart leaves this page.
       </p>
-      <div className={styles.portalList}>{heart.length ? heart.map(row) : <p className="muted">No heart-related conditions in this record.</p>}</div>
+      <div className={styles.portalList}>
+        {heart.length ? (
+          heart.map(row)
+        ) : (
+          <p className="muted">No heart-related conditions on this problem list. That doesn&rsquo;t mean none happened; you can answer yourself instead.</p>
+        )}
+      </div>
       {rest.length ? (
         <button className="btn btn-ghost btn-sm" onClick={() => setShowRest((s) => !s)}>
           {showRest ? "Hide" : "Show"} {rest.length} other conditions in the record
@@ -454,4 +500,24 @@ function Frame({ children, asker }: { children?: React.ReactNode; asker?: string
       <main className={styles.main}>{children}</main>
     </div>
   );
+}
+
+/** Demo-day fallback when the public sandbox is unreachable: a clearly labeled, made-up record. */
+function simulatedRecord(): PortalResult {
+  return {
+    patientName: "Simulated patient",
+    simulated: true,
+    conditions: [
+      {
+        id: "simulated-afib",
+        display: "Atrial fibrillation",
+        code: { system: "http://snomed.info/sct", code: "49436004", display: "Atrial fibrillation" },
+        onset: "2009-04-02",
+        ageAtOnset: 34,
+        cardiac: true,
+        recordedDate: "2009-04-02",
+      },
+      { id: "simulated-htn", display: "Essential hypertension", onset: "2015-06-10", ageAtOnset: 40, cardiac: false, recordedDate: "2015-06-10" },
+    ],
+  };
 }

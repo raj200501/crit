@@ -1,0 +1,102 @@
+.main {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+.doc {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 40px 44px;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+
+.doc :global(h1) {
+  font-size: 38px;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.doc :global(h2) {
+  font-size: 28px;
+  color: var(--ink);
+  margin: 40px 0 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.doc :global(h3) {
+  font-size: 20px;
+  color: var(--ink);
+  margin: 28px 0 10px;
+}
+
+.doc :global(p),
+.doc :global(ul),
+.doc :global(ol) {
+  margin: 0 0 14px;
+}
+
+.doc :global(li) {
+  margin-bottom: 6px;
+}
+
+.doc :global(strong) {
+  color: var(--ink);
+}
+
+.doc :global(a) {
+  color: var(--accent);
+}
+
+.doc :global(code) {
+  font-size: 0.9em;
+  background: var(--surface-3);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.doc :global(hr) {
+  border: 0;
+  margin: 28px 0;
+}
+
+.doc :global(table) {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  margin: 8px 0 18px;
+}
+
+.doc :global(th),
+.doc :global(td) {
+  text-align: left;
+  vertical-align: top;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  min-width: 120px;
+}
+
+.doc :global(th) {
+  background: var(--surface-2);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .main {
+    padding: 16px 12px 48px;
+  }
+  .doc {
+    padding: 22px 18px;
+  }
+  .doc :global(h1) {
+    font-size: 28px;
+  }
+}

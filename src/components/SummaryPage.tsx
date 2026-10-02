@@ -15,6 +15,7 @@ export default function SummaryPage() {
   const reviewed = !!tree.reviewedAt;
   const [shared, setShared] = useState<{ key: string; link: string; qr: string | null } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [careView, setCareView] = useState(false);
 
   // A link is only shown while the content it was made from is unchanged.
   const contentKey = `${tree.id}|${tree.reports.map((r) => r.id).join()}|${tree.people.map((p) => `${p.id}${p.label}${p.sex}${p.deceased}`).join()}|${tree.reviewedAt}|${tree.visit?.date}`;
@@ -51,7 +52,15 @@ export default function SummaryPage() {
         </Link>
       </div>
       <div className={styles.grid}>
-        <SummaryDocument tree={tree} />
+        <div>
+          <div className="screen-only">
+            <SummaryDocument tree={tree} audience={careView ? "clinician" : "patient"} />
+          </div>
+          {/* Printing always produces the care-team version. */}
+          <div className="print-only">
+            <SummaryDocument tree={tree} audience="clinician" />
+          </div>
+        </div>
         <aside className={`${styles.side} no-print`}>
           <section className={`card ${styles.box}`}>
             <h2 className={styles.h2}>1. Review it</h2>
@@ -60,6 +69,17 @@ export default function SummaryPage() {
               <span>I&rsquo;ve checked this and it matches what my family told me.</span>
             </label>
             <p className={styles.hint}>Changing the tree clears this, so the summary is never out of date when you share it.</p>
+          </section>
+
+          <section className={`card ${styles.box}`}>
+            <h2 className={styles.h2}>What your care team sees</h2>
+            <p className={styles.hint}>
+              Printing and the practice link use the care-team version. It adds family-history criteria from cardiology guidelines for your clinician to
+              interpret.
+            </p>
+            <button className="btn btn-ghost btn-block" onClick={() => setCareView((v) => !v)} aria-pressed={careView}>
+              {careView ? "Back to my summary" : "Preview the care-team version"}
+            </button>
           </section>
 
           <section className={`card ${styles.box}`}>

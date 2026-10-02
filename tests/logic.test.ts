@@ -2,7 +2,7 @@
 // Run: npm test
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { flagsFor } from "../src/lib/clinical";
+import { reviewItems, type Tier } from "../src/lib/clinical";
 import { blankTree, demoTree } from "../src/lib/demo";
 import { toFhirBundle } from "../src/lib/fhir";
 import { shareableTree } from "../src/lib/redact";
@@ -22,7 +22,10 @@ const rep = (personId: string, r: Partial<Report>): Report => ({
   ...r,
 });
 const view = (t: FamilyTree, id: string) => viewPerson(t, t.people.find((p) => p.id === id)!);
-const titles = (t: FamilyTree) => flagsFor(t, viewTree(t)).map((f) => f.title);
+const titles = (t: FamilyTree, tier: Tier = "guideline") =>
+  reviewItems(t, viewTree(t))
+    .filter((f) => f.tier === tier)
+    .map((f) => f.title);
 const withPeople = (t: FamilyTree, ...people: Person[]) => ({ ...t, people: [...t.people, ...people] });
 
 test("demo family derives the statuses shown in the deck", () => {
@@ -34,7 +37,14 @@ test("demo family derives the statuses shown in the deck", () => {
   assert.equal(view(t, "mom").status, "known");
   assert.equal(view(t, "pgf").status, "unknown");
   assert.equal(view(t, "pgm").status, "declined");
-  assert.deepEqual(titles(t), ["Irregular heartbeat at a young age", "Reports disagree"]);
+  assert.deepEqual(titles(t), ["Very high cholesterol in the family"]);
+  // AF in a relative has no verified family-history criterion: noted, not a guideline match.
+  assert.deepEqual(titles(t, "noted"), ["Irregular heartbeat"]);
+  const clarify = titles(t, "clarify");
+  assert.ok(clarify.includes("Reports disagree: Dad"));
+  assert.ok(clarify.includes("Grandpa Ray: unknown"));
+  assert.ok(clarify.includes("Grandma June: declined to share"));
+  assert.ok(clarify.some((x) => x.startsWith("Dad (deceased)")));
 });
 
 test("an unrelated portal fact does not hide another relative's early heart attack", () => {
@@ -61,8 +71,8 @@ test("early heart disease is flagged for a sibling whose sex is not set", () => 
   t.reports = [rep("sam", { condition: "Heart attack or coronary artery disease", ageAtOnset: 40 })];
   assert.ok(titles(t).includes("Early heart disease in a parent or sibling"));
   t.reports = [rep("sam", { condition: "Heart attack or coronary artery disease", ageAtOnset: 60 })];
-  const f = flagsFor(t, viewTree(t)).find((x) => x.title === "Early heart disease in a parent or sibling");
-  assert.match(f!.detail, /sex not recorded/);
+  assert.deepEqual(titles(t), []);
+  assert.deepEqual(titles(t, "noted"), ["Heart disease in a parent or sibling, sex not recorded"]);
 });
 
 test("a reporter who adds a condition is not a disagreement; disjoint lists are", () => {
@@ -77,21 +87,28 @@ test("a reporter who adds a condition is not a disagreement; disjoint lists are"
   assert.equal(view(t, "dad").status, "conflicting");
 });
 
-test("aortic disease, cardiac arrest survivors and inherited rhythm conditions are flagged; ordinary cholesterol is not", () => {
+test("guideline tier follows the verified rules: first-degree aorta, early sudden death, named arrhythmias", () => {
   const t = blankTree("Alex");
   t.reports = [
+    rep("mom", { condition: "Aortic aneurysm or dissection", ageAtOnset: 70 }),
     rep("pgf", { condition: "Aortic aneurysm or dissection", ageAtOnset: 70 }),
-    rep("mgf", { condition: "Survived cardiac arrest or has an ICD", ageAtOnset: 62 }),
+    rep("mgf", { condition: "Survived cardiac arrest or has an ICD", ageAtOnset: 35 }),
     rep("mgm", { condition: "Inherited rhythm condition (long QT, Brugada, CPVT)" }),
     rep("pgm", { condition: "High cholesterol", ageAtOnset: 55 }),
-    rep("mom", { condition: "Unexplained fainting", ageAtOnset: 60 }),
+    rep("dad", { condition: "Unexplained fainting", ageAtOnset: 60, reportedBy: "Mom" }),
   ];
   const got = titles(t);
-  assert.ok(got.includes("Aortic aneurysm or dissection in the family"));
-  assert.ok(got.includes("Survived cardiac arrest or has a defibrillator"));
-  assert.ok(got.includes("Inherited heart condition reported in the family"));
+  assert.ok(got.includes("Aortic aneurysm or dissection in a parent or sibling"));
+  assert.ok(got.includes("Sudden death or cardiac arrest before 40"));
+  assert.ok(got.includes("Named inherited arrhythmia in the family"));
+  assert.ok(titles(t, "noted").includes("Aortic aneurysm or dissection in a relative")); // grandparent: noted only
   assert.ok(!got.some((x) => x.toLowerCase().includes("cholesterol")));
   assert.ok(!got.some((x) => x.toLowerCase().includes("fainting")));
+});
+
+test("every guideline item cites its basis", () => {
+  const t = demoTree();
+  for (const f of reviewItems(t, viewTree(t)).filter((x) => x.tier === "guideline")) assert.ok(f.basis && /\d{4}/.test(f.basis));
 });
 
 test("a decline hides other relatives' reports but keeps what the patient knows", () => {

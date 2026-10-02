@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { flagsFor, stillToConfirm } from "@/lib/clinical";
+import { stillToConfirm } from "@/lib/clinical";
 import { actions, useTree } from "@/lib/store";
 import { counts, viewTree, type PersonView } from "@/lib/status";
 import type { FamilyTree, Person, Relation } from "@/lib/types";
@@ -21,7 +21,6 @@ export default function TreeWorkspace() {
 
   const c = counts(views);
   const pending = new Set(tree.invites.filter((i) => !i.answeredAt).map((i) => i.personId));
-  const flags = flagsFor(tree, views);
   const todo = stillToConfirm(views);
   const selectedView = views.find((v) => v.person.id === selected);
   const generations = new Set(tree.people.map((p) => (p.relation.includes("grand") ? 0 : p.relation === "self" || p.relation === "sibling" ? 2 : 1))).size;
@@ -111,7 +110,6 @@ export default function TreeWorkspace() {
           ) : (
             <Overview
               views={views}
-              flagsCount={flags.length}
               todo={todo}
               onPick={setSelected}
               onStart={() => setStarting(true)}
@@ -153,7 +151,6 @@ export default function TreeWorkspace() {
 
 function Overview({
   views,
-  flagsCount,
   todo,
   onPick,
   onStart,
@@ -161,7 +158,6 @@ function Overview({
   onCancelStart,
 }: {
   views: PersonView[];
-  flagsCount: number;
   todo: PersonView[];
   onPick: (id: string) => void;
   onStart: () => void;
@@ -196,11 +192,6 @@ function Overview({
           </div>
         </div>
       ) : null}
-      {flagsCount ? (
-        <p className={styles.flagNote}>
-          Your summary lists {flagsCount} item{flagsCount === 1 ? "" : "s"} for your clinician to review.
-        </p>
-      ) : null}
       <div className={styles.reset}>
         {tree.synthetic && tree.id === "demo" ? <span className="muted">You&rsquo;re viewing the demo family.</span> : null}
         {starting ? (
@@ -234,6 +225,12 @@ function Overview({
             </button>
             <button className="btn btn-ghost btn-sm" onClick={() => confirmReplace(tree) && actions.loadDemo()}>
               {tree.id === "demo" ? "Reset demo family" : "Load the demo family"}
+            </button>
+            <button
+              className="btn btn-ghost btn-sm"
+              onClick={() => window.confirm("Delete everything this app stored in this browser? This can't be undone.") && actions.clearAll()}
+            >
+              Delete everything stored here
             </button>
           </div>
         )}

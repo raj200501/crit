@@ -109,6 +109,21 @@ export const actions = {
   loadDemo() {
     write(demoTree());
   },
+  /** Remove everything this app stored in this browser, then fall back to the demo. */
+  clearAll() {
+    for (const store of [window.localStorage, window.sessionStorage]) {
+      try {
+        Object.keys(store)
+          .filter((k) => k.startsWith("fht:") || k === "SMART_KEY")
+          .forEach((k) => store.removeItem(k));
+      } catch {
+        /* storage unavailable */
+      }
+    }
+    cache = null;
+    cacheRaw = null;
+    listeners.forEach((l) => l());
+  },
   startBlank(name: string) {
     write(blankTree(name.trim() || "You"));
   },

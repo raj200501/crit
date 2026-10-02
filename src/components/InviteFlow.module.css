@@ -294,3 +294,19 @@
   font-style: italic;
   color: var(--ink-2);
 }
+
+.confirm {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.confirm input {
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  accent-color: var(--navy);
+  flex: none;
+}

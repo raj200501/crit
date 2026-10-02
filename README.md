@@ -15,9 +15,10 @@ Turn "heart problems run in the family" into **who, what, and at what age**, bef
 | `/invite#…` | What a relative sees on their phone: answer for themselves, optionally share one fact from MyChart, add what they know about others, then send it back |
 | `/connect/callback` | SMART on FHIR redirect handler for the MyChart demo |
 | `/reply#…` | The patient opens a relative's reply link and adds the answers to their tree |
-| `/summary` | One-page pre-visit summary: red flags first, every relative with status and source, what is still to confirm. Review checkbox, print/PDF, QR read-only link, FHIR export |
-| `/view#…` | Read-only summary for the practice (opened from the link or QR) |
-| `/how-it-works` | Research summary: interop, privacy and compliance, clinical content, business model |
+| `/summary` | The patient's summary (facts, gaps, questions to ask; no alerts). Printing and the practice link use the one-page **care-team** version, which lists guideline family-history criteria in three tiers (matched / also noted / to clarify), each with its guideline basis. Review checkbox, print/PDF, QR read-only link, FHIR export |
+| `/view#…` | Read-only care-team summary for the practice (opened from the link or QR) |
+| `/how-it-works` | Research summary: MyChart access, privacy and compliance, clinical criteria, business model, riskiest assumptions |
+| `/research` | The full fact-checked research write-up (`docs/research.md`) with numbered sources |
 
 ### Try the demo
 
@@ -33,6 +34,9 @@ Turn "heart problems run in the family" into **who, what, and at what age**, bef
 - **MyChart demo.** This is a real SMART on FHIR standalone patient launch (OAuth 2 with PKCE, `fhirclient` 3.0.0) against the public [SMART Health IT sandbox](https://launch.smarthealthit.org), which serves synthetic Synthea patients. The relative sees their conditions and ticks the single fact to share. The full chart never leaves the page.
 - **Honest labels.** A portal fact is shown as "from a portal record", not "verified". A record date can be when a problem was listed, not when it was diagnosed, so the relative confirms the age.
 - **FHIR export.** The summary exports as FamilyMemberHistory resources. Statuses map to `status` and `dataAbsentReason`, and every reported condition keeps who said it.
+- **Validation.** Everything arriving from a link or from storage is validated (`src/lib/sanitize.ts`). Replies are accepted only from invited relatives, only about themselves and the people they were asked about.
+- **Content-Security-Policy.** Scripts load only from this site, and the browser may connect only to this site and the SMART sandboxes.
+- **Clinician alerts, not patient alerts.** Under FDA's 2026 clinical decision support guidance, recommendations shown to patients make software a device. The patient sees facts and generic questions; guideline criteria appear only on the care-team document, each with its guideline and year.
 
 What changes before any real patient data (see `docs/research.md`): BAA-covered hosting and storage, a BAA with each paying practice, audit logging, a breach-response plan (FTC Health Breach Notification Rule), an explicit consent flow for relatives, and production Epic app registration. **Never describe this as "HIPAA certified".** No such certification exists.
 
@@ -43,6 +47,7 @@ npm install
 npm run dev      # http://localhost:3000
 npm run build    # production build (all routes are static)
 npm run lint
+npm test         # status, red-flag, privacy and validation logic
 ```
 
 Stack: Next.js 16 (App Router), React 19, TypeScript, CSS modules, `fhirclient`, `qrcode`. No backend.
@@ -64,5 +69,6 @@ src/lib/           data model, status derivation, pedigree layout, clinical flag
                    share links, SMART client, FHIR export, local store
 demo/              the animated demo (HTML) and its GIF/MP4 renders for slides
 slides/            the "What we heard" slide (.pptx/.png) and its generator
-docs/              research write-up and MVP spec
+docs/              research write-up (also at /research) and MVP spec
+tests/             logic tests (node:test + tsx)
 ```

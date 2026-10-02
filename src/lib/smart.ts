@@ -50,6 +50,8 @@ export interface PortalCondition {
 export interface PortalResult {
   patientName: string;
   conditions: PortalCondition[];
+  /** True for the offline fallback, which never touched a portal. */
+  simulated?: boolean;
 }
 
 type Coding = { system?: string; code?: string; display?: string };

@@ -32,7 +32,13 @@ function cleanRecord(v: unknown): RecordProvenance | undefined {
     isObj(v.code) && str(v.code.code, 40)
       ? { system: str(v.code.system, 120) ?? "", code: str(v.code.code, 40)!, display: str(v.code.display, 120) ?? "" }
       : undefined;
-  return { system, reference: str(v.reference, 200) ?? "", recordedDate: isDate(v.recordedDate) ? String(v.recordedDate).slice(0, 10) : undefined, code };
+  return {
+    system,
+    reference: str(v.reference, 200) ?? "",
+    recordedDate: isDate(v.recordedDate) ? String(v.recordedDate).slice(0, 10) : undefined,
+    retrievedAt: isDate(v.retrievedAt) ? String(v.retrievedAt) : undefined,
+    code,
+  };
 }
 
 export function cleanReport(v: unknown): Omit<Report, "id"> | null {

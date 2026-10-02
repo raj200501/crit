@@ -2,7 +2,8 @@ import type { FamilyTree, Person } from "./types";
 
 // Synthetic demo family. Matches the crit deck and demo video:
 // uncle's AFib verified from a portal record, father's history conflicting,
-// grandfather unknown, grandmother declined. Not a real patient.
+// paternal grandfather unknown, paternal grandmother declined, and Mom reports Grandma Rosa's very
+// high cholesterol (a guideline family-history criterion). Not a real patient.
 
 const people: Person[] = [
   { id: "self", relation: "self", label: "Alex (you)", sex: "unknown" },
@@ -62,6 +63,19 @@ export function demoTree(): FamilyTree {
         reportedById: "dev",
         source: "relative",
         reportedAt: "2026-09-28T18:15:00Z",
+      },
+      {
+        id: "r-rosa-mom",
+        personId: "mgm",
+        kind: "condition",
+        condition: "Very high cholesterol",
+        ageAtOnset: 35,
+        approximate: true,
+        note: "She was on cholesterol pills from her 30s. The doctor said it ran in her family.",
+        reportedBy: "Mom",
+        reportedById: "mom",
+        source: "relative",
+        reportedAt: "2026-09-27T14:05:00Z",
       },
       {
         id: "r-mom-self",

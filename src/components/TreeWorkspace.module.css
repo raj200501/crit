@@ -124,14 +124,6 @@
   cursor: pointer;
 }
 
-.flagNote {
-  font-size: 13.5px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: var(--accent-soft);
-  color: #9a3412;
-}
-
 .reset {
   display: grid;
   gap: 8px;
