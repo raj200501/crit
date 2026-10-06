@@ -100,7 +100,8 @@ export interface Flag {
 
 export const BASIS = {
   ascvd: "ACC/AHA 2018 cholesterol guideline (premature ASCVD); still a risk enhancer in the 2026 ACC/AHA dyslipidemia guideline",
-  fh: "Dutch Lipid Clinic / Simon Broome criteria; 2026 ACC/AHA dyslipidemia guideline (cascade screening)",
+  fh: "Dutch Lipid Clinic and Simon Broome criteria (first-degree relative); 2026 ACC/AHA dyslipidemia guideline",
+  fhSecond: "Simon Broome Register criteria, 1991 (first- or second-degree adult relative with total cholesterol above 290 mg/dL)",
   cardiomyopathy: "AHA/ACC 2024 HCM guideline; ESC 2025 DCM family consensus",
   aortic: "ACC/AHA 2022 aortic disease guideline",
   arrhythmia: "Inherited-arrhythmia diagnostic criteria count family history (score not computed)",
@@ -108,7 +109,7 @@ export const BASIS = {
   none: "No verified family-history criterion",
 } as const;
 
-export const CRITERIA_FOOTNOTE = "ACC/AHA 2018 and 2026 (lipids), AHA/ACC 2024 (HCM), ESC 2025 (DCM), ACC/AHA 2022 (aorta), APHRS/HRS 2020 (sudden death)";
+export const CRITERIA_FOOTNOTE = "ACC/AHA 2018 and 2026 (lipids), Simon Broome and Dutch Lipid Clinic (familial hypercholesterolemia), AHA/ACC 2024 (HCM), ESC 2025 (DCM), ACC/AHA 2022 (aorta), APHRS/HRS 2020 (sudden death)";
 
 const has = (name: string, ...terms: string[]) => terms.some((t) => name.includes(t));
 
@@ -170,7 +171,8 @@ export function reviewItems(tree: FamilyTree, views: PersonView[]): Flag[] {
         }
       } else if (has(name, "cholesterol", "hypercholesterol", "ldl")) {
         const explicit = name === "very high cholesterol" || has(name, "very high", "familial", "inherited", "ldl");
-        if (explicit && (first || second)) add("guideline", "Very high cholesterol in the family", line, BASIS.fh);
+        if (explicit && first) add("guideline", "Very high cholesterol in a parent or sibling", `${line} Level not reported.`, BASIS.fh);
+        else if (explicit && second) add("guideline", "Very high cholesterol in a grandparent, aunt or uncle", `${line} Level not reported.`, BASIS.fhSecond);
         else if (age != null && age < 40) add("noted", "High cholesterol at a young age", line, BASIS.none);
       } else if (has(name, "arrhythmia", "fibrillation", "afib", "pacemaker")) {
         if (age != null && age < 60) add("noted", "Irregular heartbeat", line, BASIS.none);

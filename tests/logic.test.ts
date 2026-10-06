@@ -37,7 +37,7 @@ test("demo family derives the statuses shown in the deck", () => {
   assert.equal(view(t, "mom").status, "known");
   assert.equal(view(t, "pgf").status, "unknown");
   assert.equal(view(t, "pgm").status, "declined");
-  assert.deepEqual(titles(t), ["Very high cholesterol in the family"]);
+  assert.deepEqual(titles(t), ["Very high cholesterol in a grandparent, aunt or uncle"]);
   // AF in a relative has no verified family-history criterion: noted, not a guideline match.
   assert.deepEqual(titles(t, "noted"), ["Irregular heartbeat"]);
   const clarify = titles(t, "clarify");
