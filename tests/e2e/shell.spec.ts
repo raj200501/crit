@@ -242,7 +242,6 @@ test.describe("404 page", () => {
 // Hard rule 3 (DESIGN §5.3): a visible synthetic-demo notice on every route — the app ribbon (role="note") or the
 // marketing nav chip. These states render no header today; their owners add the minimal Lockup + HonestyRibbon header.
 const HONESTY_GAPS: Record<string, string> = {
-  "/view": "P7: /view without a #payload ('This link is incomplete') has no header (DESIGN §12.8b)",
   "/invite": "P6: /invite without a #payload has no header (DESIGN §12.6)",
   "/connect/callback": "P6: /connect/callback without OAuth params ('Couldn't connect') has no header (DESIGN §12.6)",
 };
