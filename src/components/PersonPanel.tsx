@@ -1,59 +1,88 @@
 "use client";
 
+import { Link2, PenLine, Plus, Send, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { buildInvite, inviteUrl } from "@/lib/share";
-import { actions, deviceId } from "@/lib/store";
-import { formatCondition, type PersonView } from "@/lib/status";
-import type { FamilyTree, Relation, Report } from "@/lib/types";
+import { actions } from "@/lib/store";
+import type { PersonView } from "@/lib/status";
+import type { FamilyTree, Report } from "@/lib/types";
 import AnswerForm, { type Answer } from "./AnswerForm";
-import { Check, Close, Link as LinkIcon, Lock } from "./icons";
-import styles from "./PersonPanel.module.css";
+import { Badge } from "./ui/Badge";
+import { Button } from "./ui/Button";
+import { cn } from "./ui/cn";
+import { Eyebrow } from "./ui/Eyebrow";
+import { IconButton } from "./ui/IconButton";
+import { PedigreeGlyph, shapeForSex } from "./ui/PedigreeGlyph";
+import { StatusPill } from "./ui/StatusPill";
+import { AutoHeight } from "./person/AutoHeight";
+import { useEnter } from "./person/useEnter";
+import { EditPerson } from "./person/EditPerson";
+import { InviteBox } from "./person/InviteBox";
+import { ReceiptTimeline } from "./person/ReceiptTimeline";
+import { VoicePair, voicesOf } from "./person/VoicePair";
+import { canRemove, hasFinding, nodeStatus, notAsked, pronoun, relationLine, shortDate, shortName } from "./tree/model";
 
-const RELATION_TEXT: Record<Relation, string> = {
-  self: "You",
-  mother: "Your mother",
-  father: "Your father",
-  sibling: "Your brother or sister",
-  "paternal-grandfather": "Your father’s father",
-  "paternal-grandmother": "Your father’s mother",
-  "maternal-grandfather": "Your mother’s father",
-  "maternal-grandmother": "Your mother’s mother",
-  "paternal-aunt-uncle": "Your father’s brother or sister",
-  "maternal-aunt-uncle": "Your mother’s brother or sister",
-};
+export { shortName } from "./tree/model";
 
-const STATUS_TEXT = {
-  known: "Known",
-  conflicting: "Conflicting",
-  unknown: "Unknown",
-  declined: "Declined",
-} as const;
+export type PanelMode = "view" | "answer" | "invite" | "edit";
 
-export default function PersonPanel({
-  view,
-  tree,
-  onClose,
-  focusOnOpen,
-}: {
+export interface PersonPanelProps {
   view: PersonView;
   tree: FamilyTree;
   onClose: () => void;
-  /** Move focus here (and scroll into view on narrow screens) when opened by the user. */
+  /** Move focus to the name when opened by the user. */
   focusOnOpen?: boolean;
-}) {
+  /** From ?mode= (DESIGN §11.4). */
+  initialMode?: "view" | "answer" | "invite";
+  /** Internal (visit-ready checklist and gap links): open the edit form on this field. */
+  initialEdit?: "age" | "cause";
+  /** Invited and waiting. */
+  pending?: boolean;
+}
+
+/**
+ * Everything about one relative (DESIGN §12.3): who they are, what was said and by whom (receipts, with conflicts as two
+ * voices), what's still unknown, and the actions. The root stays `<section aria-label="{label} details">` on desktop
+ * (inline inspector) and on phones (inside the bottom sheet); the h2 is the sheet's label and the focus target.
+ */
+export default function PersonPanel({ view, tree, onClose, focusOnOpen, initialMode, initialEdit, pending }: PersonPanelProps) {
   const p = view.person;
   const isSelf = p.relation === "self";
-  const [mode, setMode] = useState<"view" | "answer" | "invite" | "edit">("view");
+  const short = shortName(p.label);
+  const them = p.sex === "male" ? "him" : p.sex === "female" ? "her" : "them";
+  const [mode, setMode] = useState<PanelMode>(initialEdit ? "edit" : (initialMode ?? "view"));
+  const [editField, setEditField] = useState(initialEdit);
   const heading = useRef<HTMLHeadingElement>(null);
+  const body = useRef<HTMLDivElement>(null);
+  const firstMode = useRef(true);
+  const titleId = `person-${p.id}-title`;
+  // mode changes crossfade (the height animates in AutoHeight)
+  useEnter(body, { duration: 180 }, [mode]);
 
   useEffect(() => {
-    if (!focusOnOpen || !heading.current) return;
-    heading.current.focus({ preventScroll: true });
-    if (window.matchMedia("(max-width: 1040px)").matches) {
-      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      heading.current.closest("section")?.scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
-    }
+    if (!focusOnOpen) return;
+    // a frame later, so a sheet's showModal() has run and the heading is focusable
+    const raf = requestAnimationFrame(() => heading.current?.focus({ preventScroll: true }));
+    return () => cancelAnimationFrame(raf);
   }, [focusOnOpen]);
+
+  // Mode changes move focus to the new content (back to the name when returning to the overview of this person).
+  useEffect(() => {
+    if (firstMode.current) {
+      firstMode.current = false;
+      return;
+    }
+    const raf = requestAnimationFrame(() => {
+      // a form that already took focus (a gap's "Add" focuses its field) keeps it
+      if (mode !== "view" && body.current?.contains(document.activeElement)) return;
+      (mode === "view" ? heading.current : body.current)?.focus({ preventScroll: true });
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [mode]);
+
+  const go = (next: PanelMode, field?: "age" | "cause") => {
+    setEditField(field);
+    setMode(next);
+  };
 
   const save = (answers: Answer[]) => {
     const now = new Date().toISOString();
@@ -67,271 +96,179 @@ export default function PersonPanel({
         reportedAt: now,
       })),
     );
-    setMode("view");
+    go("view");
   };
 
+  const ns = nodeStatus(view, pending);
+  const invite = [...tree.invites].filter((i) => i.personId === p.id).sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
+
   return (
-    <section className={`card ${styles.panel}`} aria-label={`${p.label} details`}>
-      <header className={styles.head}>
-        <div>
-          <p className={styles.rel}>{RELATION_TEXT[p.relation]}</p>
-          <h2 className={styles.name} ref={heading} tabIndex={-1}>
+    <section aria-label={`${p.label} details`} className="flex flex-col">
+      <header className="flex items-start gap-4 pb-5">
+        <span className={cn("mt-1 grid size-14 shrink-0 place-items-center rounded-2xl", isSelf ? "bg-ink" : "bg-canvas ring-1 ring-line")}>
+          <PedigreeGlyph
+            shape={shapeForSex(p.sex)}
+            status={ns}
+            finding={hasFinding(view)}
+            deceased={p.deceased}
+            record={view.verified}
+            proband={isSelf}
+            size={40}
+            tone={isSelf ? "night" : "paper"}
+          />
+        </span>
+        <div className="min-w-0 flex-1">
+          <Eyebrow>{relationLine(p)}</Eyebrow>
+          <h2 id={titleId} ref={heading} tabIndex={-1} className="mt-1 font-display text-display-m font-book break-words text-fg outline-none">
             {p.label}
-            {p.deceased ? <span className={styles.dagger}> † deceased</span> : null}
           </h2>
+          {p.deceased ? (
+            <p className="mt-1 flex items-center gap-2 text-small text-fg-2">
+              <svg aria-hidden viewBox="0 0 16 16" className="size-4 text-ink-2">
+                <rect x="2.5" y="2.5" width="11" height="11" rx="2" fill="none" stroke="currentColor" strokeWidth="1.2" />
+                <path d="M1 15 15 1" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+              </svg>
+              Passed away{p.ageAtDeath != null ? ` at ${p.ageAtDeath}` : ""}
+              {p.causeOfDeath ? ` · ${p.causeOfDeath}` : ""}
+            </p>
+          ) : null}
           {!isSelf ? (
-            <div className={styles.statusRow}>
-              <span className={`chip chip-${view.status}`}>{STATUS_TEXT[view.status]}</span>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              {ns !== "self" ? <StatusPill status={ns} /> : null}
               {view.verified ? (
-                <span className="chip chip-record">
-                  <Check size={11} /> From a portal record
-                </span>
+                <Badge tone="record" icon={<Link2 />}>
+                  From a portal record
+                </Badge>
               ) : null}
-              {view.reason && !view.verified ? <span className={styles.reason}>{view.reason}</span> : null}
             </div>
           ) : null}
+          {!isSelf && invite ? (
+            <p className="mt-2.5 font-mono text-eyebrow text-fg-3 uppercase">
+              Asked directly {shortDate(invite.createdAt)}
+              {invite.answeredAt ? ` · answered ${shortDate(invite.answeredAt)}` : " · waiting"}
+            </p>
+          ) : null}
         </div>
-        <button className={`btn btn-ghost btn-sm ${styles.close}`} onClick={onClose} aria-label="Close">
-          <Close size={16} />
-        </button>
+        <IconButton label="Close" title="Close" icon={<X />} onClick={onClose} className="-mt-1.5 -mr-2" />
       </header>
 
-      {mode === "answer" ? (
-        <AnswerForm
-          subject={isSelf ? "you" : p.label}
-          self={isSelf}
-          allowDecline={false}
-          compact
-          submitLabel="Add to tree"
-          onSubmit={save}
-          onCancel={() => setMode("view")}
-        />
-      ) : mode === "invite" ? (
-        <InviteBox tree={tree} view={view} onDone={() => setMode("view")} />
-      ) : mode === "edit" ? (
-        <EditPerson view={view} onDone={() => setMode("view")} onRemoved={onClose} />
-      ) : (
-        <>
-          <div className={styles.section}>
-            <h3 className={styles.h3}>{isSelf ? "Your own heart history" : "What we know"}</h3>
-            {isSelf ? <p className={styles.tip}>Shown on your summary under &ldquo;Your own history&rdquo;.</p> : null}
-            {view.reports.length === 0 ? (
-              <p className="muted">Nothing yet.</p>
-            ) : (
-              <ul className={styles.reports}>
-                {view.reports.map((r) => (
-                  <ReportRow key={r.id} r={r} canRemove={r.source === "patient" || (r.source === "self" && r.reportedById === "self")} />
-                ))}
-              </ul>
-            )}
-          </div>
-
-          <div className={styles.actions}>
-            <button className="btn btn-primary" onClick={() => setMode("answer")}>
-              {isSelf ? "Add your own history" : "Add what you know"}
-            </button>
-            {!isSelf && !p.deceased ? (
-              <button className="btn btn-secondary" onClick={() => setMode("invite")}>
-                <LinkIcon size={14} /> Ask {shortName(p.label)} directly
-              </button>
-            ) : null}
-            {!isSelf && p.deceased ? (
-              <p className={styles.tip}>
-                {shortName(p.label)} has passed away. Ask a relative who knew them; their answers show up here with their name attached.
-              </p>
-            ) : null}
-            {!isSelf ? (
-              <button className="btn btn-ghost btn-sm" onClick={() => setMode("edit")}>
-                Edit details
-              </button>
-            ) : null}
-          </div>
-        </>
-      )}
+      <AutoHeight step={mode}>
+        <div key={mode} ref={body} tabIndex={-1} className="border-t border-line pt-5 outline-none">
+          {mode === "answer" ? (
+            <AnswerForm
+              subject={isSelf ? "you" : p.label}
+              self={isSelf}
+              allowDecline={false}
+              compact
+              submitLabel="Add to tree"
+              onSubmit={save}
+              onCancel={() => go("view")}
+            />
+          ) : mode === "invite" ? (
+            <InviteBox tree={tree} view={view} onDone={() => go("view")} />
+          ) : mode === "edit" ? (
+            <EditPerson view={view} focusField={editField} onDone={() => go("view")} onRemoved={onClose} />
+          ) : (
+            <Overview view={view} isSelf={isSelf} short={short} them={them} onGo={go} />
+          )}
+        </div>
+      </AutoHeight>
     </section>
   );
 }
 
-function ReportRow({ r, canRemove }: { r: Report; canRemove: boolean }) {
-  const what =
-    r.kind === "condition"
-      ? formatCondition(r)
-      : r.kind === "no-history"
-        ? "No heart history"
-        : r.kind === "declined"
-          ? "Prefers not to share"
-          : "Doesn’t know";
-  const from =
-    r.source === "record"
-      ? `From ${r.record?.system ?? "a portal record"}, shared by ${r.reportedBy}`
-      : r.source === "self"
-        ? `${r.reportedBy}, about themself`
-        : r.source === "patient"
-          ? `${r.reportedBy} (you)`
-          : `${r.reportedBy} said`;
-  return (
-    <li className={`${styles.report} ${r.source === "record" ? styles.recordRow : ""}`}>
-      <div className={styles.reportMain}>
-        <b>{what}</b>
-        {r.kind === "declined" ? <Lock size={12} className={styles.lockIcon} /> : null}
-        {r.note && r.kind !== "declined" ? <q className={styles.note}>{r.note}</q> : null}
-        <small>
-          {r.source === "record" ? <Check size={11} /> : null} {from} · {new Date(r.reportedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-          {r.record?.recordedDate ? ` · on problem list since ${r.record.recordedDate.slice(0, 4)}` : ""}
-        </small>
-      </div>
-      {canRemove ? (
-        <button className="btn btn-ghost btn-sm" onClick={() => actions.removeReport(r.id)} aria-label="Remove this entry">
-          <Close size={13} />
-        </button>
-      ) : null}
-    </li>
-  );
-}
-
-function InviteBox({ tree, view, onDone }: { tree: FamilyTree; view: PersonView; onDone: () => void }) {
+function Overview({
+  view,
+  isSelf,
+  short,
+  them,
+  onGo,
+}: {
+  view: PersonView;
+  isSelf: boolean;
+  short: string;
+  them: string;
+  onGo: (mode: PanelMode, field?: "age" | "cause") => void;
+}) {
   const p = view.person;
-  const [url] = useState(() => inviteUrl(window.location.origin, buildInvite(tree, p, deviceId())));
-  const [copied, setCopied] = useState(false);
-  // Only mark someone as invited once the link has actually left this screen.
-  const markSent = () => actions.createInvite(p.id);
-  const message = `Hi! I'm getting ready for a ${tree.visit?.specialty.toLowerCase() ?? "doctor's"} visit and I'm putting together our family's heart history. Could you answer a few quick questions? It takes about 2 minutes: ${url}`;
+  const voices = view.status === "conflicting" ? voicesOf(view.reports) : null;
+  const rest = voices ? view.reports.filter((r) => r.id !== voices[0].id && r.id !== voices[1].id) : view.reports;
+  const remove = (id: string) => actions.removeReport(id);
+  const removable = (r: Report) => canRemove(r);
 
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(message);
-      markSent();
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      setCopied(false);
-    }
-  };
-
-  const share = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: "Family heart history", text: message });
-        markSent();
-      } catch {
-        /* user cancelled */
-      }
-    } else {
-      copy();
-    }
-  };
+  const gaps: { label: string; aria: string; go: () => void }[] = [];
+  if (!isSelf && p.deceased && p.ageAtDeath == null) gaps.push({ label: "age at death", aria: "Add age at death", go: () => onGo("edit", "age") });
+  if (!isSelf && p.deceased && !p.causeOfDeath) {
+    const how = `how ${pronoun(p)} died`;
+    gaps.push({ label: how, aria: `Add ${how}`, go: () => onGo("edit", "cause") });
+  }
+  if (!isSelf && view.status === "unknown") gaps.push({ label: "their heart history", aria: "Add their heart history", go: () => onGo("answer") });
 
   return (
-    <div className={styles.invite}>
-      <h3 className={styles.h3}>Ask {shortName(p.label)} to fill in their branch</h3>
-      <p className={styles.tip}>
-        They answer on their own phone, with no account. They can also share one fact from their MyChart without sharing their whole chart.
-      </p>
-      <textarea className={`input ${styles.msg}`} readOnly value={message} rows={5} aria-label="Invite message" />
-      <div className={styles.inviteActions}>
-        <button className="btn btn-primary" onClick={share}>
-          Send…
-        </button>
-        <button className="btn btn-secondary" onClick={copy}>
-          {copied ? "Copied" : "Copy message"}
-        </button>
-        <a className="btn btn-ghost" href={url} target="_blank" rel="noopener noreferrer" onClick={markSent}>
-          Preview as {shortName(p.label)}
-        </a>
-      </div>
-      <p className={styles.small}>
-        <Lock size={11} /> The answers ride inside the link itself (after the #), which browsers never send to a server.
-      </p>
-      <button className="btn btn-ghost btn-sm" onClick={onDone}>
-        Done
-      </button>
-    </div>
-  );
-}
+    <div className="flex flex-col gap-6">
+      <section aria-labelledby={`know-${p.id}`} className="flex flex-col gap-4">
+        <div>
+          <h3 id={`know-${p.id}`} className="font-mono text-eyebrow font-medium text-fg-3 uppercase">
+            {isSelf ? "Your own heart history" : "What we know"}
+          </h3>
+          {isSelf ? <p className="mt-1 text-small text-fg-3">Shown on your summary under &ldquo;Your own history&rdquo;.</p> : null}
+        </div>
+        {voices ? <VoicePair voices={voices} removable={removable} onRemove={remove} /> : null}
+        {rest.length ? (
+          <ReceiptTimeline reports={rest} removable={removable} onRemove={remove} />
+        ) : !voices ? (
+          <p className="rounded-md border border-dashed border-line-strong px-4 py-3.5 text-small text-fg-2">
+            {isSelf
+              ? "Nothing yet. If you’ve had any heart condition yourself, add it here."
+              : notAsked(view)
+                ? `No one has answered about ${short} yet.`
+                : `Nothing confirmed about ${short} yet.`}
+          </p>
+        ) : null}
+      </section>
 
-function EditPerson({ view, onDone, onRemoved }: { view: PersonView; onDone: () => void; onRemoved: () => void }) {
-  const p = view.person;
-  const [label, setLabel] = useState(p.label);
-  const [sex, setSex] = useState(p.sex);
-  const [deceased, setDeceased] = useState(!!p.deceased);
-  const [ageAtDeath, setAgeAtDeath] = useState(p.ageAtDeath != null ? String(p.ageAtDeath) : "");
-  const [cause, setCause] = useState(p.causeOfDeath ?? "");
-  const removable = !["self", "mother", "father"].includes(p.relation);
-  return (
-    <form
-      className={styles.edit}
-      onSubmit={(e) => {
-        e.preventDefault();
-        const age = Number.parseInt(ageAtDeath, 10);
-        actions.updatePerson(p.id, {
-          label: label.trim() || p.label,
-          sex,
-          deceased: deceased || undefined,
-          ageAtDeath: deceased && Number.isFinite(age) && age >= 0 && age < 130 ? age : undefined,
-          causeOfDeath: deceased ? cause.trim() || undefined : undefined,
-        });
-        onDone();
-      }}
-    >
-      <label className="field">
-        <span className="field-label">Name</span>
-        <input className="input" value={label} onChange={(e) => setLabel(e.target.value.slice(0, 40))} />
-      </label>
-      <label className="field">
-        <span className="field-label">Sex</span>
-        <select className="input" value={sex} onChange={(e) => setSex(e.target.value as typeof sex)}>
-          <option value="unknown">Not set</option>
-          <option value="female">Female</option>
-          <option value="male">Male</option>
-        </select>
-        <span className="field-hint">Used only for age cutoffs on the summary (e.g. early heart disease).</span>
-      </label>
-      <label className={styles.check}>
-        <input type="checkbox" checked={deceased} onChange={(e) => setDeceased(e.target.checked)} /> Has passed away
-      </label>
-      {deceased ? (
-        <div className={styles.deathRow}>
-          <label className="field">
-            <span className="field-label">Age at death</span>
-            <input
-              className="input"
-              inputMode="numeric"
-              placeholder="e.g. 66"
-              value={ageAtDeath}
-              onChange={(e) => setAgeAtDeath(e.target.value.replace(/\D/g, "").slice(0, 3))}
-            />
-          </label>
-          <label className="field">
-            <span className="field-label">Cause, if known</span>
-            <input className="input" placeholder="e.g. heart attack, sudden, cancer" value={cause} onChange={(e) => setCause(e.target.value.slice(0, 80))} />
-          </label>
-          <span className="field-hint">Was it sudden or unexpected? Say so in the cause; it matters to the cardiologist.</span>
+      {gaps.length ? (
+        <div className="rounded-md bg-sunken/70 px-4 py-3">
+          <p className="text-small text-fg-2">
+            <span className="font-medium text-fg">Still unknown: </span>
+            {gaps.map((g, i) => (
+              <span key={g.label}>
+                {i ? <span aria-hidden> · </span> : null}
+                {g.label}{" "}
+                <button
+                  type="button"
+                  aria-label={g.aria}
+                  onClick={g.go}
+                  className="cursor-pointer rounded-xs font-medium text-brand underline decoration-brand/30 underline-offset-2 hover:text-brand-strong hover:decoration-current"
+                >
+                  Add
+                </button>
+              </span>
+            ))}
+          </p>
         </div>
       ) : null}
-      <div className={styles.inviteActions}>
-        {removable ? (
-          <button
-            type="button"
-            className="btn btn-ghost"
-            onClick={() => {
-              actions.removePerson(p.id);
-              onRemoved();
-            }}
-          >
-            Remove from tree
-          </button>
-        ) : null}
-        <button type="button" className="btn btn-ghost" onClick={onDone}>
-          Cancel
-        </button>
-        <button type="submit" className="btn btn-primary">
-          Save
-        </button>
-      </div>
-    </form>
-  );
-}
 
-export function shortName(label: string) {
-  return label.replace(/\s*\(you\)$/, "");
+      <div className="flex flex-col gap-2">
+        <Button iconLeft={<Plus />} fullWidth onClick={() => onGo("answer")}>
+          {isSelf ? "Add your own history" : "Add what you know"}
+        </Button>
+        {!isSelf && !p.deceased ? (
+          <Button variant="secondary" iconLeft={<Send />} fullWidth onClick={() => onGo("invite")}>
+            Ask {short} directly
+          </Button>
+        ) : null}
+        {!isSelf && p.deceased ? (
+          <p className="rounded-md bg-sunken/70 px-4 py-3 text-small text-fg-2">
+            {short} has passed away. Ask a relative who knew {them}; their answers show up here with their name attached.
+          </p>
+        ) : null}
+        {!isSelf ? (
+          <Button variant="ghost" iconLeft={<PenLine />} fullWidth onClick={() => onGo("edit")}>
+            Edit details
+          </Button>
+        ) : null}
+      </div>
+    </div>
+  );
 }
