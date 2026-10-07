@@ -240,16 +240,11 @@ test.describe("404 page", () => {
 });
 
 // Hard rule 3 (DESIGN §5.3): a visible synthetic-demo notice on every route — the app ribbon (role="note") or the
-// marketing nav chip. These states render no header today; their owners add the minimal Lockup + HonestyRibbon header.
-const HONESTY_GAPS: Record<string, string> = {
-  "/invite": "P6: /invite without a #payload has no header (DESIGN §12.6)",
-  "/connect/callback": "P6: /connect/callback without OAuth params ('Couldn't connect') has no header (DESIGN §12.6)",
-};
+// marketing nav chip. Payload-less /invite, /connect/callback and /view render the minimal Lockup + HonestyRibbon header.
 test.describe("Honesty notice on every route", () => {
   test.use({ allowHttpErrors: [/\/no-such-page/] });
   for (const route of [...ROUTES, "/no-such-page"]) {
     test(`${route} shows the synthetic-demo notice`, async ({ page }) => {
-      test.fixme(route in HONESTY_GAPS, HONESTY_GAPS[route]);
       test.info().annotations.push({ type: "route", description: route });
       await page.goto(route);
       await page.locator("html[data-hydrated]").waitFor({ state: "attached" });
