@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import PracticePreview from "./PracticePreview";
+import { PracticeView } from "@/components/summary/PracticeView";
 
-// PLACEHOLDER created by P1 so the AppShell role menu ("Practice · care-team view") never 404s.
-// P7 owns this route (AMENDMENTS A1) and replaces both files.
+// The practice-side demo (AMENDMENTS A1): upcoming new-patient visits and the care-team document.
 export const metadata: Metadata = { title: "Practice view (demo)" };
 
 export default function Page() {
-  return <PracticePreview />;
+  return <PracticeView />;
 }
