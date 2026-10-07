@@ -47,7 +47,7 @@ export function NodeHoverCard({ view, pending, rect, viewport, onOpen, onPointer
           {latest.map((r) => (
             <li key={r.id} className="flex flex-col items-start gap-1">
               <span className="text-small font-medium text-fg">{factLine(r)}</span>
-              <SourceChip kind={r.source} who={r.reportedBy} date={r.source === "record" ? r.record?.recordedDate : r.reportedAt} />
+              <SourceChip kind={r.source} who={r.reportedBy} date={r.source === "record" ? r.record?.recordedDate : r.reportedAt} system={r.record?.system} />
             </li>
           ))}
         </ul>

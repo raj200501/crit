@@ -2,7 +2,7 @@ import { ChevronDown, Hand, ShieldCheck, Users } from "lucide-react";
 import { useId } from "react";
 import { HEART_CHOICES } from "@/lib/clinical";
 import { Button } from "../ui/Button";
-import { TickCard } from "./TickCard";
+import { CheckboxCard } from "../ui/CheckboxCard";
 import { Eyebrow } from "../ui/Eyebrow";
 import { AskerMark } from "./AskerMark";
 import { teamOf, withArticle } from "./describe";
@@ -87,7 +87,7 @@ export function Welcome({ me, asker, visit, others, adult, onAdult, onStart, onD
           </div>
         </details>
 
-        <TickCard checked={adult} onChange={onAdult} title="I’m 18 or older." />
+        <CheckboxCard size="lg" checked={adult} onChange={onAdult} title="I’m 18 or older." />
         <Button variant="ghost" size="lg" fullWidth onClick={onDecline} className="-mt-1">
           I&rsquo;d rather not share
         </Button>

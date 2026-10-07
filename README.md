@@ -10,15 +10,19 @@ Turn "heart problems run in the family" into **who, what, and at what age**, bef
 
 | Route | What it does |
 | --- | --- |
-| `/` | Landing page: the problem, how it works, what we heard in interviews |
+| `/` | Landing page: the three.js "Night Window" hero and its scroll story, the problem, the live product tour, the relative's phone flow, privacy, two readers, practices, what we heard |
 | `/tree` | The patient's tree. Tap a relative to add what you know (guided cardiac questions with examples), invite them, or edit them. Statuses are derived, never typed: **known**, **conflicting**, **unknown**, **declined** |
 | `/invite#…` | What a relative sees on their phone: answer for themselves, optionally share one fact from MyChart, add what they know about others, then send it back |
 | `/connect/callback` | SMART on FHIR redirect handler for the MyChart demo |
 | `/reply#…` | The patient opens a relative's reply link and adds the answers to their tree |
-| `/summary` | The patient's summary (facts, gaps, questions to ask; no alerts). Printing and the practice link use the one-page **care-team** version, which lists guideline family-history criteria in three tiers (matched / also noted / to clarify), each with its guideline basis. Review checkbox, print/PDF, QR read-only link, FHIR export |
-| `/view#…` | Read-only care-team summary for the practice (opened from the link or QR) |
+| `/summary` | The patient's own one-page summary (facts, gaps, questions to ask; no criteria, no alerts). Review checkbox, print/PDF of the patient copy, the practice link and check-in QR, FHIR export |
+| `/view#…` | Read-only **care-team** summary for the practice (opened from the link or QR). It lists guideline family-history criteria in three tiers (matched / also noted / to clarify), each with its guideline basis |
+| `/practice` | The practice-side demo: upcoming new-patient visits and the care-team document for this browser's tree (print, copy as chart text, FHIR) |
+| `/for-practices`, `/pilot` | The buyer's page (the annotated care-team page, how it arrives, intake) and the proposed pilot with an ROI calculator |
+| `/privacy` | Security and privacy: what stays in the browser, the CSP, portal records, what changes before real data |
 | `/how-it-works` | Research summary: MyChart access, privacy and compliance, clinical criteria, business model, riskiest assumptions |
 | `/research` | The full fact-checked research write-up (`docs/research.md`) with numbered sources |
+| `/design-system` | Internal QA gallery of the design-system primitives (noindex) |
 
 ### Try the demo
 
@@ -47,10 +51,13 @@ npm install
 npm run dev      # http://localhost:3000
 npm run build    # production build (all routes are static)
 npm run lint
-npm test         # status, red-flag, privacy and validation logic
+npm run typecheck
+npm test         # logic, design tokens, hero story model, research transforms
+npm run build && npx next start -p 3100 &   # e2e always runs against the production server
+E2E_PORT=3100 npx playwright test           # e2e contract, axe, CSP, print (E2E_SANDBOX=1 adds the live SMART sandbox test)
 ```
 
-Stack: Next.js 16 (App Router), React 19, TypeScript, CSS modules, `fhirclient`, `qrcode`. No backend.
+Stack: Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4 (tokens in `src/app/globals.css`; CSS modules only for the summary's print rules, the hero stage and the `/research` prose), `motion`, `three` (lazy-loaded hero), Lenis, `fhirclient`, `qrcode`. No backend.
 
 ## Deploy (free, Vercel Hobby)
 
@@ -67,11 +74,14 @@ Vercel Hobby is for non-commercial use and has no BAA. That is fine for this syn
 
 ```
 src/app/           routes (see table above)
-src/components/    TreeView, PersonPanel, AnswerForm, InviteFlow, SummaryDocument, …
+src/components/    ui/ (design-system primitives), brand/, site/ (marketing chrome), hero/ (three.js),
+                   landing/, content/, tree/ + person/ (workspace), relative/ (invite flow),
+                   summary/ (summary, care-team view, practice demo)
+src/content/       the shared copy deck (site.ts)
 src/lib/           data model, status derivation, pedigree layout, clinical flags,
                    share links, SMART client, FHIR export, local store
 demo/              the animated demo (HTML) and its GIF/MP4 renders for slides
 slides/            the "What we heard" slide (.pptx/.png) and its generator
 docs/              research write-up (also at /research) and MVP spec
-tests/             logic tests (node:test + tsx)
+tests/             unit tests (node:test + tsx) and tests/e2e (Playwright)
 ```

@@ -13,12 +13,12 @@ export interface OthersListProps {
   onAnswer: (personId: string, answers: Answer[]) => void;
   /** Open this person's form on arrival (a "Change" from the check-answers screen). */
   initialOpen?: string | null;
-  /** Spread onto AnswerForm: P5's `variant="page"` once its API lands (DESIGN §11.4). */
-  formProps?: Record<string, unknown>;
+  /** AnswerForm's variant (DESIGN §11.4): "page" in the relative's phone flow. */
+  formVariant?: "panel" | "page";
 }
 
 /** "Others you know": one card per relative with an h3 (DESIGN §12.9 R3), 48 px actions and the inline answer form. */
-export function OthersList({ people, done, drafts, onAnswer, initialOpen, formProps }: OthersListProps) {
+export function OthersList({ people, done, drafts, onAnswer, initialOpen, formVariant }: OthersListProps) {
   const [open, setOpen] = useState<string | null>(initialOpen ?? null);
   return (
     <ul className="flex flex-col gap-3">
@@ -34,7 +34,7 @@ export function OthersList({ people, done, drafts, onAnswer, initialOpen, formPr
           onAnswer={(a) => onAnswer(o.id, a)}
           form={(close) => (
             <AnswerForm
-              {...formProps}
+              variant={formVariant}
               subject={o.l.split(" (")[0]}
               compact
               submitLabel="Save"

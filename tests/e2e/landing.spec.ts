@@ -1,6 +1,6 @@
 // Contract for "/" (owner: P3; DESIGN §8 and §13.3, AMENDMENTS A1).
-// Runs against `next start` (production CSP). The embedded SummaryDocument (P7) still renders its own <h1>/<h2>s
-// inside <article aria-label="Pre-visit family history summary">, so page-outline checks skip that article.
+// Runs against `next start` (production CSP). The embedded SummaryDocuments (P7) render with headingLevel={3}, so their
+// headings sit inside the page outline (title h3 under the section's h2, then h4/h5).
 import { FAQ, HONESTY, INTERVIEWS, PROTOTYPE_VS_PILOT, STATS } from "../../src/content/site";
 import {
   DESKTOP,
@@ -20,8 +20,9 @@ import type { Page } from "@playwright/test";
 const DOC = 'article[aria-label="Pre-visit family history summary"]';
 
 const H1 = "Turn “heart problems run in the family” into who, what, and at what age.";
-// §8 order (§8.11 "What we heard" carries a visually hidden h2; the eyebrow and the quote lead it visually).
+// §8 order (§8.11 "What we heard" and the hero's chapter list carry visually hidden h2s).
 const H2S = [
+  "How it works, in four chapters", // the hero's chapter cards (sr-only h2 over their h3s)
   "“It runs in the family” is where most family histories stop.",
   "This is the real app. Go ahead, click Dad.",
   "Guided questions, not a blank box.",
@@ -35,16 +36,15 @@ const H2S = [
   "Walk in knowing who, what, and at what age.",
 ];
 
-/** Headings in main, outside the embedded summary document, as [level, text]. */
+/** Every heading in main (the embedded summary documents included), as [level, text]. */
 async function outline(page: Page) {
-  return page.locator("main").evaluate((main, doc) => {
+  return page.locator("main").evaluate((main) => {
     return (
       [...main.querySelectorAll("h1, h2, h3, h4, h5, h6")]
-        .filter((h) => !h.closest(doc))
         // TextReveal headings carry one sr-only sentence plus aria-hidden word spans: read the sentence
         .map((h) => [Number(h.tagName[1]), ((h.querySelector(":scope > .sr-only") ?? h).textContent ?? "").replace(/\s+/g, " ").trim()] as [number, string])
     );
-  }, DOC);
+  });
 }
 
 test.describe("structure", () => {
@@ -63,6 +63,8 @@ test.describe("structure", () => {
     await gotoApp(page, "/");
     const heads = await outline(page);
     expect(heads.filter(([l]) => l === 2).map(([, t]) => t)).toEqual(H2S);
+    // the two-readers sheet's document is titled at h3 under its section (SummaryDocument headingLevel={3})
+    expect(heads).toContainEqual([3, "Alex"]);
     for (let i = 1; i < heads.length; i++) expect(heads[i][0] - heads[i - 1][0], `after "${heads[i - 1][1]}"`).toBeLessThanOrEqual(1);
     const unlabelled = await page
       .locator("main > section")
@@ -245,8 +247,8 @@ test.describe("interaction", () => {
     await gotoApp(page, "/");
     const afib = page.getByRole("checkbox", { name: /Atrial fibrillation/ });
     await expect(afib).not.toBeChecked();
-    await expect(page.getByRole("button", { name: "Share 0 facts with Alex" })).toBeDisabled();
-    await afib.check({ force: true }); // the visually hidden input sits under its card's label
+    await expect(page.getByRole("button", { name: "Share with Alex" })).toBeDisabled(); // P2's OneFactBeam: nothing ticked yet
+    await afib.check();
     await page.getByRole("button", { name: "Share 1 fact with Alex" }).click();
     await expect(page.getByText("Grandpa Luis shared one fact from his portal. Only that fact left the page.")).toBeVisible();
     await page.getByRole("button", { name: "Reset" }).click();

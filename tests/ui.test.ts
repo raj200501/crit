@@ -141,7 +141,9 @@ describe("Tailwind build", () => {
     assert.match(out.css, /\.present\\:text-lg/);
     assert.match(out.css, /\.bg-bg\s*\{\s*background-color:\s*var\(--ui-bg\)/, "bg-bg must read the per-element --ui-bg so night bands switch");
     assert.doesNotMatch(out.css, /\.bg-red-500\s*\{/, "only brand colors may exist");
-    assert.match(out.css, /@layer components/, "legacy CSS must stay inside @layer components");
+    // the pre-revamp legacy layer (orange accent, .btn/.chip) was removed in the P1 cleanup; nothing may bring it back
+    assert.doesNotMatch(out.css, /--accent:\s*#c2410c/i, "legacy tokens are gone");
+    assert.doesNotMatch(out.css, /\.btn-primary\s*\{/, "legacy .btn classes are gone");
   });
 
   test("dark: skips a paper surface nested in a night band (document cards, frame screens)", async () => {
@@ -173,6 +175,8 @@ describe("content and primitives", () => {
     assert.equal(sourceChipText("relative", "Mom", "2026-09-27T14:03:00Z"), "TOLD BY MOM · SEP 27");
     assert.equal(sourceChipText("self", undefined, "2026-09-27"), "SELF-REPORTED · SEP 27");
     assert.equal(sourceChipText("record", undefined, "2009-03-14"), "PORTAL RECORD · DEMO SANDBOX · 2009");
+    assert.equal(sourceChipText("record", undefined, "2009-03-14", "MyChart (demo sandbox)"), "PORTAL RECORD · DEMO SANDBOX · 2009");
+    assert.equal(sourceChipText("record", undefined, "2009-03-14", "Simulated portal record"), "PORTAL RECORD · SIMULATED · 2009");
     assert.doesNotMatch(sourceChipText("record"), /verified/i);
   });
   test("pilot CTAs fall back to /pilot#contact without NEXT_PUBLIC_PILOT_EMAIL", () => {

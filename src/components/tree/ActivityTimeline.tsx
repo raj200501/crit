@@ -121,6 +121,7 @@ export function ActivityTimeline({ tree, views, pendingIds, newIds, onStart }: A
                       kind={r.source}
                       who={r.reportedById === "self" ? "you" : r.reportedBy}
                       date={r.source === "record" ? r.record?.recordedDate : undefined}
+                      system={r.record?.system}
                     />
                     <time dateTime={r.reportedAt} className="font-mono text-eyebrow text-fg-3 uppercase">
                       {shortDate(r.reportedAt)}

@@ -3,7 +3,7 @@ import { useId, useState } from "react";
 import { SANDBOX_LABEL, type PortalCondition, type PortalResult } from "@/lib/smart";
 import { Button } from "../ui/Button";
 import { cn } from "../ui/cn";
-import { TickCard } from "./TickCard";
+import { CheckboxCard } from "../ui/CheckboxCard";
 import { Eyebrow } from "../ui/Eyebrow";
 import { Input } from "../ui/Input";
 import { ActionHint, StepLayout } from "./StepLayout";
@@ -40,7 +40,8 @@ export function RecordPicker({ portal, asker, onShare, onCancel }: RecordPickerP
   const row = (c: PortalCondition) => {
     const since = c.onset ?? c.recordedDate;
     return (
-      <TickCard
+      <CheckboxCard
+        size="lg"
         key={c.id}
         checked={picked.has(c.id)}
         onChange={(on) => toggle(c.id, on)}
@@ -65,7 +66,7 @@ export function RecordPicker({ portal, asker, onShare, onCancel }: RecordPickerP
             aria-label={`Age when ${c.display} started`}
           />
         </div>
-      </TickCard>
+      </CheckboxCard>
     );
   };
 

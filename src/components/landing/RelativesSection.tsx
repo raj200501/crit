@@ -1,9 +1,9 @@
 import { ArrowUpRight } from "lucide-react";
+import OneFactBeam from "@/components/hero/OneFactBeam";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { OneFactPlaceholder } from "./OneFactPlaceholder";
 import { PhoneScreens } from "./PhoneScreens";
 
 /** §8.7 "Grandpa answers from his phone." The relative's five screens, and sharing one fact from a portal record. */
@@ -36,7 +36,7 @@ export function RelativesSection() {
               <p className="font-mono text-eyebrow text-fg-3 uppercase">His record, his choice</p>
               <p className="max-w-[46ch] text-body text-fg-2">Only what you tick is shared. Nothing else from the chart leaves this page.</p>
             </div>
-            <OneFactPlaceholder />
+            <OneFactBeam />
           </Reveal>
         </div>
         <p className="mt-14 border-t border-line pt-6 text-center font-mono text-eyebrow text-fg-3 uppercase">

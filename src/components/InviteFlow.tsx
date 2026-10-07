@@ -18,7 +18,7 @@ import { SentScreen } from "./relative/SentScreen";
 import { ActionHint, STEP_BACK, STEP_FORWARD, StepLayout, StepTitle, StepTransition } from "./relative/StepLayout";
 import { Welcome } from "./relative/Welcome";
 import { Button } from "./ui/Button";
-import { TickCard } from "./relative/TickCard";
+import { CheckboxCard } from "./ui/CheckboxCard";
 
 type Step = "welcome" | "self" | "portal" | "others" | "review" | "sent";
 
@@ -41,11 +41,6 @@ const PROGRESS: Partial<Record<Step, [number, string]>> = {
   others: [3, "Others you know"],
   review: [4, "Check and send"],
 };
-
-// P5's AnswerForm adds `variant` and `stickyActions` (DESIGN §11.4). Spread, so this compiles against today's AnswerForm
-// (which ignores them) and lights up when P5's API lands, with no change here.
-const PAGE_FORM: Record<string, unknown> = { variant: "page" };
-const PAGE_FORM_STICKY: Record<string, unknown> = { variant: "page", stickyActions: true };
 
 export default function InviteFlow() {
   const hash = useHash();
@@ -255,7 +250,7 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
           <h2 id="answer-yourself" className="text-title font-strong text-fg">
             Or answer yourself
           </h2>
-          <AnswerForm {...PAGE_FORM_STICKY} subject="you" self allowDecline submitLabel="Next" onSubmit={addSelf} />
+          <AnswerForm variant="page" stickyActions subject="you" self allowDecline submitLabel="Next" onSubmit={addSelf} />
         </section>
       </StepLayout>
     );
@@ -314,7 +309,7 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
           </Button>
         }
       >
-        <OthersList people={payload.a} done={done} drafts={drafts} onAnswer={addAbout} initialOpen={changing} formProps={PAGE_FORM} />
+        <OthersList people={payload.a} done={done} drafts={drafts} onAnswer={addAbout} initialOpen={changing} formVariant="page" />
       </StepLayout>
     );
   } else if (step === "review") {
@@ -351,7 +346,7 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
           }}
         />
         {drafts.length ? (
-          <TickCard checked={confirmShare} onChange={setConfirmShare} title={`Share these answers with ${asker}.`} />
+          <CheckboxCard size="lg" checked={confirmShare} onChange={setConfirmShare} title={`Share these answers with ${asker}.`} />
         ) : null}
         <Button
           variant="ghost"

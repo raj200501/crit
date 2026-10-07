@@ -1,19 +1,19 @@
 import { ArrowRight } from "lucide-react";
+import HeroPoster from "@/components/hero/HeroPoster";
+import type { StoryModel } from "@/components/hero/story";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
 import { pilotHref, SITE } from "@/content/site";
 import { InView } from "./InView";
-import { NightPoster } from "./NightPoster";
-import type { PersonReceipt } from "./receipts";
 
-/** §8.13 The closing night band: a faded static pedigree (no WebGL) whose four lit nodes twinkle, then the two ways in. */
-export function FinalCta({ receipts }: { receipts: Record<string, PersonReceipt> }) {
+/** §8.13 The closing night band: the hero's static night poster at 30% (no WebGL) whose lit relatives twinkle, then
+ *  the two ways in. */
+export function FinalCta({ model }: { model: StoryModel }) {
   return (
     <Section theme="night" grain aria-labelledby="final-title" className="relative overflow-hidden py-28 lg:py-40">
       <InView mode="pause" className="pointer-events-none absolute inset-0 flex items-center justify-center">
-        {/* TODO(integrator): swap for P2's <HeroPoster theme="night" /> once hero/* merges */}
-        <NightPoster receipts={receipts} variant="backdrop" className="h-[112%] w-auto max-w-none opacity-30" />
+        <HeroPoster model={model} theme="night" twinkle className="h-[84%] w-auto max-w-none opacity-30" />
       </InView>
       <div
         aria-hidden

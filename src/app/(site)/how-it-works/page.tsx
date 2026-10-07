@@ -253,7 +253,7 @@ export default function HowItWorks() {
             title="The product in four steps."
             lead="Alex’s family is made up. Each step below is a piece of the working prototype, with the same people and the same answers."
           />
-          <ProductSteps className="mt-12" patientDoc={<SummaryDocument tree={DEMO} audience="patient" />} />
+          <ProductSteps className="mt-12" patientDoc={<SummaryDocument tree={DEMO} audience="patient" headingLevel={4} />} />
 
           <div className="mt-24">
             <Reveal className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">

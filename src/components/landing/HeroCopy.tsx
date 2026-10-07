@@ -37,7 +37,7 @@ function Underline() {
   );
 }
 
-/** The hero's copy column (Server Component). HeroPlaceholder (now) and HeroStage (P2) render it as children. */
+/** The hero's copy column (Server Component), rendered by HeroStage (P2) as its children. */
 export function HeroCopy() {
   return (
     <div className="flex max-w-[36rem] flex-col items-start">

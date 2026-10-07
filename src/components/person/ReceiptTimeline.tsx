@@ -49,7 +49,7 @@ export function ReceiptRow({ r, onRemove }: { r: Report; onRemove?: () => void }
         <p className="mt-1 text-small text-fg-2">From a portal record · on problem list since {r.record.recordedDate.slice(0, 4)}</p>
       ) : null}
       <div className="mt-2 flex min-h-9 items-center gap-2">
-        <SourceChip kind={r.source} who={chipWho(r)} date={r.source === "record" ? r.record?.recordedDate : r.reportedAt} />
+        <SourceChip kind={r.source} who={chipWho(r)} date={r.source === "record" ? r.record?.recordedDate : r.reportedAt} system={r.record?.system} />
         {onRemove ? (
           <IconButton label="Remove this entry" title="Remove this entry" size="sm" icon={<X />} onClick={onRemove} className="ml-auto max-lg:size-11" />
         ) : null}

@@ -38,7 +38,7 @@ function HeroWindow() {
         <div className="absolute inset-x-4 top-4 rounded-paper bg-white shadow-paper sm:inset-x-6 sm:top-6">
           {/* a tighter sheet margin than the full page, so the window shows the header and the review band */}
           <DocPreview heightClassName="h-[40rem]" className="[&_article]:px-6! [&_article]:pt-7! sm:[&_article]:px-8!">
-            <SummaryDocument tree={DEMO} audience="clinician" />
+            <SummaryDocument tree={DEMO} audience="clinician" headingLevel={3} />
           </DocPreview>
         </div>
       </ProductFrame>
@@ -113,7 +113,7 @@ export default function ForPracticesPage() {
             className="mt-14"
             label="The care-team page for Alex’s made-up family: the clinician review band, gaps and conflicts, the relative table and a source on every fact."
           >
-            <SummaryDocument tree={DEMO} audience="clinician" />
+            <SummaryDocument tree={DEMO} audience="clinician" headingLevel={3} />
           </AnnotatedDocument>
         </Container>
       </Section>
@@ -127,7 +127,7 @@ export default function ForPracticesPage() {
             title="On paper, at the front desk, or in the chart."
             lead="The same page in three forms. Nothing to install at the practice."
           />
-          <ArrivalCards className="mt-12" careTeamDoc={<SummaryDocument tree={DEMO} audience="clinician" />} />
+          <ArrivalCards className="mt-12" careTeamDoc={<SummaryDocument tree={DEMO} audience="clinician" headingLevel={4} />} />
         </Container>
       </Section>
 

@@ -4,13 +4,11 @@ import { ArrowRight, ArrowUpRight, MousePointerClick } from "lucide-react";
 import { useRef, useState, type ReactNode } from "react";
 import TreeView from "@/components/TreeView";
 import { Button } from "@/components/ui/Button";
-import { cn } from "@/components/ui/cn";
 import { ProductFrame } from "@/components/ui/ProductFrame";
 import { StatusLegend } from "@/components/ui/StatusLegend";
 import type { PersonView } from "@/lib/status";
 import { FadeSwap } from "./FadeSwap";
 import { LandingReceipt } from "./LandingReceipt";
-import { DOC_BRIDGE, TREE_BRIDGE } from "./legacyBridge";
 import type { PersonReceipt } from "./receipts";
 
 type Tab = "tree" | "summary" | "practice";
@@ -37,7 +35,7 @@ function DocPane({ caption, action, children }: { caption: string; action: React
         <p className="font-mono text-eyebrow text-fg-3 uppercase">{caption}</p>
         {action}
       </div>
-      <div className={cn("mx-auto max-w-[816px]", DOC_BRIDGE)}>{children}</div>
+      <div className="mx-auto max-w-[816px]">{children}</div>
     </div>
   );
 }
@@ -84,13 +82,13 @@ export function ProductTour({ views, receipts, patientDoc, clinicianDoc }: Produ
           <>
             {tab === "tree" ? (
               <div className="grid min-h-full lg:grid-cols-[minmax(0,1fr)_22rem]">
-                <div className={cn("bg-dots relative flex min-w-0 flex-col bg-canvas px-3 pt-4 pb-6 [--dots-size:20px] sm:px-6 sm:pt-6", TREE_BRIDGE)}>
+                <div className="bg-dots relative flex min-w-0 flex-col bg-canvas px-3 pt-4 pb-6 [--dots-size:20px] sm:px-6 sm:pt-6">
                   <p className="mb-3 inline-flex items-center gap-2 self-start rounded-full border border-line bg-surface/90 px-3 py-1 text-caption text-fg-2 shadow-xs">
                     <MousePointerClick aria-hidden className="size-3.5 text-brand" />
                     Select anyone to see who said what
                   </p>
                   <div className="my-auto py-2">
-                    <TreeView views={views} selectedId={selected} onSelect={select} maxScale={0.9} minScale={0.6} />
+                    <TreeView mode="embed" views={views} selectedId={selected} onSelect={select} />
                   </div>
                 </div>
                 <div ref={receiptRef} aria-live="polite" className="scroll-mt-4 border-t border-line bg-surface p-5 sm:p-6 lg:border-t-0 lg:border-l">

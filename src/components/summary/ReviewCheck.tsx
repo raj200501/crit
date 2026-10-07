@@ -16,9 +16,9 @@ export interface ReviewCheckProps {
 }
 
 /**
- * The review checkbox (e2e contract: the first checkbox on /summary, named exactly REVIEW_LABEL). The CheckboxCard look,
- * but the real input covers the whole label (transparent), so a finger, a keyboard, assistive tech and Playwright's
- * check() all land on the input itself.
+ * The review checkbox (e2e contract: the first checkbox on /summary, named exactly REVIEW_LABEL). The CheckboxCard look
+ * and hit-testing (the real input covers the whole label, transparent), plus a compact chrome-less "strip" variant for
+ * the phone bar, which CheckboxCard doesn't have.
  */
 export function ReviewCheck({ checked, onChange, variant = "card", describedBy, className }: ReviewCheckProps) {
   const id = useId();

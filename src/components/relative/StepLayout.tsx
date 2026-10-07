@@ -7,22 +7,7 @@ import { StickyActionBar } from "../ui/StickyActionBar";
 export const STEP_FORWARD = "step-forward";
 export const STEP_BACK = "step-back";
 
-// View-transition pseudo-elements can't be styled with utilities, so the step slide lives here (x 24 px + fade, 280 ms
-// quart; the old step leaves in 140 ms). Reduced motion: no animation (also covered by the globals.css safety net).
-const STEP_CSS = `
-::view-transition { pointer-events: none; }
-::view-transition-old(.fht-step-fwd), ::view-transition-old(.fht-step-back) { animation: 140ms cubic-bezier(0.25, 1, 0.5, 1) both fht-step-out; }
-::view-transition-new(.fht-step-fwd), ::view-transition-new(.fht-step-back) { animation: 280ms cubic-bezier(0.25, 1, 0.5, 1) both fht-step-in; }
-::view-transition-old(.fht-step-fwd) { --fht-step-x: -24px; }
-::view-transition-new(.fht-step-fwd) { --fht-step-x: 24px; }
-::view-transition-old(.fht-step-back) { --fht-step-x: 24px; }
-::view-transition-new(.fht-step-back) { --fht-step-x: -24px; }
-@keyframes fht-step-out { to { opacity: 0; transform: translateX(var(--fht-step-x)); } }
-@keyframes fht-step-in { from { opacity: 0; transform: translateX(var(--fht-step-x)); } }
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(*), ::view-transition-new(*), ::view-transition-group(*) { animation: none !important; }
-}`;
-
+// The step slide (x 24 px + fade) is styled in globals.css (view-transition pseudo-elements can't take utilities).
 const CLASSES = { [STEP_FORWARD]: "fht-step-fwd", [STEP_BACK]: "fht-step-back", default: "none" };
 
 /**
@@ -31,14 +16,9 @@ const CLASSES = { [STEP_FORWARD]: "fht-step-fwd", [STEP_BACK]: "fht-step-back", 
  */
 export function StepTransition({ step, children }: { step: string; children: ReactNode }) {
   return (
-    <>
-      <style href="fht-relative-steps" precedence="default">
-        {STEP_CSS}
-      </style>
-      <ViewTransition key={step} enter={CLASSES} exit={CLASSES} default="none">
-        <div className="flex flex-1 flex-col">{children}</div>
-      </ViewTransition>
-    </>
+    <ViewTransition key={step} enter={CLASSES} exit={CLASSES} default="none">
+      <div className="flex flex-1 flex-col">{children}</div>
+    </ViewTransition>
   );
 }
 

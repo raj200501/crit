@@ -9,7 +9,8 @@ import { cn } from "./ui/cn";
 import { Input, Textarea } from "./ui/Input";
 import { StickyActionBar } from "./ui/StickyActionBar";
 import { Switch } from "./ui/Switch";
-import { ChoiceCard, ChoiceSegment } from "./person/ChoiceCard";
+import { CheckboxCard } from "./ui/CheckboxCard";
+import { RadioSegment } from "./ui/RadioSegment";
 
 export interface Answer {
   kind: ReportKind;
@@ -219,7 +220,7 @@ export default function AnswerForm({
               {g.choices.map((c) => {
                 const pick = picked[c.id];
                 return (
-                  <ChoiceCard key={c.id} size={cardSize} checked={!!pick} onChange={(on) => toggle(c.id, on)} title={c.label} description={c.examples}>
+                  <CheckboxCard key={c.id} size={cardSize} checked={!!pick} onChange={(on) => toggle(c.id, on)} title={c.label} description={c.examples}>
                     {pick ? (
                       <AgeRow
                         id={`${id}-${c.id}-age`}
@@ -230,7 +231,7 @@ export default function AnswerForm({
                         onApprox={(approx) => setPicked((p) => ({ ...p, [c.id]: { ...p[c.id], approx } }))}
                       />
                     ) : null}
-                  </ChoiceCard>
+                  </CheckboxCard>
                 );
               })}
             </div>
@@ -239,7 +240,7 @@ export default function AnswerForm({
 
         <fieldset className="flex min-w-0 flex-col gap-2">
           <legend className="mb-2 font-mono text-eyebrow font-medium text-fg-3 uppercase">Something else</legend>
-          <ChoiceCard
+          <CheckboxCard
             size={cardSize}
             checked={other.on}
             onChange={(on) => {
@@ -268,7 +269,7 @@ export default function AnswerForm({
                 />
               </div>
             ) : null}
-          </ChoiceCard>
+          </CheckboxCard>
         </fieldset>
       </fieldset>
 
@@ -276,7 +277,7 @@ export default function AnswerForm({
         <p aria-hidden className="font-mono text-eyebrow font-medium text-fg-3 uppercase">
           Or
         </p>
-        <ChoiceSegment
+        <RadioSegment
           name={`${id}-alt`}
           label="Other answers"
           options={altOptions}

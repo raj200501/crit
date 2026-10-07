@@ -1,19 +1,19 @@
-// P2: the Night Window, the Clearing and OneFactBeam (DESIGN §9.8, §13.2). Runs on /hero-preview (the hero package's
-// QA page) and on "/" as soon as the landing page mounts HeroStage (until then the "/" runs skip themselves).
+// P2: the Night Window, the Clearing and OneFactBeam (DESIGN §9.8, §13.2), on the landing page "/" where P3 mounts
+// HeroStage (with HeroCopy) and OneFactBeam (in the relatives section).
 // Runs under chromium; with E2E_WEBKIT=1 the webkit project runs it too (WebKit isn't installed in this environment).
 import { gzipSync } from "node:zlib";
 import type { Page } from "@playwright/test";
 import { CHAPTER_STARTS } from "../../src/components/hero/clearing-constants";
 import { DESKTOP, expect, expectNoSeriousA11y, gotoApp, MOBILE, noHorizontalOverflow, recordRequests, test } from "./fixtures";
 
-const PATHS = ["/hero-preview", "/"] as const;
+const PATHS = ["/"] as const;
 const HERO = "section[aria-labelledby='hero-title']";
+const RELATIVES = "section[aria-labelledby='relatives-title']"; // the landing section that holds OneFactBeam
 const THREE_MARKER = "isWebGLRenderer"; // a property name three.js sets on its renderer; survives minification
 
-/** "/" mounts the hero only once the landing page wires HeroStage in (P3); skip there until then. */
 async function openHero(page: Page, path: string, query = "") {
   await gotoApp(page, `${path}${query}`);
-  if (path === "/" && (await page.locator("#hero-stage").count()) === 0) test.skip(true, "HeroStage is not mounted on / yet (the landing page wires it in)");
+  await expect(page.locator("#hero-stage")).toHaveCount(1);
 }
 
 async function waitLive(page: Page) {
@@ -110,7 +110,7 @@ for (const path of PATHS) {
       await expect(play).toHaveAttribute("aria-pressed", "true");
       await play.click();
       await expect(page.getByRole("button", { name: "Pause animation" })).toHaveAttribute("aria-pressed", "false");
-      await page.getByRole("button", { name: "Replay" }).click();
+      await page.locator(HERO).getByRole("button", { name: "Replay" }).click(); // the privacy band's FlowDiagram has a Replay too
       await expect(page.locator(HERO)).toHaveAttribute("data-phase", /fog|grow/);
     });
 
@@ -267,6 +267,28 @@ for (const path of PATHS) {
       await noHorizontalOverflow(page);
     });
 
+    test("the LCP element is the hero copy (on phones TextReveal's word spans can make the lead win), CLS < 0.05", async ({ page }) => {
+      await openHero(page, path);
+      await page.waitForTimeout(2500);
+      const { lcp, cls } = await page.evaluate(
+        () =>
+          new Promise<{ lcp: string; cls: number }>((resolve) => {
+            let lcp = "";
+            let cls = 0;
+            new PerformanceObserver((l) => {
+              const el = (l.getEntries().at(-1) as PerformanceEntry & { element?: Element | null })?.element;
+              lcp = !el ? "" : el.closest("#hero-title") ? "h1" : el.closest("section[aria-labelledby='hero-title']") && el.tagName === "P" ? "lead" : el.outerHTML.slice(0, 80);
+            }).observe({ type: "largest-contentful-paint", buffered: true });
+            new PerformanceObserver((l) => {
+              for (const e of l.getEntries() as (PerformanceEntry & { value: number; hadRecentInput: boolean })[]) if (!e.hadRecentInput) cls += e.value;
+            }).observe({ type: "layout-shift", buffered: true });
+            setTimeout(() => resolve({ lcp, cls }), 400);
+          }),
+      );
+      expect(["h1", "lead"]).toContain(lcp);
+      expect(cls).toBeLessThan(0.05);
+    });
+
     test("Skip the story lands on the next section", async ({ page }) => {
       await openHero(page, path);
       await page.getByRole("button", { name: "Skip the story" }).click();
@@ -283,7 +305,6 @@ for (const path of PATHS) {
     test.use({ ...DESKTOP, javaScriptEnabled: false });
     test("the poster, the real relative list and the four chapters render; no pin", async ({ page }) => {
       await page.goto(path);
-      if (path === "/" && (await page.locator("#hero-stage").count()) === 0) test.skip(true, "HeroStage is not mounted on / yet");
       await expect(page.locator(HERO)).toHaveAttribute("data-mode", "poster");
       await expect(page.getByRole("list", { name: "Demo family (synthetic)" }).getByRole("button")).toHaveCount(8);
       await expect(page.getByRole("list", { name: "How it works, in four chapters" }).getByRole("listitem")).toHaveCount(4);
@@ -299,7 +320,7 @@ test.describe("OneFactBeam", () => {
   ] as const) {
     test(`keyboard only at ${label} px: nothing pre-ticked → tick → share → reset`, async ({ page }) => {
       await page.setViewportSize(device.viewport);
-      await gotoApp(page, "/hero-preview");
+      await gotoApp(page, "/");
       const afib = page.getByRole("checkbox", { name: /Atrial fibrillation/ });
       await afib.scrollIntoViewIfNeeded();
       for (const name of [/Atrial fibrillation/, /Essential hypertension/, /Seasonal allergies/]) await expect(page.getByRole("checkbox", { name })).not.toBeChecked();
@@ -322,14 +343,14 @@ test.describe("OneFactBeam", () => {
       await expect(page.getByRole("checkbox", { name: /Atrial fibrillation/ })).not.toBeChecked();
       await expect(page.getByRole("checkbox", { name: /Atrial fibrillation/ })).toBeFocused();
       await noHorizontalOverflow(page);
-      await expectNoSeriousA11y(page, { include: ["#problem"] });
+      await expectNoSeriousA11y(page, { include: [RELATIVES] });
     });
   }
 
   test.describe("reduced motion", () => {
     test.use({ contextOptions: { reducedMotion: "reduce" } });
     test("the fact lands instantly: no travel", async ({ page }) => {
-      await gotoApp(page, "/hero-preview");
+      await gotoApp(page, "/");
       await page.getByRole("checkbox", { name: /Atrial fibrillation/ }).check();
       await page.getByRole("button", { name: "Share 1 fact with Alex" }).click();
       await expect(page.getByText("Grandpa Luis shared one fact from his portal.")).toBeVisible({ timeout: 200 });

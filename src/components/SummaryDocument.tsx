@@ -5,7 +5,7 @@
 // Server-renderable: the only client code is the provenance popover island. Print rules live in the CSS module and
 // keep each copy on one Letter page.
 import { Flag as FlagIcon } from "lucide-react";
-import { useId, type ReactNode } from "react";
+import { createElement, useId, type HTMLAttributes, type ReactNode } from "react";
 import { CRITERIA_FOOTNOTE, reviewItems, stillToConfirm, type Flag } from "@/lib/clinical";
 import { formatCondition, viewTree, type PersonView } from "@/lib/status";
 import type { FamilyTree, Report } from "@/lib/types";
@@ -45,7 +45,17 @@ export interface SummaryDocumentProps {
   provenance?: boolean;
   /** The demo "Mark reviewed by clinician" stamp (/view, /practice). */
   clinicianReviewedAt?: string | null;
+  /** Level of the title heading (default 1, the document's own page). Embeds pass the level that fits their page's
+   *  outline (e.g. 3 under a section's h2); the section headings follow one level below it. */
+  headingLevel?: 1 | 2 | 3 | 4;
   className?: string;
+}
+
+type HeadingTag = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+const hTag = (level: number) => `h${Math.min(6, Math.max(1, level))}` as HeadingTag;
+/** An h1–h6 picked by level (the document's outline shifts with `headingLevel`). */
+function Heading({ level, ...rest }: { level: number } & HTMLAttributes<HTMLHeadingElement>) {
+  return createElement(hTag(level), rest);
 }
 
 const LEGEND: LegendItem[] = ["known", "conflicting", "unknown", "pending", "declined", "finding", "deceased", "record", "proband"];
@@ -57,7 +67,14 @@ const QUESTIONS = [
   "Is there anything I should ask my relatives before my next visit?",
 ];
 
-export default function SummaryDocument({ tree, audience = "patient", provenance = false, clinicianReviewedAt, className }: SummaryDocumentProps) {
+export default function SummaryDocument({
+  tree,
+  audience = "patient",
+  provenance = false,
+  clinicianReviewedAt,
+  headingLevel = 1,
+  className,
+}: SummaryDocumentProps) {
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const views = viewTree(tree);
   const relatives = documentOrder(views);
@@ -71,7 +88,7 @@ export default function SummaryDocument({ tree, audience = "patient", provenance
     `${generations(tree.people)} generations`,
     `${relatives.length} relative${relatives.length === 1 ? "" : "s"}`,
   ].filter(Boolean) as string[];
-  const ctx: Ctx = { tree, audience, provenance };
+  const ctx: Ctx = { tree, audience, provenance, hl: headingLevel };
 
   return (
     <article
@@ -86,9 +103,9 @@ export default function SummaryDocument({ tree, audience = "patient", provenance
           <p className={cn(styles.eyebrow, "font-mono text-eyebrow font-medium text-ink-3 uppercase")}>
             Pre-visit family heart history <span aria-hidden>·</span> {clinician ? "For the care team" : "Your copy"}
           </p>
-          <h1 className={cn(styles.title, "mt-3 font-display text-[2.5rem] leading-[1.02] font-book tracking-[-0.02em] text-ink sm:text-[2.75rem]")}>
+          <Heading level={headingLevel} className={cn(styles.title, "mt-3 font-display text-[2.5rem] leading-[1.02] font-book tracking-[-0.02em] text-ink sm:text-[2.75rem]")}>
             {title}
-          </h1>
+          </Heading>
         </div>
         <div className={cn(styles.stamps, "mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 sm:mt-0 sm:flex-col sm:items-end sm:pt-px")}>
           {tree.synthetic ? <Badge className={cn(styles.badge, "sm:order-first")}>{HONESTY.docChip}</Badge> : null}
@@ -134,7 +151,8 @@ export default function SummaryDocument({ tree, audience = "patient", provenance
   );
 }
 
-type Ctx = { tree: FamilyTree; audience: Audience; provenance: boolean };
+/** hl = the title heading level; section headings are hl + 1, their sub-headings hl + 2. */
+type Ctx = { tree: FamilyTree; audience: Audience; provenance: boolean; hl: number };
 
 /**
  * Pointing at (or focusing into) a person's row lights their symbol in the pedigree: CSS :has(), no JS, so it works in the
@@ -148,21 +166,21 @@ function LinkedHighlight({ uid, ids }: { uid: string; ids: string[] }) {
   return css ? <style>{css}</style> : null;
 }
 
-function SectionTitle({ id, children, className }: { id: string; children: ReactNode; className?: string }) {
+function SectionTitle({ id, level, children, className }: { id: string; level: number; children: ReactNode; className?: string }) {
   return (
-    <h2 id={id} className={cn(styles.h2, "flex items-center gap-3 font-mono text-eyebrow font-medium text-ink-2 uppercase", className)}>
+    <Heading level={level} id={id} className={cn(styles.h2, "flex items-center gap-3 font-mono text-eyebrow font-medium text-ink-2 uppercase", className)}>
       <span className="shrink-0">{children}</span>
       <span aria-hidden className="h-px flex-1 bg-line" />
-    </h2>
+    </Heading>
   );
 }
 
 function PedigreeFigure({ views, ctx, uid }: { views: PersonView[]; ctx: Ctx; uid: string }) {
   return (
     <figure aria-labelledby={`${uid}-ped`} className={styles.pedigree}>
-      <h2 id={`${uid}-ped`} className="sr-only">
+      <Heading level={ctx.hl + 1} id={`${uid}-ped`} className="sr-only">
         Pedigree
-      </h2>
+      </Heading>
       <div
         className={cn(
           styles.pedFrame,
@@ -195,10 +213,10 @@ function PedigreeFigure({ views, ctx, uid }: { views: PersonView[]; ctx: Ctx; ui
 function Source({ r, ctx, subject }: { r: Report; ctx: Ctx; subject: string }) {
   const who = chipWho(r, ctx.audience, ctx.tree.patientName);
   const date = r.source === "record" ? r.record?.recordedDate : r.reportedAt;
-  if (!ctx.provenance) return <SourceChip kind={r.source} who={who} date={date} className={styles.chip} />;
+  if (!ctx.provenance) return <SourceChip kind={r.source} who={who} date={date} system={r.record?.system} className={styles.chip} />;
   return (
     <ProvenancePopover
-      label={sourceChipText(r.source, who, date)}
+      label={sourceChipText(r.source, who, date, r.record?.system)}
       subject={subject}
       kind={r.source}
       entries={provEntries([r], ctx.audience, ctx.tree.patientName)}
@@ -221,7 +239,7 @@ function PatientBody({ ctx, views, relatives, uid }: { ctx: Ctx; views: PersonVi
       <PedigreeFigure views={views} ctx={ctx} uid={uid} />
 
       <section aria-labelledby={`${uid}-know`} className={styles.know}>
-        <SectionTitle id={`${uid}-know`}>What we know</SectionTitle>
+        <SectionTitle level={ctx.hl + 1} id={`${uid}-know`}>What we know</SectionTitle>
         {withInfo.length ? (
           <ul className="mt-2">
             {withInfo.map((v) => (
@@ -240,7 +258,7 @@ function PatientBody({ ctx, views, relatives, uid }: { ctx: Ctx; views: PersonVi
 
       {todo.length ? (
         <section aria-labelledby={`${uid}-todo`} className={styles.todo}>
-          <SectionTitle id={`${uid}-todo`}>Still to confirm</SectionTitle>
+          <SectionTitle level={ctx.hl + 1} id={`${uid}-todo`}>Still to confirm</SectionTitle>
           <ul className="mt-3 flex flex-col gap-3">
             {(groupNotAsked ? todo.filter((v) => !notAsked(v)) : todo).map((v) => (
               <li key={v.person.id} data-row={v.person.id} className={cn(styles.todoItem, "grid grid-cols-[22px_1fr] items-start gap-x-3 text-small text-ink-2")}>
@@ -273,7 +291,7 @@ function PatientBody({ ctx, views, relatives, uid }: { ctx: Ctx; views: PersonVi
 
       {own.length ? (
         <section aria-labelledby={`${uid}-own`} className={styles.own}>
-          <SectionTitle id={`${uid}-own`}>Your own history</SectionTitle>
+          <SectionTitle level={ctx.hl + 1} id={`${uid}-own`}>Your own history</SectionTitle>
           <ul className="mt-3 flex flex-col gap-2 text-small">
             {own.map((r) => (
               <li key={r.id} className="flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -286,7 +304,7 @@ function PatientBody({ ctx, views, relatives, uid }: { ctx: Ctx; views: PersonVi
       ) : null}
 
       <section aria-labelledby={`${uid}-ask`} className={styles.ask}>
-        <SectionTitle id={`${uid}-ask`}>Questions you could ask</SectionTitle>
+        <SectionTitle level={ctx.hl + 1} id={`${uid}-ask`}>Questions you could ask</SectionTitle>
         <ol className={cn(styles.askList, "mt-3 grid gap-x-8 gap-y-2.5 text-small text-ink-2 sm:grid-cols-2")}>
           {QUESTIONS.map((q, i) => (
             <li key={q} className="grid grid-cols-[1.75rem_1fr] items-baseline">
@@ -390,10 +408,10 @@ function ClinicianBody({ ctx, views, uid }: { ctx: Ctx; views: PersonView[]; uid
   return (
     <div className={cn(styles.body, styles.clinicianBody, "mt-8 flex flex-col gap-9")}>
       <section aria-labelledby={`${uid}-review`} className={cn(styles.review, "rounded-r-md border-l-[3px] border-ink bg-mist px-5 py-4 sm:px-6 sm:py-5")}>
-        <h2 id={`${uid}-review`} className={cn(styles.reviewTitle, "flex items-center gap-2 font-sans text-ui font-strong text-ink")}>
+        <Heading level={ctx.hl + 1} id={`${uid}-review`} className={cn(styles.reviewTitle, "flex items-center gap-2 font-sans text-ui font-strong text-ink")}>
           <FlagIcon aria-hidden className="size-4" strokeWidth={2.25} />
           For clinician review <span className="font-mono text-eyebrow font-medium text-ink-2">({guideline.length})</span>
-        </h2>
+        </Heading>
         <p className={cn(styles.reviewNote, "mt-1 text-caption text-ink-2")}>
           Family-history criteria named in cardiology guidelines, matched to what was reported. For the clinician to interpret; not a diagnosis or a
           risk score.
@@ -425,7 +443,9 @@ function ClinicianBody({ ctx, views, uid }: { ctx: Ctx; views: PersonView[]; uid
         ) : null}
         {noted.length ? (
           <div className={cn(styles.noted, "mt-2 border-t border-ink/12 pt-3")}>
-            <h3 className="font-mono text-eyebrow font-medium text-ink-3 uppercase">Also noted · no guideline criterion</h3>
+            <Heading level={ctx.hl + 2} className="font-mono text-eyebrow font-medium text-ink-3 uppercase">
+              Also noted · no guideline criterion
+            </Heading>
             <ul className="mt-1.5 flex flex-col gap-1 text-small text-ink-2">
               {noted.map((f) => (
                 <li key={f.personId + f.title}>
@@ -439,7 +459,7 @@ function ClinicianBody({ ctx, views, uid }: { ctx: Ctx; views: PersonView[]; uid
 
       {clarify.length ? (
         <section aria-labelledby={`${uid}-gaps`} className={styles.gaps}>
-          <SectionTitle id={`${uid}-gaps`}>Gaps and conflicts</SectionTitle>
+          <SectionTitle level={ctx.hl + 1} id={`${uid}-gaps`}>Gaps and conflicts</SectionTitle>
           <ul className={cn(styles.gapList, "mt-3 flex flex-col gap-2.5")}>
             {clarify.map((f) => (
               <GapRow key={f.personId + f.title} f={f} v={byId.get(f.personId)} />
@@ -451,7 +471,7 @@ function ClinicianBody({ ctx, views, uid }: { ctx: Ctx; views: PersonView[]; uid
       <PedigreeFigure views={views} ctx={ctx} uid={uid} />
 
       <section aria-labelledby={`${uid}-table`} className={styles.tableWrap}>
-        <SectionTitle id={`${uid}-table`}>Family history, in chart order</SectionTitle>
+        <SectionTitle level={ctx.hl + 1} id={`${uid}-table`}>Family history, in chart order</SectionTitle>
         <FamilyTable rows={rows} ctx={ctx} />
       </section>
     </div>

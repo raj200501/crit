@@ -294,7 +294,7 @@ export function PracticeView() {
               </aside>
               <div className="min-w-0 lg:order-1">
                 <div className="mx-auto max-w-[816px] rounded-paper shadow-paper print:max-w-none print:shadow-none">
-                  <SummaryDocument tree={care} audience="clinician" provenance clinicianReviewedAt={reviewedAt} />
+                  <SummaryDocument tree={care} audience="clinician" provenance clinicianReviewedAt={reviewedAt} headingLevel={3} />
                 </div>
               </div>
             </div>

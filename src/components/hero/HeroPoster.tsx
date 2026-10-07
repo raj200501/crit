@@ -19,6 +19,9 @@ export interface HeroPosterProps {
   dust?: boolean;
   /** paper: names under the glyphs. */
   names?: boolean;
+  /** night: the halos of the lit relatives twinkle (one 6 s sine loop each, motion-safe). Pauses while an ancestor
+   *  `group/inview` carries data-offscreen (landing/InView mode="pause"). Used by the landing's final CTA backdrop. */
+  twinkle?: boolean;
   className?: string;
 }
 
@@ -61,7 +64,7 @@ function grains(model: StoryModel, crisp: (id: string) => number) {
   return out.map((g) => ({ x: f3(g.x), y: f3(g.y), r: f3(g.r), o: f3(g.o) }));
 }
 
-export default function HeroPoster({ model, theme = "night", keyframe, invites = false, dust = true, names = false, className }: HeroPosterProps) {
+export default function HeroPoster({ model, theme = "night", keyframe, invites = false, dust = true, names = false, twinkle = false, className }: HeroPosterProps) {
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const k = keyframe ?? model.keyframes.length - 1;
   const kf = model.keyframes[k];
@@ -137,14 +140,23 @@ export default function HeroPoster({ model, theme = "night", keyframe, invites =
             })
         : null}
 
-      {model.nodes.map((n) => {
+      {model.nodes.map((n, i) => {
         const s = kf.states[n.id];
         const x = f3(n.pos[0]);
         const y = f3(-n.pos[1]);
         const lit = !n.isSelf && (s === "known" || s === "conflicting");
         return (
           <g key={n.id}>
-            {night && lit ? <circle cx={x} cy={y} r={0.62} fill={`url(#${uid}-halo)`} /> : null}
+            {night && lit ? (
+              <circle
+                cx={x}
+                cy={y}
+                r={0.62}
+                fill={`url(#${uid}-halo)`}
+                className={twinkle ? "motion-safe:animate-pulse group-data-offscreen/inview:[animation-play-state:paused]" : undefined}
+                style={twinkle ? { animationDuration: "6s", animationTimingFunction: "var(--ease-in-out-sine)", animationDelay: `${i * -1.4}s` } : undefined}
+              />
+            ) : null}
             {night && n.isSelf ? <circle cx={x} cy={y} r={0.55} fill={`url(#${uid}-self)`} /> : null}
             <PedigreeGlyph
               as="g"

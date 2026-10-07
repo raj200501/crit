@@ -2,7 +2,6 @@
 
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/components/ui/cn";
-import { DOC_BRIDGE } from "./docBridge";
 
 type Box = { top: number; left: number; width: number; height: number };
 
@@ -161,9 +160,9 @@ export function AnnotatedDocument({ children, label, className }: { children: Re
   return (
     <div className={cn("grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-14 xl:grid-cols-[minmax(0,1fr)_24rem]", className)}>
       <figure ref={frameRef} aria-label={label} className="relative min-w-0">
-        {/* A picture of the page: `label`, the callouts and the link to the live document describe it, so its own <h1>
-            and sections stay out of this page's outline (and its text can't be focused or selected by accident). */}
-        <div ref={docRef} aria-hidden inert className={cn("relative rounded-paper bg-white shadow-paper select-none [&_article]:border-0! [&_article]:shadow-none!", DOC_BRIDGE)}>
+        {/* The real, readable document. The caller renders it with a headingLevel that fits this page's outline
+            (SummaryDocument headingLevel={3} under the section's h2), so screen readers get it in place. */}
+        <div ref={docRef} className="relative rounded-paper bg-white shadow-paper [&_article]:border-0! [&_article]:shadow-none!">
           {children}
         </div>
         <div aria-hidden className="pointer-events-none absolute inset-0">

@@ -37,7 +37,7 @@ function Voice({ r, side, onRemove }: { r: Report; side: "a" | "b"; onRemove?: (
       <p className="mt-1.5 text-ui font-strong text-fg">{factLine(r)}</p>
       {r.note ? <p className="mt-1 text-small text-ink-2 italic">&ldquo;{r.note}&rdquo;</p> : null}
       <div className="mt-auto flex min-h-9 items-center gap-2 pt-2.5">
-        <SourceChip kind={r.source} who={chipWho(r)} date={r.source === "record" ? r.record?.recordedDate : undefined} />
+        <SourceChip kind={r.source} who={chipWho(r)} date={r.source === "record" ? r.record?.recordedDate : undefined} system={r.record?.system} />
         {onRemove ? <IconButton label="Remove this entry" size="sm" icon={<X />} onClick={onRemove} className="ml-auto max-lg:size-11" /> : null}
       </div>
     </article>

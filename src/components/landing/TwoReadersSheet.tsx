@@ -4,7 +4,6 @@ import { useState, type ReactNode } from "react";
 import { BorderBeam } from "@/components/ui/BorderBeam";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { FadeSwap } from "./FadeSwap";
-import { DOC_BRIDGE } from "./legacyBridge";
 
 type Reader = "patient" | "clinician";
 const OPTIONS = [
@@ -38,7 +37,7 @@ export function TwoReadersSheet({ patientDoc, clinicianDoc }: { patientDoc: Reac
           className="pointer-events-none absolute inset-x-[8%] -bottom-10 h-40 rounded-full bg-[radial-gradient(closest-side,rgb(127_230_197/0.45),transparent)] blur-2xl"
         />
         <BorderBeam mode="loop" radius={12} className="relative shadow-paper" contentClassName="overflow-hidden bg-white">
-          <FadeSwap id={reader} animate={switched} className={`${DOC_BRIDGE} [&_article]:border-transparent`}>
+          <FadeSwap id={reader} animate={switched} className="[&_article]:border-transparent">
             {reader === "patient" ? patientDoc : clinicianDoc}
           </FadeSwap>
         </BorderBeam>

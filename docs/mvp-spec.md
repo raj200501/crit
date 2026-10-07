@@ -32,7 +32,7 @@ Build spec for the working prototype, hosted free on Vercel. As of 2 October 202
 | `qrcode` | 1.5.4 | QR for the read-only summary link |
 | `eslint` / `eslint-config-next` | 9.39.5 / 16.3.8 | |
 | `tsx` | ^4.23 | Runs `tests/*.test.ts` with `node --test` |
-| Styling | CSS modules + `globals.css`; fonts through `next/font/google` (self-hosted at build, so no third-party requests at runtime) | |
+| Styling | Tailwind CSS v4 + CSS modules for print (the summary) and the hero stage; fonts through `next/font/google` (self-hosted at build, so no third-party requests at runtime) | |
 | Runtime | Node `>=20` (`engines`). Vercel's default Node 24.x is fine. Every route is static | |
 
 **Not included, on purpose:** database, ORM, auth library, email or SMS provider, analytics, error-tracking SDKs, LLM calls, and any third-party script.

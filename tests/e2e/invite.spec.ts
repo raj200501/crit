@@ -341,15 +341,18 @@ for (const viewport of [
   });
 }
 
-// AnswerForm belongs to P5; its sticky actions (DESIGN §11.4 `stickyActions`) arrive with P5's API. Runs once that lands.
-const P5_ANSWER_FORM = fs.readFileSync(path.resolve(__dirname, "../../src/components/AnswerForm.tsx"), "utf8").includes("stickyActions");
+// The self step's answer form (P5's AnswerForm with `variant="page"` and `stickyActions`, DESIGN §11.4) sits under the
+// portal card. Once the form is on screen, its Next stays pinned to the bottom of the viewport while the rest of the long
+// form is still below the fold.
 test.describe("phone layout: the self step", () => {
   test.use(MOBILE);
   test("the answer form's Next sticks to the bottom of the screen", async ({ page }) => {
-    test.fixme(!P5_ANSWER_FORM, "needs P5's AnswerForm `variant`/`stickyActions` (DESIGN §11.4); InviteFlow already passes them");
     await gotoApp(page, luisInvite());
     await page.getByRole("checkbox", { name: /18 or older/ }).check();
     await page.getByRole("button", { name: "Start", exact: true }).click();
+    await page.getByRole("heading", { name: "Or answer yourself" }).evaluate((el) => el.scrollIntoView({ block: "start" }));
+    const formBottom = await page.locator("main form").first().evaluate((f) => f.getBoundingClientRect().bottom);
+    expect(formBottom, "the form runs past the fold").toBeGreaterThan(MOBILE.viewport.height);
     await expect(page.getByRole("button", { name: "Next", exact: true })).toBeInViewport({ ratio: 1 });
   });
 });

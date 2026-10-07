@@ -32,6 +32,10 @@ export const ROUTES = [
   "/practice",
 ] as const;
 
+/** A CSS selector for an element id. Heading slugs such as "2-privacy-and-compliance" start with a digit, which
+ *  `#…` can't select; `[id="…"]` always works. */
+export const byId = (id: string) => `[id="${id.replace(/["\\]/g, "\\$&")}"]`;
+
 /** Tests that need the public SMART sandbox run only with E2E_SANDBOX=1 (and are tagged @sandbox). */
 export const SANDBOX = process.env.E2E_SANDBOX === "1";
 /** Chromium launch options for @sandbox tests: outbound HTTPS goes through the proxy; localhost stays direct. */

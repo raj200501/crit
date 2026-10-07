@@ -671,7 +671,11 @@ export function HeroStage({ model, children }: HeroStageProps) {
             />
           </div>
 
-          <ol className={styles.chapters} aria-label="How it works, in four chapters">
+          {/* The chapter cards are h3s; this sr-only h2 keeps the page outline from jumping h1 → h3. */}
+          <h2 id="hero-chapters-title" className="sr-only">
+            How it works, in four chapters
+          </h2>
+          <ol className={styles.chapters} aria-labelledby="hero-chapters-title">
             {chapterList.map((c, i) => {
               const p = posterForChapter(model, i);
               return (

@@ -1,5 +1,5 @@
 /* SummaryDocument: phone table layout + print (one Letter page). Screen styling is Tailwind in the component.
-   Tokens only (var(--color-…)); no @apply. Class names avoid the legacy-layer hooks (…__paper, …__questions). */
+   Tokens only (var(--color-…)); no @apply. */
 
 .sheet {
   /* the sheet sets its own rhythm, whatever page it sits on */

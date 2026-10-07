@@ -18,6 +18,8 @@ const eslintConfig = defineConfig([
     // Playwright output.
     "test-results/**",
     "playwright-report/**",
+    // Agent worktrees and settings (each worktree lints itself).
+    ".claude/**",
   ]),
 ]);
 

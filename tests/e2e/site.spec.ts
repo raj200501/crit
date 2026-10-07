@@ -173,6 +173,11 @@ test.describe("/for-practices", () => {
     await expect(callouts.first()).toHaveAttribute("aria-pressed", "false");
     await callouts.nth(3).focus();
     await expect(callouts.nth(3)).toHaveAttribute("aria-pressed", "true");
+    // the annotated sheet is the real, readable document, titled at h3 under the section's h2
+    const sheet = page.locator("#on-the-page").getByRole("article", { name: "Pre-visit family history summary" });
+    await expect(sheet).toBeVisible();
+    await expect(sheet.getByRole("heading", { level: 3, name: "Alex" })).toBeVisible();
+    await expect(sheet.getByRole("heading", { level: 4, name: /For clinician review/ })).toBeVisible();
     for (const t of ["Print", "QR or read-only link at check-in", "FHIR FamilyMemberHistory"]) await expect(page.getByRole("heading", { level: 3, name: t, exact: true })).toBeVisible();
     await expect(page.locator("main")).toContainText("Built to be read in about a minute. That’s a target we’re testing with clinicians, not a result.");
     await expect(page.locator("main")).toContainText(FDA_LINE.text);

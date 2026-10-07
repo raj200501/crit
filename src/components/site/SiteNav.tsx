@@ -112,7 +112,7 @@ export function SiteNav() {
                   href={l.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "relative inline-flex h-9 items-center rounded-full px-3 text-small font-medium transition-colors duration-(--dur-hover)",
+                    "relative inline-flex h-9 items-center rounded-full px-3 text-small font-medium whitespace-nowrap transition-colors duration-(--dur-hover)",
                     active ? "text-fg" : "text-fg-2 hover:text-fg",
                   )}
                 >
@@ -123,7 +123,7 @@ export function SiteNav() {
             );
           })}
         </ul>
-        <Button href={SITE.demoHref} size="sm" className="hidden lg:inline-flex">
+        <Button href={SITE.demoHref} size="sm" className="hidden shrink-0 whitespace-nowrap lg:inline-flex">
           Try the demo family
         </Button>
         <IconButton
