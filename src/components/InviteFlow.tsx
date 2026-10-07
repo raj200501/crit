@@ -1,18 +1,26 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { Info } from "lucide-react";
+import { addTransitionType, startTransition, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { decodePayload, replyUrl, type InvitePayload, type ReplyPayload } from "@/lib/share";
 import { useHash } from "@/lib/useHash";
 import { clearPortalResult, peekPortalResult, SANDBOX_LABEL, startMyChartConnect, type PortalResult } from "@/lib/smart";
 import { actions, deviceId, getTree, hasSavedTree } from "@/lib/store";
-import type { Report } from "@/lib/types";
 import AnswerForm, { type Answer } from "./AnswerForm";
-import { Check, Heart, Lock, Logo } from "./icons";
-import styles from "./InviteFlow.module.css";
+import { CheckAnswers } from "./relative/CheckAnswers";
+import { describeAnswer, type Draft } from "./relative/describe";
+import { Frame } from "./relative/Frame";
+import { OthersList } from "./relative/OthersList";
+import { PortalOptionCard } from "./relative/PortalOptionCard";
+import { ProgressHeader } from "./relative/ProgressHeader";
+import { RecordPicker } from "./relative/RecordPicker";
+import { SentScreen } from "./relative/SentScreen";
+import { ActionHint, STEP_BACK, STEP_FORWARD, StepLayout, StepTitle, StepTransition } from "./relative/StepLayout";
+import { Welcome } from "./relative/Welcome";
+import { Button } from "./ui/Button";
+import { TickCard } from "./relative/TickCard";
 
 type Step = "welcome" | "self" | "portal" | "others" | "review" | "sent";
-type Draft = Omit<Report, "id">;
 
 interface Saved {
   step: Step;
@@ -26,6 +34,19 @@ interface Saved {
 
 const keyFor = (p: InvitePayload) => `fht:invite:${p.t}:${p.p}`;
 
+/** Progress labels for the four numbered steps (welcome and sent have no progress header). */
+const PROGRESS: Partial<Record<Step, [number, string]>> = {
+  self: [1, "About you"],
+  portal: [2, "Pick what to share"],
+  others: [3, "Others you know"],
+  review: [4, "Check and send"],
+};
+
+// P5's AnswerForm adds `variant` and `stickyActions` (DESIGN §11.4). Spread, so this compiles against today's AnswerForm
+// (which ignores them) and lights up when P5's API lands, with no change here.
+const PAGE_FORM: Record<string, unknown> = { variant: "page" };
+const PAGE_FORM_STICKY: Record<string, unknown> = { variant: "page", stickyActions: true };
+
 export default function InviteFlow() {
   const hash = useHash();
   const payload = useMemo<InvitePayload | null | undefined>(() => {
@@ -34,15 +55,26 @@ export default function InviteFlow() {
     return p && p.v === 1 ? p : null;
   }, [hash]);
 
-  if (payload === undefined) return <Frame />;
+  if (payload === undefined) {
+    return (
+      <Frame>
+        <p className="m-auto py-16 text-small text-fg-3 motion-safe:animate-[fade-up_560ms_var(--ease-out-expo)_400ms_both]">Opening your invite&hellip;</p>
+      </Frame>
+    );
+  }
   if (payload === null) {
     return (
       <Frame>
-        <h1 className={styles.h1}>This link doesn&rsquo;t look complete</h1>
-        <p className={styles.lead}>Ask the person who sent it to copy the whole link again, including everything after the #.</p>
-        <Link className="btn btn-secondary" href="/">
-          What is Family Health Tree?
-        </Link>
+        <div className="flex flex-col items-start gap-4 py-10">
+          <span aria-hidden className="grid size-12 place-items-center rounded-full bg-mist text-fg-2">
+            <Info className="size-6" strokeWidth={1.75} />
+          </span>
+          <StepTitle>This link doesn&rsquo;t look complete</StepTitle>
+          <p className="text-fg-2">Ask the person who sent it to copy the whole link again, including everything after the #.</p>
+          <Button variant="secondary" href="/" className="mt-2">
+            What is Family Health Tree?
+          </Button>
+        </div>
       </Frame>
     );
   }
@@ -61,6 +93,7 @@ function restore(payload: InvitePayload): Required<Saved> & { portal: PortalResu
   const link = saved?.link ?? "";
   let step: Step = portal ? "portal" : (saved?.step ?? "welcome");
   if (step === "sent" && !link) step = "review"; // never show the thank-you step without a link to send
+  if (step === "portal" && !portal) step = "self"; // the fetched record is gone (e.g. "Answer myself instead" in another tab)
   return { step, drafts: saved?.drafts ?? [], done: saved?.done ?? [], link, sameBrowser: !!saved?.sameBrowser, portal };
 }
 
@@ -76,27 +109,66 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
   const [adult, setAdult] = useState(init.step !== "welcome");
   const [confirmShare, setConfirmShare] = useState(false);
   const [sameBrowser, setSameBrowser] = useState(init.sameBrowser);
+  /** Set by a "Change" on the check-answers screen: the edited step returns straight to review. */
+  const [changing, setChanging] = useState<string | null>(null);
 
-  useEffect(() => {
+  // A layout effect, so the save lands in the same commit: passive effects can wait for a step's view transition to finish,
+  // and a reload in that window would otherwise restore the previous step.
+  useLayoutEffect(() => {
     const saved: Saved = { step, drafts, done, link: replyLink, sameBrowser };
     sessionStorage.setItem(keyFor(payload), JSON.stringify(saved));
   }, [payload, step, drafts, done, replyLink, sameBrowser]);
+
+  // A new screen starts at the top with focus on its heading (or on the card a "Change" link opened). Layout effect, so it
+  // happens before the view transition captures the new screen.
+  const firstRender = useRef(true);
+  useLayoutEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    const target = document.querySelector<HTMLElement>("[data-step-focus]") ?? document.querySelector<HTMLElement>("[data-step-heading]");
+    window.scrollTo(0, 0);
+    target?.focus({ preventScroll: true });
+    if (target?.hasAttribute("data-step-focus")) target.scrollIntoView({ block: "center" });
+  }, [step]);
 
   const me = payload.l;
   const asker = payload.n;
   const now = () => new Date().toISOString();
   const base = { reportedBy: me, reportedById: payload.p };
+  const selfDrafts = drafts.filter((d) => d.personId === payload.p);
+  const selfDeclined = selfDrafts.some((d) => d.kind === "declined");
+
+  /** Every step change goes through here: a transition tagged with its direction, so the screens slide (§12.6). */
+  const go = (next: Step, dir: typeof STEP_FORWARD | typeof STEP_BACK = STEP_FORWARD) => {
+    startTransition(() => {
+      addTransitionType(dir);
+      setStep(next);
+    });
+  };
+  /** After the self answers: others (if there's anyone to ask about), else review. A "Change" returns to review. */
+  const afterSelf = (declined: boolean) => {
+    if (changing) {
+      setChanging(null);
+      go("review");
+    } else go(declined || payload.a.length === 0 ? "review" : "others");
+  };
 
   const addSelf = (answers: Answer[]) => {
     const own: Draft[] = answers.map((a) => ({ ...a, ...base, personId: payload.p, source: "self", reportedAt: now() }));
     setDrafts((d) => [...d.filter((x) => !(x.personId === payload.p && x.source === "self")), ...own]);
-    setStep(answers[0]?.kind === "declined" || payload.a.length === 0 ? "review" : "others");
+    afterSelf(answers[0]?.kind === "declined");
   };
 
   const addAbout = (personId: string, answers: Answer[]) => {
     const about: Draft[] = answers.map((a) => ({ ...a, ...base, personId, source: "relative", reportedAt: now() }));
     setDrafts((d) => [...d.filter((x) => !(x.personId === personId && x.source === "relative")), ...about]);
     setDone((d) => [...new Set([...d, personId])]);
+    if (changing === personId) {
+      setChanging(null);
+      go("review");
+    }
   };
 
   const connect = async () => {
@@ -118,387 +190,194 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
     const imported = same ? actions.importReply(reply) : null;
     setSameBrowser(!!imported && !imported.error);
     setReplyLink(replyUrl(window.location.origin, reply));
-    setStep("sent");
+    go("sent");
   };
 
-  return (
-    <Frame asker={asker}>
-      {step === "welcome" ? (
-        <section className={styles.stack}>
-          <p className="kicker">For {me}</p>
-          <h1 className={styles.h1}>
-            {asker} is getting ready for a {payload.s ?? "doctor’s visit"} and asked about the family&rsquo;s heart health.
-          </h1>
-          <p className={styles.lead}>
-            A few questions about you{payload.a.length ? ` and ${payload.a.length === 1 ? "one other relative" : "a few relatives"} you might know about` : ""}.
-            About 2 minutes. Skip anything you don&rsquo;t know.
-          </p>
-          <ul className={styles.promises}>
-            <li>
-              <Lock size={14} /> Your answers go to {asker}, who may share a summary with their cardiology team. Nothing is stored on our servers.
-            </li>
-            <li>
-              <Check size={14} /> You choose what to share, and &ldquo;I&rsquo;d rather not&rdquo; is always an option.
-            </li>
-            <li>
-              <Heart size={14} /> This helps the doctor ask better questions. It doesn&rsquo;t diagnose anyone.
-            </li>
-          </ul>
-          <label className={styles.confirm}>
-            <input type="checkbox" checked={adult} onChange={(e) => setAdult(e.target.checked)} />
-            <span>I&rsquo;m 18 or older.</span>
-          </label>
-          <button className="btn btn-primary btn-block" onClick={() => setStep("self")} disabled={!adult}>
-            Start
-          </button>
-          <button
-            className="btn btn-ghost btn-block"
-            onClick={() => {
-              setDrafts([{ ...base, kind: "declined", personId: payload.p, source: "self", reportedAt: now() }]);
-              setStep("review");
-            }}
-          >
-            I&rsquo;d rather not share
-          </button>
-        </section>
-      ) : null}
+  const back = () => {
+    if (step === "portal") {
+      clearPortalResult();
+      setPortal(null);
+    }
+    if (changing) {
+      setChanging(null);
+      go("review", STEP_BACK);
+      return;
+    }
+    if (step === "self") go("welcome", STEP_BACK);
+    else if (step === "portal" || step === "others") go("self", STEP_BACK);
+    else if (step === "review") go(!adult ? "welcome" : payload.a.length && !selfDeclined ? "others" : "self", STEP_BACK);
+  };
 
-      {step === "self" ? (
-        <section className={styles.stack}>
-          <p className="kicker">About you</p>
-          <div className={styles.portalCard}>
-            <div>
-              <b>Faster: share from MyChart</b>
-              <p>Sign in to your patient portal and pick the one fact to share. Your full chart stays private.</p>
-              <small>Demo uses the public SMART on FHIR sandbox with a made-up patient.</small>
-            </div>
-            <button className="btn btn-accent" onClick={connect} disabled={connecting}>
-              {connecting ? "Opening…" : "Connect MyChart"}
-            </button>
-            {connectError ? (
-              <>
-                <p className={styles.error}>{connectError}</p>
-                <button
-                  className="btn btn-secondary"
-                  type="button"
-                  onClick={() => {
-                    setPortal(simulatedRecord());
-                    setStep("portal");
-                  }}
-                >
-                  Use a simulated record (sandbox offline)
-                </button>
-              </>
-            ) : null}
-          </div>
-          <p className={styles.or}>or answer yourself</p>
-          <AnswerForm subject="you" self allowDecline submitLabel="Next" onSubmit={addSelf} />
-        </section>
-      ) : null}
+  const progress = PROGRESS[step];
 
-      {step === "portal" && portal ? (
-        <PortalPicker
-          portal={portal}
-          onShare={(picked) => {
-            const recs: Draft[] = picked.map((c) => ({
-              ...base,
-              personId: payload.p,
-              kind: "condition",
-              condition: c.display,
-              ageAtOnset: c.ageAtOnset,
-              source: "record",
-              reportedAt: now(),
-              record: {
-                system: portal.simulated ? "Simulated portal record" : SANDBOX_LABEL,
-                reference: `Condition/${c.id}`,
-                code: c.code,
-                recordedDate: c.recordedDate?.slice(0, 10),
-                retrievedAt: now(),
-              },
-            }));
-            setDrafts((d) => [...d.filter((x) => !(x.personId === payload.p && (x.source === "self" || x.source === "record"))), ...recs]);
-            clearPortalResult();
-            setPortal(null);
-            setStep(payload.a.length ? "others" : "review");
-          }}
-          onCancel={() => {
-            clearPortalResult();
-            setPortal(null);
-            setStep("self");
-          }}
-        />
-      ) : null}
-
-      {step === "others" ? (
-        <section className={styles.stack}>
-          <p className="kicker">Anyone else you know about?</p>
-          <h1 className={styles.h2}>{asker}&rsquo;s tree has a few people you might know better.</h1>
-          <p className={styles.lead}>Optional. Add what you remember, even roughly.</p>
-          <div className={styles.people}>
-            {payload.a.map((o) => (
-              <OtherPerson
-                key={o.id}
-                label={o.l}
-                answered={done.includes(o.id)}
-                summary={drafts.filter((d) => d.personId === o.id && d.source === "relative")}
-                onAnswer={(a) => addAbout(o.id, a)}
-              />
-            ))}
-          </div>
-          <button className="btn btn-primary btn-block" onClick={() => setStep("review")}>
-            Review and send
-          </button>
-        </section>
-      ) : null}
-
-      {step === "review" ? (
-        <section className={styles.stack}>
-          <p className="kicker">Review</p>
-          <h1 className={styles.h2}>Here&rsquo;s what {asker} will see</h1>
-          <ul className={styles.review}>
-            {drafts.length === 0 ? <li className="muted">Nothing to send yet.</li> : null}
-            {drafts.map((d, i) => (
-              <li key={i}>
-                <span className={styles.who}>{d.personId === payload.p ? "You" : (payload.a.find((a) => a.id === d.personId)?.l ?? "Relative")}</span>
-                <span>
-                  {describe(d)}
-                  {d.source === "record" ? (
-                    <span className="chip chip-record" style={{ marginLeft: 8 }}>
-                      <Check size={11} /> from record
-                    </span>
-                  ) : null}
-                  {d.note && d.kind !== "declined" ? <q className={styles.reviewNote}>{d.note}</q> : null}
-                </span>
-              </li>
-            ))}
-          </ul>
-          {drafts.length ? (
-            <label className={styles.confirm}>
-              <input type="checkbox" checked={confirmShare} onChange={(e) => setConfirmShare(e.target.checked)} />
-              <span>Share these answers with {asker}.</span>
-            </label>
-          ) : null}
-          <button className="btn btn-primary btn-block" onClick={send} disabled={drafts.length === 0 || !confirmShare}>
-            Send to {asker}
-          </button>
-          <button
-            className="btn btn-ghost btn-block"
-            onClick={() => {
-              setDrafts([]);
-              setDone([]);
-              setStep("welcome");
-            }}
-          >
-            Start over
-          </button>
-        </section>
-      ) : null}
-
-      {step === "sent" ? <Sent asker={asker} link={replyLink} sameBrowser={sameBrowser} /> : null}
-    </Frame>
-  );
-}
-
-function describe(d: Draft) {
-  if (d.kind === "declined") return "Prefers not to share";
-  if (d.kind === "dont-know") return "Doesn’t know";
-  if (d.kind === "no-history") return "No heart history";
-  return `${d.condition}${d.ageAtOnset != null ? `, ${d.approximate ? "about " : ""}age ${d.ageAtOnset}` : ""}`;
-}
-
-function PortalPicker({ portal, onShare, onCancel }: { portal: PortalResult; onShare: (c: PortalResult["conditions"]) => void; onCancel: () => void }) {
-  const heart = portal.conditions.filter((c) => c.cardiac);
-  const rest = portal.conditions.filter((c) => !c.cardiac);
-  const [picked, setPicked] = useState<Set<string>>(() => new Set(heart.map((c) => c.id)));
-  const [showRest, setShowRest] = useState(false);
-  const [ages, setAges] = useState<Record<string, string>>(() =>
-    Object.fromEntries(portal.conditions.map((c) => [c.id, c.ageAtOnset != null ? String(c.ageAtOnset) : ""])),
-  );
-  const toggle = (id: string) =>
-    setPicked((s) => {
-      const n = new Set(s);
-      if (n.has(id)) n.delete(id);
-      else n.add(id);
-      return n;
-    });
-  const row = (c: PortalResult["conditions"][number]) => (
-    <div key={c.id} className={`${styles.portalRow} ${picked.has(c.id) ? styles.portalOn : ""}`}>
-      <label className={styles.portalMain}>
-        <input type="checkbox" checked={picked.has(c.id)} onChange={() => toggle(c.id)} />
-        <span>
-          <b>{c.display}</b>
-          <small>
-            {c.onset ? `On the problem list since ${c.onset.slice(0, 4)}` : "No date in the record"}
-            {c.ageAtOnset != null ? ` (age ${c.ageAtOnset})` : ""}
-          </small>
-        </span>
-        {c.cardiac ? <span className="chip chip-accent">heart</span> : null}
-      </label>
-      {picked.has(c.id) ? (
-        <label className={styles.portalAge}>
-          How old were you when it started?
-          <input
-            className="input"
-            inputMode="numeric"
-            value={ages[c.id] ?? ""}
-            onChange={(e) => setAges((a) => ({ ...a, [c.id]: e.target.value.replace(/\D/g, "").slice(0, 3) }))}
-            aria-label={`Age when ${c.display} started`}
-          />
-        </label>
-      ) : null}
-    </div>
-  );
-  return (
-    <section className={styles.stack}>
-      <p className="kicker">From your record</p>
-      <h1 className={styles.h2}>Pick what to share</h1>
-      <p className={styles.lead}>
-        {portal.simulated ? (
-          <>
-            <b>Simulated record</b> (the sandbox is offline, so this is made-up data).
-          </>
-        ) : (
-          <>
-            Connected to {SANDBOX_LABEL} as <b>{portal.patientName}</b> (a made-up sandbox patient).
-          </>
-        )}{" "}
-        Only what you tick is shared. Nothing else from the chart leaves this page.
-      </p>
-      <div className={styles.portalList}>
-        {heart.length ? (
-          heart.map(row)
-        ) : (
-          <p className="muted">No heart-related conditions on this problem list. That doesn&rsquo;t mean none happened; you can answer yourself instead.</p>
-        )}
-      </div>
-      {rest.length ? (
-        <button className="btn btn-ghost btn-sm" onClick={() => setShowRest((s) => !s)}>
-          {showRest ? "Hide" : "Show"} {rest.length} other conditions in the record
-        </button>
-      ) : null}
-      {showRest ? <div className={styles.portalList}>{rest.map(row)}</div> : null}
-      <p className={styles.hintSmall}>
-        A record date is often when a problem was added to the list, not when it was diagnosed. Fix the age if you know better.
-      </p>
-      <button
-        className="btn btn-primary btn-block"
-        disabled={picked.size === 0}
-        onClick={() =>
-          onShare(
-            portal.conditions
-              .filter((c) => picked.has(c.id))
-              .map((c) => {
-                const n = Number.parseInt(ages[c.id] ?? "", 10);
-                return { ...c, ageAtOnset: Number.isFinite(n) && n >= 0 && n < 130 ? n : undefined };
-              }),
-          )
-        }
-      >
-        Share {picked.size} {picked.size === 1 ? "fact" : "facts"}
-      </button>
-      <button className="btn btn-ghost btn-block" onClick={onCancel}>
-        Answer myself instead
-      </button>
-    </section>
-  );
-}
-
-function OtherPerson({ label, answered, summary, onAnswer }: { label: string; answered: boolean; summary: Draft[]; onAnswer: (a: Answer[]) => void }) {
-  const [open, setOpen] = useState(false);
-  const first = label.split(" (")[0];
-  return (
-    <div className={`${styles.person} ${answered ? styles.personDone : ""}`}>
-      <div className={styles.personHead}>
-        <div>
-          <b>{label}</b>
-          {answered ? <small>{summary.map(describe).join(" · ")}</small> : null}
-        </div>
-        {!open ? (
-          <div className={styles.personActions}>
-            <button className="btn btn-secondary btn-sm" onClick={() => setOpen(true)}>
-              {answered ? "Change" : "Add what I know"}
-            </button>
-            {!answered ? (
-              <button className="btn btn-ghost btn-sm" onClick={() => onAnswer([{ kind: "dont-know" }])}>
-                Don&rsquo;t know
-              </button>
-            ) : null}
+  let screen: ReactNode = null;
+  if (step === "welcome") {
+    screen = (
+      <Welcome
+        me={me}
+        asker={asker}
+        visit={payload.s}
+        others={payload.a.length}
+        adult={adult}
+        onAdult={setAdult}
+        onStart={() => go("self")}
+        onDecline={() => {
+          setDrafts([{ ...base, kind: "declined", personId: payload.p, source: "self", reportedAt: now() }]);
+          go("review");
+        }}
+      />
+    );
+  } else if (step === "self") {
+    screen = (
+      <StepLayout title="About you" lead={<>Share one fact from your patient portal, or answer a few questions yourself. Skip anything you don&rsquo;t know.</>}>
+        {selfDrafts.length ? (
+          <div className="flex flex-col gap-3 rounded-lg border border-brand/30 bg-evergreen-50/60 p-4">
+            <p className="text-small text-fg-2">
+              <span className="font-strong text-fg">Your answer so far:</span> {selfDrafts.map(describeAnswer).join(" · ")}
+              {selfDrafts.some((d) => d.source === "record") ? " (from your portal record)" : ""}
+            </p>
+            <Button variant="secondary" fullWidth onClick={() => afterSelf(selfDeclined)}>
+              Keep it and continue
+            </Button>
           </div>
         ) : null}
-      </div>
-      {open ? (
-        <AnswerForm
-          subject={first}
-          compact
-          submitLabel="Save"
-          onSubmit={(a) => {
-            onAnswer(a);
-            setOpen(false);
+        <PortalOptionCard
+          asker={asker}
+          connecting={connecting}
+          error={connectError}
+          onConnect={connect}
+          onSimulate={() => {
+            setPortal(simulatedRecord());
+            go("portal");
           }}
-          onCancel={() => setOpen(false)}
         />
-      ) : null}
-    </div>
-  );
-}
-
-function Sent({ asker, link, sameBrowser }: { asker: string; link: string; sameBrowser: boolean }) {
-  const [copied, setCopied] = useState(false);
-  const message = useMemo(() => `Done! Here are my answers for your family health tree: ${link}`, [link]);
-  return (
-    <section className={styles.stack}>
-      <div className={styles.doneIcon}>
-        <Check size={28} />
-      </div>
-      <h1 className={styles.h1}>Thank you</h1>
-      {sameBrowser ? (
-        <>
-          <p className={styles.lead}>Your answers are in {asker}&rsquo;s tree (demo: same browser).</p>
-          <Link className="btn btn-primary btn-block" href="/tree">
-            Open {asker}&rsquo;s tree
-          </Link>
-        </>
-      ) : (
-        <p className={styles.lead}>
-          Send this link back to {asker}. Opening it adds your answers to their tree. The answers are inside the link itself; nothing is stored on a server.
-        </p>
-      )}
-      <div className={styles.replyBox}>
-        <button
-          className="btn btn-secondary btn-block"
-          onClick={async () => {
-            if (navigator.share) {
-              try {
-                await navigator.share({ text: message });
-                return;
-              } catch {
-                /* fall back to copy */
-              }
-            }
-            await navigator.clipboard?.writeText(message);
-            setCopied(true);
+        <section aria-labelledby="answer-yourself" className="flex flex-col gap-4 border-t border-line pt-6">
+          <h2 id="answer-yourself" className="text-title font-strong text-fg">
+            Or answer yourself
+          </h2>
+          <AnswerForm {...PAGE_FORM_STICKY} subject="you" self allowDecline submitLabel="Next" onSubmit={addSelf} />
+        </section>
+      </StepLayout>
+    );
+  } else if (step === "portal" && portal) {
+    screen = (
+      <RecordPicker
+        portal={portal}
+        asker={asker}
+        onShare={(picked) => {
+          const recs: Draft[] = picked.map((c) => ({
+            ...base,
+            personId: payload.p,
+            kind: "condition",
+            condition: c.display,
+            ageAtOnset: c.ageAtOnset,
+            source: "record",
+            reportedAt: now(),
+            record: {
+              system: portal.simulated ? "Simulated portal record" : SANDBOX_LABEL,
+              reference: `Condition/${c.id}`,
+              code: c.code,
+              recordedDate: c.recordedDate?.slice(0, 10),
+              retrievedAt: now(),
+            },
+          }));
+          setDrafts((d) => [...d.filter((x) => !(x.personId === payload.p && (x.source === "self" || x.source === "record"))), ...recs]);
+          clearPortalResult();
+          setPortal(null);
+          if (changing) {
+            setChanging(null);
+            go("review");
+          } else go(payload.a.length ? "others" : "review");
+        }}
+        onCancel={() => {
+          clearPortalResult();
+          setPortal(null);
+          go("self", STEP_BACK);
+        }}
+      />
+    );
+  } else if (step === "others") {
+    screen = (
+      <StepLayout
+        title={<>{asker}&rsquo;s tree has a few people you might know better.</>}
+        lead="Optional. Add what you remember, even roughly."
+        actions={
+          <Button
+            size="lg"
+            fullWidth
+            onClick={() => {
+              setChanging(null);
+              go("review");
+            }}
+          >
+            Review and send
+          </Button>
+        }
+      >
+        <OthersList people={payload.a} done={done} drafts={drafts} onAnswer={addAbout} initialOpen={changing} formProps={PAGE_FORM} />
+      </StepLayout>
+    );
+  } else if (step === "review") {
+    const declinedOnly = drafts.length > 0 && drafts.every((d) => d.kind === "declined");
+    const canSend = drafts.length > 0 && confirmShare;
+    screen = (
+      <StepLayout
+        title={<>Here&rsquo;s what {asker} will see</>}
+        actions={
+          <>
+            <Button variant="brand" size="lg" fullWidth onClick={send} disabled={!canSend} aria-describedby={canSend ? undefined : "send-hint"}>
+              Send to {asker}
+            </Button>
+            {canSend ? null : (
+              <ActionHint id="send-hint">{drafts.length ? `Tick “Share these answers with ${asker}.” to send.` : "Nothing to send yet."}</ActionHint>
+            )}
+          </>
+        }
+      >
+        {declinedOnly ? (
+          <p className="rounded-md bg-declined-bg px-4 py-3 text-ui text-declined-ink">
+            Got it. {asker} will see that you&rsquo;d rather not share. Nothing else is sent.
+          </p>
+        ) : null}
+        {drafts.length === 0 ? <p className="text-fg-2">Nothing to send yet.</p> : null}
+        <CheckAnswers
+          selfId={payload.p}
+          me={me}
+          people={payload.a}
+          drafts={drafts}
+          onChange={(id) => {
+            setChanging(id);
+            go(id === payload.p ? (adult ? "self" : "welcome") : "others", STEP_BACK);
+          }}
+        />
+        {drafts.length ? (
+          <TickCard checked={confirmShare} onChange={setConfirmShare} title={`Share these answers with ${asker}.`} />
+        ) : null}
+        <Button
+          variant="ghost"
+          size="lg"
+          fullWidth
+          className="-mt-2"
+          onClick={() => {
+            setDrafts([]);
+            setDone([]);
+            setConfirmShare(false);
+            setChanging(null);
+            go("welcome", STEP_BACK);
           }}
         >
-          {copied ? "Copied" : `Send my answers to ${asker}`}
-        </button>
-      </div>
-      <p className={styles.small}>Family Health Tree · a student prototype by Team 709</p>
-    </section>
-  );
-}
+          Start over
+        </Button>
+      </StepLayout>
+    );
+  } else if (step === "sent") {
+    screen = <SentScreen asker={asker} me={me} link={replyLink} sameBrowser={sameBrowser} treeHref={`/tree?person=${encodeURIComponent(payload.p)}`} />;
+  }
 
-function Frame({ children, asker }: { children?: React.ReactNode; asker?: string }) {
   return (
-    <div className={styles.page}>
-      <header className={styles.top}>
-        <Link href="/" className={styles.brand}>
-          <Logo size={20} /> Family Health Tree
-        </Link>
-        {asker ? <span className={styles.for}>for {asker}</span> : null}
-      </header>
-      <div className={styles.banner}>Prototype with made-up data. Please don&rsquo;t enter real health information.</div>
-      <main className={styles.main}>{children}</main>
-    </div>
+    <Frame asker={asker} progress={progress ? <ProgressHeader index={progress[0]} label={progress[1]} onBack={back} /> : null}>
+      <StepTransition step={step}>{screen}</StepTransition>
+    </Frame>
   );
 }
 
