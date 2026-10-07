@@ -64,7 +64,7 @@ function Shell({ step, label, children, cta }: { step?: number; label?: string; 
         {HONESTY.heroPillShort}
       </p>
       <div className="flex h-11 shrink-0 items-center justify-between border-b border-line px-4">
-        <LogoMark size={22} tone="paper" />
+        <LogoMark size={22} tone="paper" surface="white" />
         <span className="text-caption text-ink-3">for {ASKER}</span>
       </div>
       {step ? (

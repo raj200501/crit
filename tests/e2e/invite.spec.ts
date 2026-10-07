@@ -561,7 +561,7 @@ test.describe("callback and incomplete links", () => {
     test(`${route} without a payload keeps the honesty ribbon in <header>`, async ({ page }) => {
       await gotoApp(page, route);
       await expect(page.locator("header [role=note]")).toContainText(HONESTY.ribbon);
-      await expect(page.getByRole("link", { name: "Family Health Tree home" })).toBeVisible();
+      await expect(page.getByRole("link", { name: "Stemma home", exact: true })).toBeVisible();
       await expect(page.locator("main#main")).toHaveCount(1);
     });
   }

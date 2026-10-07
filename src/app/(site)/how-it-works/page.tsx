@@ -23,7 +23,7 @@ import { FLOW, SITE } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "How it works",
-  description: "The product in four steps, then the research behind each choice: patient portals, privacy, clinical criteria and the business.",
+  description: "How Stemma works in four steps, then the research behind each choice: patient portals, privacy, clinical criteria and the business.",
 };
 
 // Every string below is fact-checked against docs/research.md (five research tracks, October 2026). The arrays and the

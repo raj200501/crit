@@ -1,10 +1,12 @@
-# Family Health Tree
+# Stemma
 
-Team 709 · Product Studio prototype. **Live demo: https://family-health-tree-raj-s-projects12.vercel.app**
+**The family health tree.** Team 709 · Product Studio prototype. **Live demo: https://stemmahealth.vercel.app**
 
-Turn "heart problems run in the family" into **who, what, and at what age**, before the cardiology visit. A patient builds a three-generation family health tree, relatives fill in their own branches, every answer keeps its source and its uncertainty, and the patient walks in with a one-page summary the clinician can act on.
+Stemma turns "heart problems run in the family" into **who, what, and at what age**, before the cardiology visit. A patient builds a three-generation family health tree, relatives fill in their own branches, every answer keeps its source and its uncertainty, and the patient walks in with a one-page summary the clinician can act on.
 
 > Student prototype with a made-up demo family. It is not a medical device, it does not diagnose, and it must not be used with real health information.
+
+**Why the name.** A *stemma* is the ancient family-tree diagram. The mark is a pedigree couple whose descent line becomes the Rod of Asclepius, the Greek god of medicine, because in ancient Greece medicine was a family business. (The product was called Family Health Tree until Oct 7, 2026; storage keys, link formats and the FHIR export tag keep their old ids so existing links still work.)
 
 ## What's in the app
 
@@ -61,7 +63,7 @@ Stack: Next.js 16 (App Router), React 19, TypeScript. **Styling: Tailwind CSS v4
 
 ## Deploy (free, Vercel Hobby)
 
-Deployed as the Vercel project `family-health-tree` at https://family-health-tree-raj-s-projects12.vercel.app. Every push to `claude/platform-demo-gif-mnpouw` (the production branch) redeploys. Vercel Authentication covers preview deployments only, so the production URL stays public for relatives and practices opening links.
+Deployed on Vercel at https://stemmahealth.vercel.app (the original address, https://family-health-tree-raj-s-projects12.vercel.app, still works). Every push to `claude/platform-demo-gif-mnpouw` (the production branch) redeploys. Vercel Authentication covers preview deployments only, so the production URL stays public for relatives and practices opening links.
 
 To set it up again elsewhere:
 
@@ -81,7 +83,8 @@ src/components/    ui/ (design-system primitives), brand/, site/ (marketing chro
 src/content/       the shared copy deck (site.ts)
 src/lib/           data model, status derivation, pedigree layout, clinical flags,
                    share links, SMART client, FHIR export, local store
-demo/              the animated demo (HTML) and its GIF/MP4 renders for slides
+public/brand/      Stemma logo PNGs (mark 512 px on transparent and on night; 1200 px lockups for light and dark slides)
+demo/              the animated demo (HTML) and its GIF/MP4 renders for slides (made before the rename)
 slides/            the "What we heard" slide (.pptx/.png) and its generator
 docs/              research write-up (also at /research) and MVP spec
 tests/             unit tests (node:test + tsx) and tests/e2e (Playwright)

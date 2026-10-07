@@ -69,7 +69,7 @@ export default function InviteFlow() {
           <StepTitle>This link doesn&rsquo;t look complete</StepTitle>
           <p className="text-fg-2">Ask the person who sent it to copy the whole link again, including everything after the #.</p>
           <Button variant="secondary" href="/" className="mt-2">
-            What is Family Health Tree?
+            What is Stemma?
           </Button>
         </div>
       </Frame>

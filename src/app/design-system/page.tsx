@@ -17,7 +17,7 @@ export default function DesignSystemPage() {
         <HonestyRibbon />
         <div className="border-b border-line">
           <div className="mx-auto flex h-14 w-full max-w-[1240px] items-center gap-3 px-4 sm:px-6 lg:px-8">
-            <Lockup href="/" size={26} />
+            <Lockup href="/" size={26} surface="white" descriptor="lg" />
             <span className="rounded-xs bg-sunken px-1.5 py-0.5 font-mono text-eyebrow font-medium text-fg-2 uppercase">Design system</span>
           </div>
         </div>

@@ -1,4 +1,4 @@
-# How Family Health Tree would actually work
+# How Stemma would actually work
 
 Team 709, Cornell Product Studio (NYC). Research as of 2 October 2026.
 

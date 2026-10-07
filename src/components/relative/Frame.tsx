@@ -19,7 +19,7 @@ export function Frame({ asker, progress, children }: { asker?: string; progress?
         <header data-shell="relative" className="bg-surface">
           <HonestyRibbon />
           <div className="flex h-14 items-center justify-between gap-3 border-b border-line px-4 sm:px-6">
-            <Lockup href="/" size={24} />
+            <Lockup href="/" size={24} surface="white" />
             {asker ? (
               <p className="flex min-w-0 items-center gap-2 text-small text-fg-2">
                 <AskerMark name={asker} size="sm" />
@@ -35,7 +35,7 @@ export function Frame({ asker, progress, children }: { asker?: string; progress?
           {children}
         </main>
       </Card>
-      <p className="mt-6 hidden text-center text-caption text-fg-3 sm:block">Family Health Tree · a student prototype by Team 709 · No account. No app.</p>
+      <p className="mt-6 hidden text-center text-caption text-fg-3 sm:block">Stemma, the family health tree · a student prototype by Team 709 · No account. No app.</p>
     </div>
   );
 }

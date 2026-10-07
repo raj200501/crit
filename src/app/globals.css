@@ -1,4 +1,4 @@
-/* Family Health Tree design system ("Clearing"). Owned by P1; other packages request changes. */
+/* Stemma design system ("Clearing"). Owned by P1; other packages request changes. */
 @import "tailwindcss";
 
 /* `dark:` means "inside a night band" (data-theme="night"), never the OS setting. A paper surface nested in a

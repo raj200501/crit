@@ -17,7 +17,7 @@ import { MECHANISMS, NEVER, PROTOTYPE_VS_PILOT } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Security & privacy",
-  description: "What's true in this prototype today, what changes before any real patient data, and what we'll never do.",
+  description: "Stemma's security and privacy: what's true in this prototype today, what changes before any real patient data, and what we'll never do.",
 };
 
 // Hard-coded on purpose (DESIGN §10.2). Keep in sync with next.config.ts: site.spec.ts compares this list with the

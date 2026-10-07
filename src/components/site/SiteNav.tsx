@@ -97,12 +97,12 @@ export function SiteNav() {
       <nav
         aria-label="Main"
         className={cn(
-          "pointer-events-auto mx-auto flex h-14 max-w-[1240px] items-center gap-2 rounded-full border pr-1.5 pl-3 text-fg max-lg:[--wordmark-size:15px] sm:gap-3 sm:pl-4",
+          "pointer-events-auto mx-auto flex h-14 max-w-[1240px] items-center gap-2 rounded-full border pr-1.5 pl-3 text-fg sm:gap-3 sm:pl-4",
           "transition-[max-width,background-color,border-color,box-shadow] duration-(--dur-panel) ease-out-quart motion-reduce:transition-none",
           scrolled || menuOpen ? "glass border-line shadow-sm lg:max-w-[920px]" : "border-transparent",
         )}
       >
-        <Lockup href="/" className="max-lg:[&_svg]:size-6" />
+        <Lockup href="/" size={32} descriptor="lg" className="[--wordmark-size:20px] max-lg:[&_svg]:size-6" />
         <HonestyPill size="sm" />
         <ul data-glide-scope="" className="ml-auto hidden items-center gap-0.5 lg:flex">
           {LINKS.map((l) => {

@@ -10,7 +10,7 @@ export const DEMO = demoTree();
 export const DEMO_VIEWS = viewTree(DEMO);
 
 /** How the deployed site's host reads in mocks (shortened like a phone's address bar would). */
-export const SITE_HOST = "family-health-tree…vercel.app";
+export const SITE_HOST = "stemmahealth.vercel.app";
 
 export function viewOf(id: string, views: PersonView[] = DEMO_VIEWS): PersonView {
   const v = views.find((x) => x.person.id === id);

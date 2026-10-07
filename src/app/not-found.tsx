@@ -14,7 +14,7 @@ export default function NotFound() {
         <HonestyRibbon />
         <div className="border-b border-line">
           <div className="container-page flex h-[60px] items-center">
-            <Lockup href="/" size={26} />
+            <Lockup href="/" size={26} surface="white" />
           </div>
         </div>
       </header>

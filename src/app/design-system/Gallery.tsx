@@ -4,7 +4,7 @@ import { ArrowRight, Download, Plus, Printer, QrCode, Share2, ZoomIn } from "luc
 import { useRef, useState, type ReactNode } from "react";
 import { Lockup } from "@/components/brand/Lockup";
 import { LogoMark } from "@/components/brand/LogoMark";
-import { Wordmark } from "@/components/brand/Wordmark";
+import { Descriptor, Wordmark } from "@/components/brand/Wordmark";
 import { HonestyPill } from "@/components/site/HonestyPill";
 import { PilotCard } from "@/components/site/PilotCard";
 import { ProofList } from "@/components/site/ProofList";
@@ -145,13 +145,26 @@ export function Gallery({ tone }: { tone: Tone }) {
         </h2>
 
         <div className="mt-10 flex flex-col gap-12">
-          <Group title="Brand">
+          <Group
+            title="Brand"
+            note="Rod and Lineage: a pedigree couple whose descent line is the Rod of Asclepius. The snake's knockout follows the surface (paper, white or night)."
+          >
             <Row className="gap-6">
               <LogoMark />
               <LogoMark size={40} />
+              <LogoMark size={72} />
+              {!night ? (
+                <span className="grid size-[88px] place-items-center rounded-md bg-white ring-1 ring-line">
+                  <LogoMark size={56} surface="white" title="Stemma mark on white" />
+                </span>
+              ) : null}
               <Wordmark />
+              <Descriptor />
+            </Row>
+            <Row className="mt-8 gap-x-10 gap-y-6">
               <Lockup />
-              <Lockup href="/" />
+              <Lockup descriptor />
+              <Lockup href="/" size={36} descriptor />
               <HonestyPill size="sm" />
               <HonestyPill />
             </Row>
@@ -409,7 +422,7 @@ export function Gallery({ tone }: { tone: Tone }) {
           <Group title="ProductFrame · PhoneFrame">
             <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-10 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
               <ProductFrame
-                title="family-health-tree · demo"
+                title="stemma · demo"
                 tabs={[
                   { id: "tree", label: "Tree" },
                   { id: "summary", label: "My summary" },
@@ -611,7 +624,7 @@ export function Gallery({ tone }: { tone: Tone }) {
                 <ProofList />
                 <div className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-5">
                   <SmsBubble from="them">Cardiology Associates: before your visit on Oct 14, you can put together your family history here: [link]</SmsBubble>
-                  <SmsBubble from="me" preview={{ title: "Alex asked for your help", site: "Family Health Tree" }}>
+                  <SmsBubble from="me" preview={{ title: "Alex asked for your help", site: "Stemma" }}>
                     Hi, it’s Alex. I’m putting together our family health history and would love your help. Here’s a private link; you can answer, skip, or say no.
                   </SmsBubble>
                 </div>

@@ -36,8 +36,8 @@ export default function AppShell({ children, active }: { children: ReactNode; ac
         <HonestyRibbon />
         <div className="relative flex h-[60px] items-center gap-3 px-4 md:px-6">
           <div aria-hidden className="glass absolute inset-0 -z-10 border-b border-line" />
-          <div className="flex min-w-0 items-center gap-2.5 max-md:[--wordmark-size:16px]">
-            <Lockup href="/" size={26} />
+          <div className="flex min-w-0 items-center gap-2.5">
+            <Lockup href="/" size={26} surface="white" />
             <span className="hidden rounded-xs bg-sunken px-1.5 py-0.5 font-mono text-eyebrow font-medium text-fg-2 uppercase min-[400px]:inline md:max-lg:hidden">Prototype</span>
           </div>
           <nav

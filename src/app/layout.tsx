@@ -7,6 +7,7 @@ import { MotionProvider } from "@/components/ui/MotionProvider";
 import { PresentModeHotkey } from "@/components/ui/PresentMode";
 import { SkipLink } from "@/components/ui/SkipLink";
 import { Toaster } from "@/components/ui/Toast";
+import { SITE } from "@/content/site";
 
 // Sans: the same metric overrides next/font generates for Arial, declared in globals.css ("Geist Fallback") so they also
 // apply to Arial's metric twins (Liberation Sans, Arimo) on Linux, where local(Arial) doesn't resolve.
@@ -33,10 +34,15 @@ const display = Newsreader({
   fallback: ["Newsreader Fallback"],
 });
 
+const DESCRIPTION =
+  "Stemma, the family health tree, turns “heart problems run in the family” into who, what, and at what age, before the cardiology visit. A Team 709 student prototype with a made-up demo family.";
+
 export const metadata: Metadata = {
-  title: { default: "Family Health Tree", template: "%s · Family Health Tree" },
-  description:
-    "Turn “heart problems run in the family” into who, what, and at what age, before the cardiology visit. A Team 709 student prototype with a made-up demo family.",
+  metadataBase: new URL(SITE.url),
+  title: { default: "Stemma — the family health tree", template: "%s · Stemma" },
+  applicationName: "Stemma",
+  description: DESCRIPTION,
+  openGraph: { siteName: "Stemma", type: "website", title: "Stemma — the family health tree", description: DESCRIPTION },
   robots: { index: false, follow: false },
 };
 export const viewport: Viewport = { themeColor: "#F6F8F7", colorScheme: "light" };

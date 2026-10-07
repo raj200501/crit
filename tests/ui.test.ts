@@ -6,7 +6,7 @@ import path from "node:path";
 import { describe, test } from "node:test";
 import { cn } from "../src/components/ui/cn";
 import { sourceChipText } from "../src/components/ui/SourceChip";
-import { HONESTY, PATIENT_QUESTIONS, pilotCta, pilotHref, SITE, STATS } from "../src/content/site";
+import { BRAND_LINE, HONESTY, PATIENT_QUESTIONS, pilotCta, pilotHref, SITE, STATS } from "../src/content/site";
 import { statusWord } from "../src/components/tree/model";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
@@ -205,5 +205,14 @@ describe("content and primitives", () => {
     for (const s of STATS) assert.ok(s.cite > 0 && s.source.length > 0);
     assert.match(HONESTY.ribbon, /made-up demo family/);
     assert.doesNotMatch(Object.values(HONESTY).join(" "), /HIPAA (certified|compliant)|verified/i);
+  });
+  test("the brand is Stemma, the family health tree, with the one Asclepius line (BRAND.md)", () => {
+    assert.equal(SITE.name, "Stemma");
+    assert.equal(SITE.descriptor, "the family health tree");
+    assert.equal(SITE.url, "https://stemmahealth.vercel.app");
+    assert.equal(
+      BRAND_LINE,
+      "Named for the stemma, the ancient family-tree diagram. The mark is the Rod of Asclepius, the Greek god of medicine: in ancient Greece, medicine was a family business.",
+    );
   });
 });

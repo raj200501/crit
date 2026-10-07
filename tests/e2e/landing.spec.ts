@@ -56,7 +56,8 @@ test.describe("structure", () => {
     expect(h1s).toEqual([[1, H1]]);
     await expect(page.locator("h1#hero-title")).toBeVisible();
     await expect(page.getByRole("link", { name: /Try the demo family/ }).first()).toHaveAttribute("href", "/tree");
-    await expect(page).toHaveTitle("Family Health Tree");
+    await expect(page).toHaveTitle("Stemma — the family health tree");
+    expect(await page.title()).toContain("Stemma");
   });
 
   test("the h2s follow DESIGN §8, every section is labelled, and no heading level is skipped", async ({ page }) => {

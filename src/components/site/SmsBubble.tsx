@@ -26,7 +26,7 @@ export function SmsBubble({ from, children, preview, className }: SmsBubbleProps
       {preview ? (
         <div data-theme="paper" className="flex max-w-[34ch] items-center gap-3 rounded-md border border-line bg-surface p-2.5 pr-4 text-fg shadow-xs">
           <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-sm bg-mist">
-            <LogoMark size={24} tone="paper" />
+            <LogoMark size={24} tone="paper" surface="var(--color-mist)" />
           </span>
           <span className="min-w-0">
             <span className="block truncate text-small font-strong">{preview.title}</span>

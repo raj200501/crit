@@ -2,7 +2,7 @@
 //   /how-it-works · /research · /for-practices · /privacy · /pilot
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { FDA_LINE, HONESTY, PILOT, pilotCta, PROOF_POINTS, STATS } from "../../src/content/site";
+import { BRAND_LINE, FDA_LINE, HONESTY, PILOT, pilotCta, PROOF_POINTS, STATS } from "../../src/content/site";
 import { DESKTOP, expect, expectNoSeriousA11y, gotoApp, MOBILE, noHorizontalOverflow, pdfPageCount, scrollThrough, test } from "./fixtures";
 import type { Page } from "@playwright/test";
 
@@ -10,11 +10,11 @@ import type { Page } from "@playwright/test";
 const ROOT = process.cwd();
 
 const PAGES = [
-  { path: "/how-it-works", title: "How it works · Family Health Tree", h1: "How it works, and how it would really work." },
-  { path: "/research", title: "Research · Family Health Tree", h1: "The research behind Family Health Tree" },
-  { path: "/for-practices", title: "For practices · Family Health Tree", h1: "Family history that arrives before the patient does." },
-  { path: "/privacy", title: "Security & privacy · Family Health Tree", h1: "Security & privacy" },
-  { path: "/pilot", title: "Pilot · Family Health Tree", h1: "A paid 8–12 week pilot for independent NYC cardiology practices." },
+  { path: "/how-it-works", title: "How it works · Stemma", h1: "How it works, and how it would really work." },
+  { path: "/research", title: "Research · Stemma", h1: "The research behind Stemma" },
+  { path: "/for-practices", title: "For practices · Stemma", h1: "Family history that arrives before the patient does." },
+  { path: "/privacy", title: "Security & privacy · Stemma", h1: "Security & privacy" },
+  { path: "/pilot", title: "Pilot · Stemma", h1: "A paid 8–12 week pilot for independent NYC cardiology practices." },
 ] as const;
 
 /** Text with typographic quotes, non-breaking spaces and runs of whitespace flattened, for verbatim comparisons. */
@@ -57,6 +57,30 @@ test.describe("every content page", () => {
       // no time-to-complete claims for our product (AMENDMENTS A2); /research quotes sourced study times
       if (p.path !== "/research") expect(text).not.toMatch(/(about|takes|only|in) \d+ minutes?\b(?! saved)/i);
       expect(await page.locator('main a[href*="view=care-team"]').count()).toBe(0);
+    });
+  }
+});
+
+test.describe("brand (Stemma)", () => {
+  for (const route of ["/", "/privacy"]) {
+    test(`${route}: the logo links home as "Stemma", and the Asclepius line appears exactly once, in the footer`, async ({ page }) => {
+      await gotoApp(page, route);
+      expect(await page.title()).toContain("Stemma");
+      const nav = page.locator('header[data-shell="site"]');
+      await expect(nav.getByRole("link", { name: "Stemma home", exact: true })).toHaveAttribute("href", "/");
+      const footer = page.locator('footer[data-shell="footer"]');
+      await expect(footer.getByRole("link", { name: "Stemma home", exact: true })).toHaveAttribute("href", "/");
+      const count = (s: string) => norm(s).split(norm(BRAND_LINE)).length - 1;
+      expect(count((await footer.textContent()) ?? "")).toBe(1);
+      // the whole document, minus scripts (Next's inline RSC payload repeats every string)
+      const bodyText = await page.locator("body").evaluate((b) => {
+        const c = b.cloneNode(true) as HTMLElement;
+        c.querySelectorAll("script, template, style").forEach((n) => n.remove());
+        return c.textContent ?? "";
+      });
+      expect(count(bodyText)).toBe(1);
+      // the old product name is gone from what visitors read (it may only describe the thing: "family health tree")
+      expect(await page.locator("body").innerText()).not.toMatch(/Family Health Tree/);
     });
   }
 });
@@ -173,6 +197,13 @@ test.describe("/for-practices", () => {
     await callouts.nth(1).click();
     await expect(callouts.nth(1)).toHaveAttribute("aria-pressed", "true");
     await expect(callouts.first()).toHaveAttribute("aria-pressed", "false");
+    // park the pointer first: focusing scrolls the list, and a callout sliding under the pointer from the click above
+    // fires mouseenter and takes the active state back (a pre-existing flake, ~1 in 5 runs)
+    await page.mouse.move(0, 0);
+    // and let the click's smooth scroll finish (two frames at the same scrollY)
+    await page.waitForFunction(
+      () => new Promise<boolean>((done) => { const y = scrollY; requestAnimationFrame(() => requestAnimationFrame(() => done(scrollY === y))); }),
+    );
     await callouts.nth(3).focus();
     await expect(callouts.nth(3)).toHaveAttribute("aria-pressed", "true");
     // the annotated sheet is the real, readable document, titled at h3 under the section's h2

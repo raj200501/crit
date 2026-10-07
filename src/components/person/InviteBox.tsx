@@ -98,11 +98,11 @@ export function InviteBox({ tree, view, onDone }: { tree: FamilyTree; view: Pers
         />
         <div className="mt-2 flex max-w-[34ch] items-center gap-3 rounded-[14px] border border-line bg-surface p-3 shadow-xs">
           <span className="grid size-10 shrink-0 place-items-center rounded-[10px] bg-paper ring-1 ring-line">
-            <LogoMark size={24} />
+            <LogoMark size={24} surface="paper" />
           </span>
           <span className="min-w-0">
             <span className="block truncate text-small font-strong text-fg">{asker} asked for your help</span>
-            <span className="block truncate text-caption text-fg-3">Family Health Tree</span>
+            <span className="block truncate text-caption text-fg-3">Stemma</span>
           </span>
         </div>
       </figure>

@@ -13,7 +13,7 @@ import { HONESTY, PILOT, pilotCta, SITE } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Pilot",
-  description: "A paid 8–12 week pilot for independent NYC cardiology practices: pricing, the metrics we agree on first, and the go/no-go. Prints on one page.",
+  description: "A paid 8–12 week Stemma pilot for independent NYC cardiology practices: pricing, the metrics we agree on first, and the go/no-go. Prints on one page.",
 };
 
 // DESIGN §10.3 + §14: this brief prints on ONE Letter page (SiteNav and SiteFooter are print:hidden). Every band below
@@ -80,7 +80,7 @@ export default function PilotPage() {
       <style>{PRINT_PAGE}</style>
       {/* print only: the brief names itself (SiteNav and the footer don't print) */}
       <p className="hidden border-b border-ink pb-1.5 font-mono text-[9px] tracking-[0.08em] text-ink uppercase print:flex print:justify-between">
-        <span>Family Health Tree · Pilot brief</span>
+        <span>Stemma · the family health tree · Pilot brief</span>
         <span>Student prototype · synthetic demo data</span>
       </p>
       <PageHero

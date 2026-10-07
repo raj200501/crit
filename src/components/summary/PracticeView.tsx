@@ -93,7 +93,7 @@ export function PracticeView() {
       <header data-shell="practice" className="relative z-(--z-nav) bg-surface print:hidden">
         <HonestyRibbon />
         <div className="flex h-[60px] items-center gap-3 border-b border-line px-4 md:px-6">
-          <Lockup href="/" size={26} className="max-md:[--wordmark-size:16px]" />
+          <Lockup href="/" size={26} surface="white" />
           <span className="hidden rounded-xs bg-sunken px-1.5 py-0.5 font-mono text-eyebrow font-medium text-fg-2 uppercase min-[420px]:inline">Practice</span>
           <Button href="/summary" variant="ghost" size="sm" className="ml-auto max-md:h-11">
             Patient view

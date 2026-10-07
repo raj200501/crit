@@ -222,7 +222,7 @@ test.describe("/view: the care-team copy", () => {
   test("without a #payload: the minimal header with the honesty note, and 'This link is incomplete'", async ({ page }) => {
     await gotoApp(page, "/view");
     await expect(page.locator("header [role=note]")).toBeVisible();
-    await expect(page.getByRole("link", { name: "Family Health Tree home" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Stemma home", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { level: 1, name: "This link is incomplete" })).toBeVisible();
     await expect(page.locator("main#main")).toHaveCount(1);
     await expectNoSeriousA11y(page);

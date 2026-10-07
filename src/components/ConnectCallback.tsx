@@ -57,7 +57,7 @@ export default function ConnectCallback() {
         <HonestyRibbon />
         <div className="border-b border-line">
           <div className="container-page flex h-14 items-center">
-            <Lockup href="/" size={24} />
+            <Lockup href="/" size={24} surface="white" />
           </div>
         </div>
       </header>

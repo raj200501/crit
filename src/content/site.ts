@@ -1,14 +1,20 @@
 // src/content/site.ts — shared copy and data. Owned by P1. Change it only through DESIGN.md.
 export const SITE = {
-  name: "Family Health Tree",
+  name: "Stemma",
+  descriptor: "the family health tree",
+  url: "https://stemmahealth.vercel.app",
   demoHref: "/tree",
   // The founders set NEXT_PUBLIC_PILOT_EMAIL in Vercel. If it's empty, pilot CTAs link to /pilot#contact.
   pilotEmail: process.env.NEXT_PUBLIC_PILOT_EMAIL ?? "",
 } as const;
 
+/** The one Asclepius line (BRAND.md). It appears once on the site, in the footer brand block, and nowhere louder. */
+export const BRAND_LINE =
+  "Named for the stemma, the ancient family-tree diagram. The mark is the Rod of Asclepius, the Greek god of medicine: in ancient Greece, medicine was a family business.";
+
 export function pilotHref(): string {
   if (!SITE.pilotEmail) return "/pilot#contact";
-  const subject = encodeURIComponent("Family Health Tree pilot");
+  const subject = encodeURIComponent("Stemma pilot");
   const body = encodeURIComponent("Practice name:\nEHR you use:\nNumber of cardiologists:\nBest time to talk:\n");
   return `mailto:${SITE.pilotEmail}?subject=${subject}&body=${body}`; // a plain link, not a form, so CSP form-action doesn't apply
 }

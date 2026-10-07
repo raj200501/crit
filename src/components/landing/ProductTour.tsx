@@ -62,7 +62,7 @@ export function ProductTour({ views, receipts, patientDoc, clinicianDoc }: Produ
   return (
     <div>
       <ProductFrame
-        title="family-health-tree · demo"
+        title="stemma · demo"
         tabs={TABS}
         value={tab}
         onChange={(v) => {

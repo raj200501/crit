@@ -132,7 +132,7 @@ describe("docs/research.md, rendered", () => {
   });
 
   test("the markdown's own H1 is dropped (the page renders one)", () => {
-    assert.equal(doc.title, "How Family Health Tree would actually work");
+    assert.equal(doc.title, "How Stemma would actually work");
     assert.doesNotMatch(doc.html, /<h1/);
   });
 

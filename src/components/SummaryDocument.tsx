@@ -135,7 +135,7 @@ export default function SummaryDocument({
           {clinician ? ` Criteria: ${CRITERIA_FOOTNOTE}.` : ""}
         </p>
         <p className="font-mono text-eyebrow text-ink-3 uppercase">
-          Family Health Tree · student prototype by Team 709 · prepared{" "}
+          Stemma · student prototype by Team 709 · prepared{" "}
           <time dateTime={tree.updatedAt} suppressHydrationWarning>
             {fmtStamp(tree.updatedAt, { year: true })}
           </time>

@@ -25,7 +25,7 @@ import { FDA_LINE, PILOT, pilotCta } from "@/content/site";
 export const metadata: Metadata = {
   title: "For practices",
   description:
-    "For cardiology practices: one link with your new-patient paperwork, and a one-page, source-labeled family history summary before the visit. Synthetic demo data.",
+    "Stemma for cardiology practices: one link with your new-patient paperwork, and a one-page, source-labeled family history summary before the visit. Synthetic demo data.",
 };
 
 /** Hero visual: the real care-team sheet in a window, with two receipts floating off it (desktop). */

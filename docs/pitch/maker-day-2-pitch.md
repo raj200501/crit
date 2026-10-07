@@ -1,24 +1,24 @@
-# Maker Day 2 pitch: Family Health Tree
+# Maker Day 2 pitch: Stemma, the family health tree
 
 Team 709 · Section 7 · TECH 5900 Product Studio · Maker Day 2, Oct 16, 2026 (slides as one PDF by 5:00 pm Oct 16)
-Raj Kashikar · Viha Srinivas · Unser Jaffry · Draft of Oct 6, 2026 (revised after review)
+Raj Kashikar · Viha Srinivas · Unser Jaffry · Draft of Oct 6, 2026 (revised after review; renamed Stemma on Oct 7)
 
 **How to read this.** `[n]` = numbered source in `../research.md`. `[S#]` = source opened for the pitch work; the full list with URLs is at the end of this file and in `vca.md`. Interview IDs match the Team Hub "Interview Logs". "(note)" = the note-taker's wording; quotation marks only where the Team Hub notes have them. **Assumption** = our estimate, with its math. Canvas tags: **N** new, **O** old, **N/O** some of each.
 
-**Deck look.** The deck has its own look and does not follow the website. Use the Team 709 theme from Maker Day 1: white background; headline in the dark navy bold display face used for "FAMILY HEALTH TREE"; body text in dark gray; orange as the one accent color; the small "Team 709" mark top right and a page counter bottom right ("2 / 8"). The deck's status colors (**known** = green outline, **conflicting** = orange outline, **unknown** = gray dashed outline, **declined** = gray fill) appear only on slide 1, which is drawn natively. The only things the deck takes from the website are the screenshots on slides 3–5 and backup A12, placed in plain gray browser or phone frames. The deck is not restyled to match them, and slide 3 has no deck-colored legend: the app's own status labels, visible in the screenshot, carry the statuses. Every slide except 3–5 and backup A12 can be built now.
+**Deck look.** The deck has its own look and does not follow the website. Use the Team 709 theme from Maker Day 1: white background; headline in the dark navy bold display face used for the Maker Day 1 title (now set as "STEMMA"); body text in dark gray; orange as the one accent color; the small "Team 709" mark top right and a page counter bottom right ("2 / 8"). The deck's status colors (**known** = green outline, **conflicting** = orange outline, **unknown** = gray dashed outline, **declined** = gray fill) appear only on slide 1, which is drawn natively. The only things the deck takes from the website are the screenshots on slides 3–5 and backup A12, placed in plain gray browser or phone frames. The deck is not restyled to match them, and slide 3 has no deck-colored legend: the app's own status labels, visible in the screenshot, carry the statuses. Every slide except 3–5 and backup A12 can be built now.
 
-**Main deck: 8 slides, 4:45 of talk** (15 seconds of slack before the 5:00 hard stop; the script is about 650 words, 4:21 at 150 words a minute). Raj 1:47 (slides 1, 2, 8), Viha 1:20 (slides 3–5), Unser 1:38 (slides 6–7), handoffs included in the incoming speaker's time.
+**Main deck: 8 slides, 4:49 of talk** (11 seconds of slack before the 5:00 hard stop; the script is about 665 words, 4:26 at 150 words a minute). Raj 1:51 (slides 1, 2, 8), Viha 1:20 (slides 3–5), Unser 1:38 (slides 6–7), handoffs included in the incoming speaker's time.
 
 | # | Element | Story title | Speaker | Seconds | Clock at end |
 | --- | --- | --- | --- | ---: | ---: |
-| 1 | Opens 1 | Family Health Tree turns "it runs in the family" into facts. | Raj | 14 | 0:14 |
-| 2 | 1 Customer and problem | Patients know heart trouble runs in the family, not who. | Raj | 44 | 0:58 |
-| 3 | 2 Mockup | The patient builds the tree by side of family, uncertainty included. | Viha | 23 | 1:21 |
-| 4 | 2 Mockup | Relatives answer for themselves, on their phone, with no account. | Viha | 25 | 1:46 |
-| 5 | 2 Mockup | The patient walks in with one page the cardiologist can act on. | Viha | 32 | 2:18 |
-| 6 | 3 Will people buy it? | People use it when the practice sends the link; no practice has agreed to pay yet. | Unser | 47 | 3:05 |
-| 7 | 4 Can you make it? | We can pilot by January; salaries need a bigger market. | Unser | 51 | 3:56 |
-| 8 | 5 Central business logic and wedge | Start with three NYC cardiology groups, then grow into primary care. | Raj | 49 | **4:45** |
+| 1 | Opens 1 | Stemma turns "it runs in the family" into facts. | Raj | 18 | 0:18 |
+| 2 | 1 Customer and problem | Patients know heart trouble runs in the family, not who. | Raj | 44 | 1:02 |
+| 3 | 2 Mockup | The patient builds the tree by side of family, uncertainty included. | Viha | 23 | 1:25 |
+| 4 | 2 Mockup | Relatives answer for themselves, on their phone, with no account. | Viha | 25 | 1:50 |
+| 5 | 2 Mockup | The patient walks in with one page the cardiologist can act on. | Viha | 32 | 2:22 |
+| 6 | 3 Will people buy it? | People use it when the practice sends the link; no practice has agreed to pay yet. | Unser | 47 | 3:09 |
+| 7 | 4 Can you make it? | We can pilot by January; salaries need a bigger market. | Unser | 51 | 4:00 |
+| 8 | 5 Central business logic and wedge | Start with three NYC cardiology groups, then grow into primary care. | Raj | 49 | **4:49** |
 
 ---
 
@@ -26,17 +26,20 @@ Raj Kashikar · Viha Srinivas · Unser Jaffry · Draft of Oct 6, 2026 (revised a
 
 ### Slide 1 · Title
 
-- **Story title:** Family Health Tree turns "it runs in the family" into facts.
-- **Speaker / time:** Raj · 14 s
+- **Story title:** Stemma turns "it runs in the family" into facts.
+- **Speaker / time:** Raj · 18 s
 - **On-slide text:**
   - Top strip (small caps): `TEAM 709 · SECTION 7 · PRODUCT STUDIO · MAKER DAY 2 · OCT 16, 2026`
-  - Headline: `FAMILY HEALTH TREE`
+  - Headline: `STEMMA`
+  - Descriptor (small caps, directly under the headline): `THE FAMILY HEALTH TREE`
   - Subhead: `"Heart problems run in the family" → who, what, at what age. Before the first cardiology visit.`
   - Line: `Free for patients · cardiology practices pay`
   - Names: `Raj Kashikar · Viha Srinivas · Unser Jaffry`
   - Footer (small): `Prototype uses synthetic data only.`
 - **Visual:** Left half: the text above, in the Maker Day 1 layout. Right half, built natively in Slides (not a screenshot): a gray speech bubble reading "Heart problems run in the family." with an orange arrow to three status chips stacked vertically, in the deck's status colors: green-outline chip `Uncle Dev · atrial fibrillation at 34 · his answer + his portal record`; orange-outline chip `Dad · heart attack at 60? or angina at ~58?`; gray-dashed chip `Grandpa Ray · unknown`. This previews the whole idea in one picture. It is the only slide with deck-colored status chips.
-- **Script (Raj):** "We're Team 709. Family Health Tree turns 'heart problems run in the family' into who had what, at what age, before the first cardiology visit. Free for patients; practices pay."
+- **Logo files:** `public/brand/stemma-lockup-1200.png` (mark + "Stemma" + descriptor in ink and evergreen, transparent, for white slides) and `public/brand/stemma-lockup-night-1200.png` (ivory and lumen, transparent, for a dark #1F2937 slide); the mark alone is `stemma-mark-512.png` / `stemma-mark-night-512.png`. If the logo goes on the slide, it sits above or beside the headline; the headline stays text.
+- **Script (Raj):** "We're Team 709, and this is Stemma. In ancient Greece, medicine was a family business. Stemma brings the family back into it: it turns 'heart problems run in the family' into who had what, at what age, before the first cardiology visit." (18 s; the slide's "Free for patients · cardiology practices pay" line is no longer read aloud.)
+- **Why the name (for Q&A, not read aloud):** a *stemma* (Greek στέμμα) is the ancient family-tree diagram; Roman households displayed stemmata of their ancestors. The mark is a pedigree couple whose descent line becomes the Rod of Asclepius, the Greek god of medicine's staff with one snake (not the two-snake caduceus). Medicine was a family business: Asclepius's children included Hygieia, Iaso and Aceso, and Greek doctors called themselves Asclepiads, "of the family of Asclepius". Before using the name beyond the class, see open item 15 (trademark).
 - **Evidence notes:** Uncle Dev's portal record gives the condition and the date it went on his problem list (2009); the age, 34, is his own answer [8] (`src/lib/demo.ts`).
 
 ### Slide 2 · Customer and problem
@@ -151,7 +154,7 @@ Raj Kashikar · Viha Srinivas · Unser Jaffry · Draft of Oct 6, 2026 (revised a
   - Left column `WEDGE · NOW`: `3 independent NYC cardiology groups · all adult new patients · $1,000, 12-week pilot · goal: 4 in 10 have a reviewed page in the chart before visit one`
   - Right column `VISION · LATER`: `Larger groups → genetics and lipid clinics → primary care`
   - Ask (orange): `Our ask: introductions to NYC cardiology practice managers.`
-  - Corner: QR code + `family-health-tree-raj-s-projects12.vercel.app · synthetic data only`
+  - Corner: QR code + `stemmahealth.vercel.app · synthetic data only`
 - **Visual:** Two full-width sentence cards stacked at the top (navy text, "People will buy it because" and "We can make it because" in bold). Below, two columns joined by an orange arrow: a small narrow box "WEDGE · NOW" on the left, a wider box "VISION · LATER" on the right, so the wedge is visibly smaller than the vision. Ask line under them. Bottom right: the QR code and the URL as text. No website thumbnail: the closing slide stays in the deck's own look.
 - **Script (Raj), reads both cards word for word:** "People will buy it because cardiology practices need which relative, what condition and what age, their intake forms take it from memory, and a link they send gets those details, each with its source, into the chart before visit one. We can make it because the patient side already runs on public standards, a PDF reaches any chart, and a pilot on vendors that sign BAAs costs under 850 dollars a month, which about ten two-cardiologist practices cover with founders unpaid. We start with three independent New York cardiology groups in a paid 12-week pilot. Success: four in ten new patients have a reviewed page in the chart before visit one. Our ask: introductions to practice managers."
 - **Evidence notes:** each clause is traced in `vca.md` (Central business logic table). "Take it from memory": the form asks yes or no per relative, then leaves a few lines for details, with no side of family and no room for "not sure" [S5]. Wedge: R5 scoring (Appendix A6), research §5 pilot design, 39 NYC groups with 2+ independent cardiologists, about 19–20 cardiology-focused once hospital-linked groups are removed [S27]. "About ten two-cardiologist practices": 9–11 at $500 per cardiologist per year (A4). Success metric: of invited new patients whose first visit falls in pilot weeks 2–12, the share with a patient-reviewed summary in the chart before that visit (A11). Primary care: the Annual Wellness Visit requires family history [104].
@@ -162,10 +165,10 @@ The teammate not speaking holds a phone stopwatch where the speaker can see it.
 
 | Checkpoint | Who should be talking | If more than 10 s late, cut this |
 | --- | --- | --- |
-| 0:58 | Viha starts slide 3 | Viha drops "Each relative gets plain questions with examples" (the slide shows it) |
-| 2:18 | Unser starts slide 6 | Unser drops the MeTree sentence; keeps the 57 percent line and the riskiest claim |
-| 3:05 | Unser starts slide 7 | Unser drops the salary sentence; says "about ten practices cover the cost; price is the risk" |
-| 3:56 | Raj starts slide 8 | **Hard rule:** by 4:00 Unser hands over mid-sentence if needed. Raj keeps both sentences word for word, the wedge and the ask; drops the success line (it stays on the slide) |
+| 1:02 | Viha starts slide 3 | Viha drops "Each relative gets plain questions with examples" (the slide shows it) |
+| 2:22 | Unser starts slide 6 | Unser drops the MeTree sentence; keeps the 57 percent line and the riskiest claim |
+| 3:09 | Unser starts slide 7 | Unser drops the salary sentence; says "about ten practices cover the cost; price is the risk" |
+| 4:00 | Raj starts slide 8 | **Hard rule:** by 4:04 Unser hands over mid-sentence if needed. Raj keeps both sentences word for word, the wedge and the ask; drops the success line (it stays on the slide) |
 
 Handoff lines: Raj → Viha: "Viha will show you what our made-up patient, Alex, does instead." / "Alex builds the tree one side of the family at a time…". Viha → Unser: "…Uncle Dev says angina at about 58. Unser?" / "Against what each person uses today…". Unser → Raj: "…New York is our pilot, not our market." (turns to Raj) / "People will buy it because…". Stand in speaking order (Raj, Viha, Unser), pass one clicker, never say "next slide".
 
@@ -273,7 +276,7 @@ These also serve the Milestone 4 PDF. Full detail is in `vca.md`.
 
 | | Relatives answer for themselves | Per-fact status and source | Fact from a relative's portal | Cardiology one-pager for the clinician | Price |
 | --- | --- | --- | --- | --- | --- |
-| Family Health Tree | Yes | Yes | Yes (sandbox) | Yes | $500/cardiologist/yr (to test) |
+| Stemma | Yes | Yes | Yes (sandbox) | Yes | $500/cardiologist/yr (to test) |
 | FamGenix | Partly: invited relatives share and update their own data in its app [S31] | Not documented | Not documented | Cardio risk model (QRisk) at an extra fee [111] | Free up to 20 pedigrees; Individual $500/yr; questionnaires and cardio model extra [111] |
 | My Family Health Portrait | No | No | No | No | Free; original host offline Apr 2026 [97][S7] |
 | Invitae Family History Tool | No | No | No | Cancer focus | Free [107] |
@@ -346,6 +349,7 @@ Two more if there's time: **"Does it save the practice time?"** Unproven; a 2026
 12. **FamGenix hands-on** (free tier, one synthetic cardiac family) before Oct 16, so the comparison isn't from its marketing pages and app-store listing.
 13. **Company and counsel.** A practice will expect a company, not three students, to sign the BAA and send the invoice (NY LLC publication rules [S53]). Agree who forms it and when (proposed Nov 15), and book a Cornell law clinic for the BAA template, privacy policy and the care-team page question.
 14. **Label the genetics counselor D021** (not ID021) and keep her first name off slides. She has not agreed to review anything; don't list her as a reviewer.
+15. **Name and trademark.** "Stemma" is fine as a class-project name, but there is a pending US trademark application for **STEMMAMD** (Stemma Inc, filed Aug 25, 2026, classes 9 and 38, patient medical-information software), close to our name and our field. Ask counsel (item 13) for a clearance search before incorporating, registering a domain or filing under the name, and keep a fallback name ready.
 
 ---
 
@@ -425,7 +429,7 @@ Two more if there's time: **"Does it save the practice time?"** Unproven; a 2026
 - [S23] US Bureau of Labor Statistics, Occupational Outlook Handbook, Software Developers (median annual wage $135,980, May 2025). https://www.bls.gov/ooh/computer-and-information-technology/software-developers.htm (re-checked Oct 6, 2026)
 - [S25] AccountableHQ (secondary), "Google Workspace HIPAA cost," found Oct 6, 2026 ($7/$14/$22 per user per month; not confirmed on Google's page). https://www.accountablehq.com/post/google-workspace-hipaa-cost-pricing-baa-requirements-and-plan-options
 - [S27] Team analysis of the CMS Doctors and Clinicians national file [99], pulled Oct 2 and re-run Oct 6, 2026: 7,699 of 29,847 cardiologists in organizations of 100 or fewer (a proxy for independent; it includes some hospital practices); 2,152 such organizations with a median of 2 cardiologists; NYC 285–320 independent cardiologists (research.md's Oct 2 figure was 280–320), 122 small organizations (83 with one cardiologist), 39 organizations with 2+ independent cardiologists (144 cardiologists; median 2 per group; the mean of 3.7 is pulled up by two groups with 28 and 13), 22 where cardiologists are at least half the clinicians. The 39 include hospital-linked organizations (for example Maimonides Cardiology FPP, TBHC Medical Services PC of The Brooklyn Hospital Center, Icahn School of Medicine at Mount Sinai, and the Hospital for Special Surgery's legal entity); about 19–20 cardiology-focused groups remain after removing them (to confirm by phone). https://data.cms.gov/provider-data/dataset/mj5m-pzi6
-- [S28] Live prototype checks, Oct 6, 2026: routes /, /tree, /summary, /invite, /view, /research, /how-it-works return HTTP 200; 10 of 10 logic tests pass; SMART launcher responds; CSP and Referrer-Policy headers present. https://family-health-tree-raj-s-projects12.vercel.app
+- [S28] Live prototype checks, Oct 6, 2026: routes /, /tree, /summary, /invite, /view, /research, /how-it-works return HTTP 200; 10 of 10 logic tests pass; SMART launcher responds; CSP and Referrer-Policy headers present. Now at https://stemmahealth.vercel.app (checked at the earlier address, https://family-health-tree-raj-s-projects12.vercel.app, which still works)
 - [S29] Phreesia, Form 10-K for fiscal 2026 (about 180 million patient visits; direct sales; sales cycles of three to twelve months; integrates with most major EMR and PM systems). https://www.sec.gov/Archives/edgar/data/1412408/000141240826000079/phr-20260131.htm
 - [S31] FamGenix Family Health History, Apple App Store listing (seller FamHis, Inc; "Invite and share data with other family members"; version 4.0.0, Feb 11, 2025; 15 ratings), opened Oct 6, 2026. https://apps.apple.com/us/app/famgenix-family-health-history/id1483520084
 - [S32] Zocdoc, "Pay-per-booking fees explained," The Paper Gown, Dec 17, 2025. https://thepapergown.zocdoc.com/facts/pay-per-booking-fees-explained/

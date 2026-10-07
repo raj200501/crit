@@ -79,7 +79,7 @@ export function SentScreen({ asker, me, link, sameBrowser, treeHref }: SentScree
             ))}
           </ol>
         </section>
-        <p className="text-small text-fg-3">Family Health Tree · a student prototype by Team 709</p>
+        <p className="text-small text-fg-3">Stemma, the family health tree · a student prototype by Team 709</p>
       </div>
       <StepActions>
         {sameBrowser ? (

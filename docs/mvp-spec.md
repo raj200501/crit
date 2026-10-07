@@ -1,4 +1,4 @@
-# Family Health Tree: MVP build spec
+# Stemma (formerly Family Health Tree): MVP build spec
 
 Build spec for the working prototype, hosted free on Vercel. As of 2 October 2026. The reasoning and sources behind each decision are in [`research.md`](./research.md); section numbers below refer to it.
 

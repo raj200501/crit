@@ -6,7 +6,7 @@ import { cn } from "@/components/ui/cn";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 
 export interface UrlBarVisualProps {
-  /** Shortened host, e.g. "family-health-tree…vercel.app". */
+  /** Shortened host, e.g. "stemmahealth.vercel.app". */
   host: string;
   path: string;
   /** The real base64url fragment (without "#"). */

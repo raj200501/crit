@@ -35,7 +35,7 @@ export function CheckInSheet({ open, onClose, tree, link, qr, copied, onCopy }: 
           <div className="flex items-start justify-between gap-4 px-5 pt-5 sm:px-7 sm:pt-6">
             <div className="min-w-0">
               <p className="flex items-center gap-2 font-mono text-eyebrow font-medium text-ink-3 uppercase">
-                <LogoMark size={18} />
+                <LogoMark size={18} surface="white" />
                 Read-only summary
               </p>
               <h2 id={titleId} className="mt-2 font-display text-[1.875rem] leading-tight font-book tracking-[-0.015em] text-ink">

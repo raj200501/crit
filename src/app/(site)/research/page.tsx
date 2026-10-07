@@ -10,7 +10,7 @@ import styles from "./research.module.css";
 
 export const metadata: Metadata = {
   title: "Research",
-  description: "The fact-checked research behind Family Health Tree: patient portals, privacy and compliance, clinical criteria and the business, with numbered sources.",
+  description: "The fact-checked research behind Stemma, the family health tree: patient portals, privacy and compliance, clinical criteria and the business, with numbered sources.",
 };
 
 // docs/research.md, rendered once at build time (DESIGN §10.5). Heading ids, #source-N anchors and [n] citation links
@@ -29,7 +29,7 @@ export default function ResearchPage() {
         <Container className="relative">
           <Eyebrow>Research</Eyebrow>
           <h1 id="research-title" className="mt-5 max-w-[20ch] font-display text-display-xl font-book text-fg">
-            The research behind Family Health Tree
+            The research behind Stemma
           </h1>
           <p className="mt-6 max-w-[60ch] text-lead text-fg-2">
             Five research tracks, each checked against primary sources by an independent reviewer as of October 2026. Every bracketed number links to
