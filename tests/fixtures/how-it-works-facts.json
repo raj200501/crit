@@ -1,0 +1,201 @@
+{
+  "_comment": "Every fact-checked string on /how-it-works before the P4 restructure (DESIGN §10.4, §13.4 acceptance 2). site.spec.ts asserts each one still appears in the page text. Do not edit by hand; a fact changes only through docs/research.md.",
+  "arrays": {
+    "bottomLine": [
+      {
+        "k": "The problem is measurable",
+        "v": "Self-reports caught only 57.6% of heart attacks in parents and siblings (25,302 Swedes, 2026). Only 28% of offspring reports that Dad had a heart attack before 55 were confirmed by records (Framingham). Only about 11% of charted entries name both the relative and the age."
+      },
+      {
+        "k": "Guided trees fix the structure",
+        "v": "With MeTree, a guided side-of-family tool, 99.8% of pedigrees met quality criteria, against under 4% of chart records. Lineage was recorded for 100% of relatives, against 28.4%."
+      },
+      {
+        "k": "HIPAA starts when practices pay",
+        "v": "A patient-chosen app isn't covered by HIPAA; the FTC Health Breach Notification Rule and state laws are. Once a practice pays and summaries feed its chart, the team is a business associate and needs BAAs with every practice and vendor."
+      },
+      {
+        "k": "Box is the wrong home for the tree",
+        "v": "Box signs a BAA only on Enterprise plans and stores files, not relational data. Keep the tree in a BAA-covered Postgres database; use Box at most to drop the summary PDF into a practice's own Box."
+      },
+      {
+        "k": "MyChart works for one fact, not the whole history",
+        "v": "A free, read-only Epic app can reach a relative's own problem list. Epic's family-history API isn't part of USCDI, so each health system must approve it by hand. A portal date can be when a problem was listed, not diagnosed."
+      },
+      {
+        "k": "Alerts go to the clinician, never the patient",
+        "v": "Under FDA's January 2026 decision-support guidance, recommendations shown to patients make software a device. Clinician alerts stay outside device rules when they're rule-based, cite the guideline and show every source and gap."
+      }
+    ],
+    "dataStages": [
+      [
+        "Tree",
+        "In the browser only",
+        "Postgres (Neon Scale, HIPAA on) behind Vercel Pro + BAA add-on",
+        "Plus field-level encryption for notes"
+      ],
+      [
+        "Invites and replies",
+        "Data after the # in the link",
+        "Server records behind hashed, expiring, revocable tokens",
+        "Same"
+      ],
+      [
+        "Portal fact",
+        "Public SMART sandbox, synthetic patients",
+        "Epic production app, read-only USCDI scopes, auto-distributed",
+        "Plus aggregator or TEFCA partner"
+      ],
+      [
+        "Summary to practice",
+        "Print/PDF, read-only link, FHIR file",
+        "PDF, SMART Health Link, fax from a BAA-covered backend",
+        "Plus Direct messaging, EHR app"
+      ],
+      [
+        "Who could be harmed",
+        "Nobody (synthetic data)",
+        "Real families: BAAs, audit log, MFA, breach plan",
+        "Same, at scale"
+      ]
+    ],
+    "criteria": [
+      [
+        "Early heart disease (heart attack, stent, bypass, angina)",
+        "Parent or sibling",
+        "Men < 55, women < 65",
+        "ACC/AHA 2018; 2026 dyslipidemia"
+      ],
+      [
+        "Very high cholesterol / familial hypercholesterolemia",
+        "First- or second-degree",
+        "Any age",
+        "Dutch Lipid Clinic, Simon Broome; ACC/AHA 2026"
+      ],
+      [
+        "Cardiomyopathy (HCM, DCM)",
+        "Parent or sibling, or 2+ relatives",
+        "Any age",
+        "AHA/ACC 2024; ESC 2025"
+      ],
+      [
+        "Aortic aneurysm or dissection",
+        "Parent or sibling",
+        "Any age",
+        "ACC/AHA 2022"
+      ],
+      [
+        "Named inherited arrhythmia (long QT, Brugada, CPVT)",
+        "First- or second-degree",
+        "Any age",
+        "Diagnostic criteria (score not computed)"
+      ],
+      [
+        "Sudden unexplained death or cardiac arrest",
+        "Any relative",
+        "Before 40",
+        "APHRS/HRS 2020"
+      ],
+      [
+        "Atrial fibrillation in a relative",
+        "—",
+        "—",
+        "No verified criterion: shown as “also noted”"
+      ]
+    ],
+    "market": [
+      [
+        "US independent cardiology",
+        "7,699 cardiologists × $1,188–1,788/yr",
+        "$9.1M – $13.8M"
+      ],
+      [
+        "At FamGenix's $500/yr anchor",
+        "7,699 × $500",
+        "$3.8M"
+      ],
+      [
+        "NYC independent",
+        "280–320 × $1,800",
+        "$0.50M – $0.58M"
+      ]
+    ],
+    "risks": [
+      [
+        "A practice manager will pay for a tool that bills nothing",
+        "5 manager interviews with a price card; ask for a paid pilot letter ($500–1,000)",
+        "≥ 1 signed paid pilot"
+      ],
+      [
+        "Patients finish the tree before the visit",
+        "Moderated usability sessions with a fictional family",
+        "Median ≤ 15 min, no wrong-side errors; pilot ≥ 40% completion"
+      ],
+      [
+        "Relatives respond",
+        "Fake-door invite that collects nothing; count opens in 72 hours",
+        "≥ 25% get one relative contribution"
+      ],
+      [
+        "Clinicians trust a patient-built summary",
+        "Show the synthetic one-pager to 5 clinicians; time the scan",
+        "≥ 4/5 usefulness; scan < 1 minute"
+      ],
+      [
+        "Regulatory lines hold",
+        "FTC Mobile Health Apps tool; law clinic consult; recheck NY bill",
+        "No patient-facing recommendations; BAA template ready"
+      ]
+    ]
+  },
+  "prose": [
+    "The problem is measurable",
+    "Self-reports caught only 57.6% of heart attacks in parents and siblings (25,302 Swedes, 2026). Only 28% of offspring reports that Dad had a heart attack before 55 were confirmed by records (Framingham). Only about 11% of charted entries name both the relative and the age.",
+    "Guided trees fix the structure",
+    "With MeTree, a guided side-of-family tool, 99.8% of pedigrees met quality criteria, against under 4% of chart records. Lineage was recorded for 100% of relatives, against 28.4%.",
+    "HIPAA starts when practices pay",
+    "A patient-chosen app isn't covered by HIPAA; the FTC Health Breach Notification Rule and state laws are. Once a practice pays and summaries feed its chart, the team is a business associate and needs BAAs with every practice and vendor.",
+    "Box is the wrong home for the tree",
+    "Box signs a BAA only on Enterprise plans and stores files, not relational data. Keep the tree in a BAA-covered Postgres database; use Box at most to drop the summary PDF into a practice's own Box.",
+    "MyChart works for one fact, not the whole history",
+    "A free, read-only Epic app can reach a relative's own problem list. Epic's family-history API isn't part of USCDI, so each health system must approve it by hand. A portal date can be when a problem was listed, not diagnosed.",
+    "Alerts go to the clinician, never the patient",
+    "Under FDA's January 2026 decision-support guidance, recommendations shown to patients make software a device. Clinician alerts stay outside device rules when they're rule-based, cite the guideline and show every source and gap.",
+    "Patient · free",
+    "Gets the link with the practice’s new-patient paperwork.",
+    "Builds the tree by side of family, with guided heart questions.",
+    "Invites relatives once there’s something useful to show.",
+    "Reviews, then prints or shares the summary.",
+    "Relative · free, no account",
+    "Opens a single-purpose link and sees who asked and why.",
+    "Answers for themself, or declines. Only they can decline.",
+    "Optionally logs into their own MyChart and ticks one fact.",
+    "Adds what they know about their own parents and siblings.",
+    "Practice · pays",
+    "Gets one page: guideline criteria matched, then gaps and conflicts.",
+    "Sees every fact with who said it and when.",
+    "Decides what matters. A “reviewed by clinician” state locks the version in the chart.",
+    "A lean BAA-covered stack (Vercel Pro with the HIPAA add-on, Neon Scale, Amazon SES) costs roughly $400–550 a month before any revenue. Vercel’s free Hobby plan is non-commercial and signs no BAA, which is why this prototype holds made-up data only.",
+    "When HIPAA applies",
+    "Patient uses the app on their own: not HIPAA. FTC Health Breach Notification Rule, FTC Act, and state laws (WA, CA, CT, NV; NY passed both houses, not yet signed).",
+    "Relative shares a portal fact: their own right of access; once released to the app it leaves HIPAA.",
+    "Practice pays and summaries feed its chart: the team is a business associate. BAAs with every practice and vendor, a risk analysis, MFA and encryption.",
+    "Family history is genetic information (GINA). It protects against health insurers and employers, not life, disability or long-term-care insurers. No insurer or employer channels, no data sales, ever.",
+    "Say this, not that",
+    "“Built to operate as a HIPAA business associate, using only vendors that sign BAAs.”",
+    "“From <health system>’s record, retrieved <date>.”",
+    "“Does not diagnose. A clinician decides what matters.”",
+    "“HIPAA certified” or a HIPAA badge (no such certification exists; see the FTC’s GoodRx case).",
+    "“HIPAA-compliant cloud (Box)” or “verified diagnosis”.",
+    "“GINA protects you from insurers” without the life, disability and LTC caveat.",
+    "Family-history criteria named in current guidelines. The app matches what was reported against these and lists them for the clinician to interpret. It never computes a risk score and never shows these to the patient as a recommendation.",
+    "Who pays, and for what",
+    "Free for patients and relatives, with no ads and no data sales written into the terms.",
+    "Independent cardiology practices pay a flat fee per cardiologist ($99–149/month to start). Never priced per referral or new patient (anti-kickback risk).",
+    "No billing code pays for family history (96160 risk assessment: $3.01; genetic counseling is bundled). The value is staff time saved and relatives identified for screening.",
+    "Competition: we found no patient-facing cardiology family-tree product combining relative-filled branches, per-fact sources, a portal fact and a cardiology one-pager. Lab-funded tools are mostly cancer-focused; FamGenix ($500/yr, with a cardio add-on) deserves a hands-on look.",
+    "Market size, with the math",
+    "NYC is a pilot market, not a revenue market; 76–79% of NYC cardiologists sit inside large health systems that already run Epic. Growth would come from larger groups, health systems, primary care (the Medicare wellness visit requires family history) and genetics programs.",
+    "Pilot: 8–12 weeks with 1–3 independent NYC groups, $500–1,000 flat, credited to an annual contract. Continue if at least 1 of 3 practices converts to paid and at least 40% of invited patients complete the tree before the visit."
+  ]
+}

@@ -1,102 +1,252 @@
-.main {
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 32px 24px 80px;
+/* /research prose (DESIGN §10.5). Tokens only; no @apply. The article HTML comes from docs/research.md via marked, so
+   every element selector is :global inside .prose. Text runs are capped at 68ch; tables may use the full column. */
+
+.prose {
+  --prose-link: var(--color-evergreen-600);
+  --prose-rule: var(--ui-line);
+  font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  letter-spacing: -0.006em;
+  color: var(--color-ink-2);
+  overflow-wrap: break-word;
 }
 
-.doc {
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  padding: 40px 44px;
-  font-size: 15.5px;
-  line-height: 1.6;
-  color: var(--ink-2);
+.prose > :global(*) {
+  max-width: 68ch;
+}
+.prose > :global([data-table-wrap]) {
+  max-width: none;
+}
+.prose > :global(:first-child) {
+  margin-top: 0;
+}
+
+/* ---------- Headings ---------- */
+.prose :global(h2) {
+  margin: 4.5rem 0 1.25rem;
+  padding-top: 2.25rem;
+  border-top: 1px solid var(--prose-rule);
+  font-family: var(--font-newsreader), ui-serif, Georgia, serif;
+  font-size: clamp(1.75rem, 1.4rem + 1vw, 2.5rem);
+  font-weight: 360;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--color-ink);
+  text-wrap: balance;
+}
+.prose > :global(h2:first-child) {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+.prose :global(h3) {
+  margin: 2.75rem 0 0.875rem;
+  font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 590;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: var(--color-ink);
+  text-wrap: balance;
+}
+.prose :global(:is(h2, h3, li)) {
+  scroll-margin-top: 56px; /* + the root scroll-padding-top (80px): lands under the sticky "On this page" bar */
+}
+@media (width >= 64rem) {
+  .prose :global(:is(h2, h3, li)) {
+    scroll-margin-top: 20px; /* + 80px root scroll padding: just under the site nav */
+  }
+}
+
+/* ---------- Text ---------- */
+.prose :global(p) {
+  margin: 0 0 1.15em;
+  text-wrap: pretty;
+}
+.prose :global(strong) {
+  font-weight: 590;
+  color: var(--color-ink);
+}
+.prose :global(em) {
+  font-style: italic;
+}
+.prose :global(hr) {
+  display: none; /* every h2 already carries a rule */
+}
+.prose :global(ul),
+.prose :global(ol) {
+  margin: 0 0 1.4em;
+  padding-left: 1.35em;
+}
+.prose :global(ul) {
+  list-style: disc;
+}
+.prose :global(ol) {
+  list-style: decimal;
+}
+.prose :global(li) {
+  margin: 0.45em 0;
+  padding-left: 0.25em;
+}
+.prose :global(li::marker) {
+  color: var(--color-ink-3);
+}
+.prose :global(ol > li::marker) {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.85em;
+}
+.prose :global(li > ul),
+.prose :global(li > ol) {
+  margin: 0.4em 0 0.6em;
+}
+
+/* ---------- Links ---------- */
+.prose :global(a) {
+  color: var(--prose-link);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgb(14 107 87 / 0.38);
+  text-underline-offset: 0.18em;
+  transition:
+    color var(--dur-hover) var(--ease-out-quart),
+    text-decoration-color var(--dur-hover) var(--ease-out-quart);
+}
+.prose :global(a:hover) {
+  color: var(--color-evergreen-700);
+  text-decoration-color: currentColor;
+}
+/* [87]: mono, brand, a dotted underline (never color alone) and a soft chip on hover */
+.prose :global(a.cite) {
+  margin-inline: 0.05em;
+  padding: 0 0.12em;
+  border-radius: 4px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.8em;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-decoration-style: dotted;
+  white-space: nowrap;
+}
+.prose :global(a.cite:hover) {
+  background: var(--color-evergreen-50);
+}
+
+/* ---------- Code ---------- */
+.prose :global(code) {
+  padding: 0.1em 0.35em;
+  border-radius: 6px;
+  background: var(--color-mist);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.86em;
+  color: var(--color-ink);
   overflow-wrap: anywhere;
 }
-
-.doc :global(h1) {
-  font-size: 38px;
-  color: var(--ink);
-  margin-bottom: 8px;
-}
-
-.doc :global(h2) {
-  font-size: 28px;
-  color: var(--ink);
-  margin: 40px 0 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--line);
-}
-
-.doc :global(h3) {
-  font-size: 20px;
-  color: var(--ink);
-  margin: 28px 0 10px;
-}
-
-.doc :global(p),
-.doc :global(ul),
-.doc :global(ol) {
-  margin: 0 0 14px;
-}
-
-.doc :global(li) {
-  margin-bottom: 6px;
-}
-
-.doc :global(strong) {
-  color: var(--ink);
-}
-
-.doc :global(a) {
-  color: var(--accent);
-}
-
-.doc :global(code) {
-  font-size: 0.9em;
-  background: var(--surface-3);
-  padding: 1px 5px;
-  border-radius: 4px;
-}
-
-.doc :global(hr) {
-  border: 0;
-  margin: 28px 0;
-}
-
-.doc :global(table) {
-  display: block;
-  width: 100%;
+.prose :global(pre) {
+  margin: 0 0 1.4em;
+  padding: 1rem 1.25rem;
   overflow-x: auto;
-  border-collapse: collapse;
-  font-size: 13.5px;
-  margin: 8px 0 18px;
+  border-radius: 14px;
+  background: var(--color-mist);
+}
+.prose :global(pre code) {
+  padding: 0;
+  background: none;
 }
 
-.doc :global(th),
-.doc :global(td) {
+/* ---------- Tables (inside keyboard-scrollable wrappers from researchHtml.ts) ---------- */
+.prose :global([data-table-wrap]) {
+  margin: 1.75rem 0 2rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  border: 1px solid var(--prose-rule);
+  border-radius: 14px;
+  background: var(--color-white);
+  box-shadow: var(--shadow-xs);
+}
+.prose :global([data-table-wrap]:focus-visible) {
+  outline: 2px solid var(--color-evergreen-600);
+  outline-offset: 2px;
+}
+.prose :global(table) {
+  width: 100%;
+  min-width: 34rem;
+  border-collapse: collapse;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+.prose :global(th),
+.prose :global(td) {
+  padding: 0.7rem 0.9rem;
   text-align: left;
   vertical-align: top;
-  padding: 8px 10px;
-  border: 1px solid var(--line);
-  min-width: 120px;
+}
+.prose :global(thead th) {
+  background: var(--color-mist);
+  font-size: 13px;
+  font-weight: 590;
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+.prose :global(tbody tr + tr td),
+.prose :global(tbody tr + tr th) {
+  border-top: 1px solid var(--prose-rule);
+}
+.prose :global(td) {
+  color: var(--color-ink-2);
+}
+.prose :global(td:first-child) {
+  color: var(--color-ink);
+  font-weight: 500;
 }
 
-.doc :global(th) {
-  background: var(--surface-2);
-  color: var(--ink);
-  font-weight: 600;
+/* ---------- Sources ---------- */
+.prose :global(#sources ~ p > strong:only-child) {
+  display: block;
+  margin-top: 2.25rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+.prose :global(#sources ~ ol) {
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+.prose :global(#sources ~ ol li) {
+  margin: 0;
+  padding: 0.45em 0.6em 0.45em 0.35em;
+  border-radius: 8px;
+  overflow-wrap: anywhere;
+  transition: background-color 600ms var(--ease-out-quart);
+}
+.prose :global(#sources ~ ol a) {
+  color: var(--color-ink-2);
+  text-decoration-color: rgb(10 31 27 / 0.25);
+}
+.prose :global(#sources ~ ol a:hover) {
+  color: var(--color-evergreen-700);
+}
+/* Arriving from a [n] link: the source lights up */
+.prose :global(li:target) {
+  background: var(--color-evergreen-50);
+  box-shadow: inset 2px 0 0 var(--color-evergreen-600);
+}
+.prose :global(:is(h2, h3):target) {
+  text-decoration: underline;
+  text-decoration-color: var(--color-lumen);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.2em;
 }
 
-@media (max-width: 640px) {
-  .main {
-    padding: 16px 12px 48px;
+@media print {
+  .prose :global(a) {
+    color: inherit;
   }
-  .doc {
-    padding: 22px 18px;
-  }
-  .doc :global(h1) {
-    font-size: 28px;
+  .prose :global([data-table-wrap]) {
+    overflow: visible;
+    box-shadow: none;
   }
 }
