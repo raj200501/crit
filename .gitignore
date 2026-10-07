@@ -42,3 +42,8 @@ next-env.d.ts
 
 # demo render scratch frames
 /demo/frames/
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/

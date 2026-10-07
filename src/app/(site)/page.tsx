@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Arrow, Check, Heart, Link as LinkIcon, Lock, Logo } from "@/components/icons";
+import { Arrow, Check, Heart, Link as LinkIcon, Lock } from "@/components/icons";
 import TreeView, { Legend } from "@/components/TreeView";
 import { demoTree } from "@/lib/demo";
 import { viewTree } from "@/lib/status";
@@ -8,19 +8,9 @@ import styles from "./landing.module.css";
 export default function Home() {
   const views = viewTree(demoTree());
   return (
-    <div className={styles.page}>
-      <div className={styles.banner}>Student prototype with a made-up demo family. Please don&rsquo;t enter real health information.</div>
-      <header className={styles.nav}>
-        <span className={styles.brand}>
-          <Logo /> Family Health Tree
-        </span>
-        <nav>
-          <Link href="/how-it-works">How it works</Link>
-          <Link href="/tree" className="btn btn-primary btn-sm">
-            Open the demo
-          </Link>
-        </nav>
-      </header>
+    <main id="main" className={styles.page}>
+      {/* Spacer for the fixed SiteNav until P3 rebuilds this page. */}
+      <div aria-hidden className="h-20" />
 
       <section className={styles.hero}>
         <div className={styles.heroText}>
@@ -131,13 +121,6 @@ export default function Home() {
         </ul>
       </section>
 
-      <footer className={styles.footer}>
-        <span>
-          Family Health Tree · Team 709 (Raj Kashikar, Viha Srinivas, Unser Jaffry) · a student prototype, not a medical device and not for real health
-          information.
-        </span>
-        <Link href="/how-it-works">Research, compliance and business model</Link>
-      </footer>
-    </div>
+    </main>
   );
 }

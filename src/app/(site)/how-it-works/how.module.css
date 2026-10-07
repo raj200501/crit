@@ -6,6 +6,12 @@
   gap: 48px;
 }
 
+/* Grid items default to min-width:auto, so the 422 px "Riskiest assumptions" table (inside its own scroller)
+   widened every ancestor grid and the page scrolled sideways on phones. */
+.main :where(section, div) {
+  min-width: 0;
+}
+
 .hero h1 {
   font-size: 44px;
   margin: 10px 0 14px;

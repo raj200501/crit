@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import AppShell from "@/components/AppShell";
 import styles from "./how.module.css";
 
 export const metadata: Metadata = { title: "How it works" };
@@ -82,8 +81,9 @@ const risks = [
 
 export default function HowItWorks() {
   return (
-    <AppShell active="how">
-      <main className={styles.main}>
+    <main id="main" className={styles.main}>
+      {/* Spacer for the fixed SiteNav until P4 rebuilds this page. */}
+      <div aria-hidden className="h-16" />
         <header className={styles.hero}>
           <p className="kicker">How it would really work</p>
           <h1>From a free prototype to something a practice would pay for</h1>
@@ -319,7 +319,6 @@ export default function HowItWorks() {
             Try the demo
           </Link>
         </footer>
-      </main>
-    </AppShell>
+    </main>
   );
 }

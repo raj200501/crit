@@ -2,7 +2,6 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import type { Metadata } from "next";
 import { marked } from "marked";
-import AppShell from "@/components/AppShell";
 import styles from "./research.module.css";
 
 export const metadata: Metadata = { title: "Research" };
@@ -14,10 +13,10 @@ export default async function ResearchPage() {
     // External sources open in a new tab without leaking where the reader came from.
     .replace(/<a href="(https?:[^"]+)"/g, '<a href="$1" target="_blank" rel="noopener noreferrer"');
   return (
-    <AppShell active="how">
-      <main className={styles.main}>
-        <article className={styles.doc} dangerouslySetInnerHTML={{ __html: html }} />
-      </main>
-    </AppShell>
+    <main id="main" className={styles.main}>
+      {/* Spacer for the fixed SiteNav until P4 rebuilds this page. */}
+      <div aria-hidden className="h-16" />
+      <article className={styles.doc} dangerouslySetInnerHTML={{ __html: html }} />
+    </main>
   );
 }
