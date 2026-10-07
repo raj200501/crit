@@ -39,7 +39,7 @@ export default function Home() {
         <HeroCopy />
       </HeroStage>
       <ProblemStats example={receipts.mgm} />
-      <Section theme="white" aria-labelledby="product-title" className="overflow-hidden">
+      <Section theme="white" aria-labelledby="product-title" className="cv-auto overflow-hidden">
         <div className="mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8">
           <SectionHeading
             id="product-title"
@@ -52,15 +52,35 @@ export default function Home() {
           </Reveal>
         </div>
       </Section>
-      <GuidedChips />
-      <ReceiptsBento receipts={receipts} />
-      <RelativesSection />
-      <PrivacyBand />
-      <TwoReaders patientDoc={patientDoc} clinicianDoc={clinicianDoc} />
-      <PracticeBand />
-      <WhatWeHeard />
-      <FaqSection />
-      <FinalCta model={model} />
+      {/* Bands below the fold skip style and layout until they near the viewport (cv-auto: content-visibility:auto with
+          a remembered intrinsic size). The landing is ~3,800 elements; this keeps first-load main-thread work down. */}
+      <div className="cv-auto">
+        <GuidedChips />
+      </div>
+      <div className="cv-auto">
+        <ReceiptsBento receipts={receipts} />
+      </div>
+      <div className="cv-auto">
+        <RelativesSection />
+      </div>
+      <div className="cv-auto">
+        <PrivacyBand />
+      </div>
+      <div className="cv-auto">
+        <TwoReaders patientDoc={patientDoc} clinicianDoc={clinicianDoc} />
+      </div>
+      <div className="cv-auto">
+        <PracticeBand />
+      </div>
+      <div className="cv-auto">
+        <WhatWeHeard />
+      </div>
+      <div className="cv-auto">
+        <FaqSection />
+      </div>
+      <div className="cv-auto">
+        <FinalCta model={model} />
+      </div>
     </main>
   );
 }

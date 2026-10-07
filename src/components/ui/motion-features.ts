@@ -1,3 +1,4 @@
-// Loaded lazily by MotionProvider. domMax = domAnimation + drag + layout: the layout feature is what makes
-// layoutId (SegmentedControl / AppShell / SiteNav pills) glide and Toast's layout="position" animate.
-export { domMax as default } from "motion/react";
+// Loaded lazily by MotionProvider. domAnimation (animations, exit, hover/tap/focus, in-view) is all the app uses: the
+// active-item indicators glide with a WAAPI FLIP (ui/useGlide.ts), so the layout/drag features (domMax, ~42 KB gzip)
+// never ship. Don't add `layout` / `layoutId` / `drag` props: under domAnimation they silently do nothing.
+export { domAnimation as default } from "motion/react";

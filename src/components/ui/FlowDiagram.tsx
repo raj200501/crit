@@ -87,6 +87,7 @@ export function FlowDiagram({ nodes, edges, viewBox = "0 0 160 90", caption, cyc
             <span
               key={`l-${e.from}-${e.to}`}
               aria-hidden
+              data-flow-edge-label=""
               className="absolute -translate-x-1/2 -translate-y-1/2 rounded-xs border border-line bg-bg px-1.5 py-0.5 font-mono text-eyebrow whitespace-nowrap text-fg-3 uppercase"
               style={{ left: `${(((a.x + b.x) / 2) / vw) * 100}%`, top: `${(((a.y + b.y) / 2) / vh) * 100}%` }}
             >
@@ -103,6 +104,7 @@ export function FlowDiagram({ nodes, edges, viewBox = "0 0 160 90", caption, cyc
             return (
               <li
                 key={n.id}
+                data-flow-node=""
                 className={cn(
                   "absolute flex -translate-y-1/2 items-center gap-2.5 rounded-md border border-line bg-surface py-2 pr-3.5 pl-2.5 whitespace-nowrap shadow-md",
                   fx > 0.2 && fx < 0.8 && "-translate-x-1/2",

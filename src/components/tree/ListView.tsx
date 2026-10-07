@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { cn } from "@/components/ui/cn";
 import { PedigreeGlyph, shapeForSex } from "@/components/ui/PedigreeGlyph";
 import { StatusPill } from "@/components/ui/StatusPill";
-import { generationOf, hasFinding, matchesHighlight, nodeStatus, statusWord, type Highlight } from "./model";
+import { generationOf, hasFinding, matchesHighlight, nodeAriaDetail, nodeDetail, nodeStatus, statusWord, type Highlight } from "./model";
 
 const GROUPS = [
   { gen: 0, title: "Grandparents" },
@@ -71,12 +71,13 @@ export function ListView({ views, selectedId, onSelect, pendingIds, arrivedIds, 
                         type="button"
                         data-person-id={p.id}
                         aria-pressed={selectedId === p.id}
-                        aria-label={`${p.label}: ${isSelf ? "you" : v.status}. ${v.headline}`}
+                        aria-label={`${p.label}: ${isSelf ? "you" : v.status}. ${isSelf ? v.headline : nodeAriaDetail(v)}`}
                         onClick={() => onSelect(p.id)}
                         className={cn(
                           "group flex min-h-16 w-full cursor-pointer items-center gap-3 px-4 py-3 text-left transition-[background-color,opacity] duration-(--dur-ui)",
                           "hover:bg-sunken focus-visible:-outline-offset-2 aria-pressed:bg-evergreen-50",
-                          dim && "opacity-35",
+                          // the legend filter fades the glyph only; text stays readable (WCAG 1.4.3)
+                          dim && "[&>span:first-child]:opacity-35",
                         )}
                       >
                         <span className={cn("grid size-10 shrink-0 place-items-center rounded-full", isSelf ? "bg-ink" : "bg-canvas")}>
@@ -92,7 +93,7 @@ export function ListView({ views, selectedId, onSelect, pendingIds, arrivedIds, 
                           />
                         </span>
                         <span className="flex min-w-0 flex-1 flex-col">
-                          <span className="flex items-center gap-2 text-ui font-strong text-fg">
+                          <span className={cn("flex items-center gap-2 text-ui font-strong", dim ? "text-fg-3" : "text-fg")}>
                             <span className="truncate">{p.label}</span>
                             {arrivedIds.has(p.id) ? (
                               <span className="rounded-xs bg-evergreen-50 px-1.5 font-mono text-eyebrow leading-5 text-evergreen-700 ring-1 ring-evergreen-600/30">
@@ -100,9 +101,10 @@ export function ListView({ views, selectedId, onSelect, pendingIds, arrivedIds, 
                               </span>
                             ) : null}
                           </span>
-                          <span className="truncate text-small text-fg-2">{v.status === "declined" ? "Chose not to share" : v.headline}</span>
+                          <span className={cn("truncate text-small", dim ? "text-fg-3" : "text-fg-2")}>{nodeDetail(v, ns, pending)}</span>
                         </span>
-                        {ns !== "self" ? <StatusPill status={ns} size="sm" label={statusWord(ns, pending)} /> : null}
+                        {/* StatusPill's own A3 label; only an invited relative gets the "Invited · waiting" word */}
+                        {ns !== "self" ? <StatusPill status={ns} size="sm" label={ns === "pending" && pending ? statusWord(ns, pending) : undefined} /> : null}
                         <ChevronRight
                           aria-hidden
                           className="size-4 shrink-0 text-fg-3 transition-transform duration-(--dur-hover) group-hover:translate-x-0.5"

@@ -1,7 +1,7 @@
 // Contract for /tree (owner: P5). DESIGN §12.1–12.5, §11.1–11.3, §13.5 acceptance; names per §12.9 (R2 chips, R7 sheet).
 // Node lookups use the `{label}: {status}. {headline}` name pattern (e.g. /^Grandpa Luis:/), never /^Grandpa Luis/ (R2).
 import type { Page } from "@playwright/test";
-import { expect, expectNoSeriousA11y, gotoApp, MOBILE, noHorizontalOverflow, test } from "./fixtures";
+import { expect, expectNoSeriousA11y, gotoApp, MOBILE, noHorizontalOverflow, obscuredFocusStops, test } from "./fixtures";
 
 const PEOPLE = ["self", "mom", "dad", "dev", "pgf", "pgm", "mgf", "mgm"];
 const INVITE_TEXT =
@@ -181,8 +181,9 @@ test.describe("tree", () => {
     expect(await preview.getAttribute("href")).toMatch(/\/invite#/);
     await panel.getByRole("button", { name: "Done" }).click();
     await expect(panel.getByRole("button", { name: "Ask Grandpa Luis directly" })).toBeVisible();
-    // the node now reads "invited, waiting"
-    await expect(page.locator('[data-person-id="mgf"]')).toContainText(/Invited · waiting/i);
+    // the node now reads "invited, waiting", in full (the demo's "Ask Grandpa Luis" beat)
+    await expect(page.locator('[data-person-id="mgf"] [data-node-status]')).toHaveText("Invited · waiting");
+    expect(await page.locator('[data-person-id="mgf"] span').evaluateAll((els) => els.filter((e) => e.scrollWidth > e.clientWidth + 0.5).map((e) => e.textContent))).toEqual([]);
   });
 
   test("edit details: Save, Cancel and (for added relatives) Remove from tree", async ({ page }) => {
@@ -262,12 +263,72 @@ test.describe("tree", () => {
     await expect(chip).toHaveAttribute("aria-pressed", "false");
     await chip.click();
     await expect(chip).toHaveAttribute("aria-pressed", "true");
-    const opacity = (id: string) => page.locator(`[data-person-id="${id}"]`).evaluate((el) => Number(getComputedStyle(el).opacity));
-    await expect.poll(() => opacity("mom")).toBeLessThan(0.5);
-    await expect.poll(() => opacity("dad")).toBe(1);
+    // only the glyph fades: names, status words and headlines keep AA contrast (WCAG 1.4.3)
+    const glyph = (id: string) => page.locator(`[data-person-id="${id}"] > svg`).evaluate((el) => Number(getComputedStyle(el).opacity));
+    const node = (id: string) => page.locator(`[data-person-id="${id}"]`).evaluate((el) => Number(getComputedStyle(el).opacity));
+    await expect.poll(() => glyph("mom")).toBeLessThan(0.5);
+    await expect.poll(() => node("mom")).toBe(1);
+    await expect.poll(() => glyph("dad")).toBe(1);
+    await a11y(page);
     await chip.click();
     await expect(chip).toHaveAttribute("aria-pressed", "false");
-    await expect.poll(() => opacity("mom")).toBe(1);
+    await expect.poll(() => glyph("mom")).toBe(1);
+  });
+
+  test("status words are the app's own (A3), in full, on nodes, in the list and in names", async ({ page }) => {
+    const status = (id: string) => page.locator(`[data-person-id="${id}"] [data-node-status]`);
+    await expect(status("pgm")).toHaveText("Chose not to share");
+    await expect(status("dad")).toHaveText("Reports disagree");
+    await expect(status("mgf")).toHaveText("Not asked yet");
+    await expect(status("pgf")).toHaveText("Unknown");
+    await expect(page.getByRole("button", { name: /^Grandma June: declined\. Chose not to share/ })).toBeVisible();
+    const tree = page.getByRole("group", { name: "Family health tree" });
+    await expect(tree).not.toContainText(/\bDeclined\b|\bDisagree\b|\bNOT ASKED\b/);
+    // nothing on a node's status line is cut off
+    const cut = await page.locator("[data-node-status]").evaluateAll((els) => els.filter((e) => e.scrollWidth > e.clientWidth + 0.5).map((e) => e.textContent));
+    expect(cut).toEqual([]);
+    await page.getByRole("button", { name: "List view" }).click();
+    await expect(tree.getByRole("button", { name: /^Grandma June:/ })).toContainText("Chose not to share");
+    await expect(tree.getByRole("button", { name: /^Dad:/ })).toContainText("Reports disagree");
+    await expect(tree).not.toContainText(/\bDeclined\b|\bDisagree\b/);
+  });
+
+  test("?person=dad&mode=invite never opens an invite for someone who passed away", async ({ page }) => {
+    await gotoApp(page, "/tree?person=dad&mode=invite");
+    const panel = page.locator('section[aria-label="Dad details"]');
+    await expect(panel).toBeVisible();
+    await expect(page.getByLabel("Invite message")).toHaveCount(0);
+    await expect(panel.getByRole("button", { name: "Add what you know" })).toBeVisible();
+  });
+
+  test("desktop inspector: Esc steps back from a form, then closes and returns focus to the node", async ({ page }) => {
+    await page.getByRole("button", { name: /^Dad:/ }).click();
+    const panel = page.locator('section[aria-label="Dad details"]');
+    await panel.getByRole("button", { name: "Add what you know" }).click();
+    await expect(panel.getByRole("group", { name: /Has Dad ever had any of these/ })).toBeVisible();
+    // the form's question is on screen, not scrolled above the column
+    await expect(panel.getByText("Has Dad ever had any of these?")).toBeInViewport();
+    await page.keyboard.press("Escape");
+    await expect(panel.getByRole("button", { name: "Add what you know" })).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(panel).toHaveCount(0);
+    await expect(page.locator('[data-person-id="dad"]')).toBeFocused();
+  });
+
+  test("copying the invite text by hand counts as sent, so the reply is accepted", async ({ page, context, baseURL }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+    await page.getByRole("button", { name: /^Grandpa Luis:/ }).click();
+    const panel = page.locator('section[aria-label="Grandpa Luis details"]');
+    await panel.getByRole("button", { name: "Ask Grandpa Luis directly" }).click();
+    await expect(panel).toContainText(/Not sent yet/i);
+    await panel.getByLabel("Invite message").focus();
+    await page.keyboard.press("ControlOrMeta+c");
+    await expect(panel).toContainText(/Link created/i);
+    const at = new Date().toISOString();
+    const reply = { v: 1, t: "demo", p: "mgf", b: "Grandpa Luis", at, reports: [{ personId: "mgf", kind: "no-history", source: "self", reportedBy: "Grandpa Luis", reportedById: "mgf", reportedAt: at }] };
+    await gotoApp(page, `${baseURL}/reply#${Buffer.from(JSON.stringify(reply)).toString("base64url")}`);
+    await expect(page.getByRole("region", { name: "What changes in your tree" })).toBeVisible();
+    await expect(page.locator("main")).not.toContainText(/haven.t invited/);
   });
 
   test("ghost slot: add Dad's brother or sister, then their panel opens", async ({ page }) => {
@@ -375,6 +436,17 @@ test.describe("arrival", () => {
     await expect(page.locator('section[aria-label="Grandpa Ray details"]')).toBeVisible();
   });
 
+  test("a reply opened in a fresh tab (tapped in Messages): Add to my tree → Open my tree plays the arrival there", async ({ page, context }) => {
+    await gotoApp(page, "/tree");
+    const fresh = await context.newPage(); // a new tab has its own sessionStorage: it has never shown the tree
+    await gotoApp(fresh, devReplyHash());
+    await fresh.getByRole("button", { name: "Add to my tree" }).click();
+    await fresh.getByRole("link", { name: "Open my tree" }).click();
+    await fresh.waitForURL(/\/tree/);
+    await expect(fresh.getByRole("status")).toContainText("Uncle Dev answered");
+    await expect(fresh.locator('[data-person-id="pgf"]')).toContainText("NEW");
+  });
+
   test.describe("reduced motion", () => {
     test.use({ contextOptions: { reducedMotion: "reduce" } });
     test("no ripple animation, but the toast still appears", async ({ page, context }) => {
@@ -450,6 +522,38 @@ test.describe("tree on phones", () => {
     await toggle.click();
     await expect(page.getByRole("heading", { name: "Get visit-ready" })).toBeVisible();
     await noHorizontalOverflow(page);
+  });
+
+  test("a focused '+' slot pans into view, and every Tab stop is visible (WCAG 2.4.11)", async ({ page }) => {
+    await gotoApp(page, "/tree");
+    const ghost = page.getByRole("button", { name: "Add Dad’s brother or sister" });
+    await ghost.focus();
+    const canvas = page.locator('[role="group"][aria-label="Family health tree"]').locator("xpath=ancestor::div[contains(@class,'group/vp')]");
+    await expect
+      .poll(async () => {
+        const [g, c] = [await ghost.boundingBox(), await canvas.boundingBox()];
+        return !!g && !!c && g.x >= c.x - 1 && g.x + g.width <= c.x + c.width + 1;
+      })
+      .toBe(true);
+    await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+    expect(await obscuredFocusStops(page, 30)).toEqual([]);
+  });
+
+  test("a toast shows above an open sheet and can be clicked (Copy message in the phone invite sheet)", async ({ page, context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+    await gotoApp(page, "/tree?person=mgf&mode=invite");
+    await expect(page.getByLabel("Invite message")).toBeVisible();
+    await page.getByRole("button", { name: "Copy message" }).click();
+    const toast = page.getByRole("status").filter({ hasText: "Copied" });
+    await expect(toast).toBeVisible();
+    const onTop = await toast.locator("li").first().evaluate((li) => {
+      const r = li.getBoundingClientRect();
+      const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      return !!hit && li.contains(hit);
+    });
+    expect(onTop).toBe(true);
+    await toast.getByRole("button", { name: "Dismiss notification" }).click();
+    await expect(toast.locator("li")).toHaveCount(0);
   });
 
   test("axe: 0 serious with the sheet closed, open, the answer form and the invite box", async ({ page }) => {

@@ -2,7 +2,7 @@
 // (the practice-side demo). Owner: P7. DESIGN §12.8 as amended by AMENDMENTS A1, §13.7 acceptance, §12.9 names.
 import { readFile } from "node:fs/promises";
 import type { Locator, Page } from "@playwright/test";
-import { expect, expectNoSeriousA11y, gotoApp, MOBILE, noHorizontalOverflow, pdfPageCount, test } from "./fixtures";
+import { expect, expectNoSeriousA11y, gotoApp, MOBILE, noHorizontalOverflow, obscuredFocusStops, pdfPageCount, test } from "./fixtures";
 
 const REVIEW = "I’ve checked this and it matches what my family told me.";
 const CLINICIAN_REVIEW = "Mark reviewed by clinician (demo, this browser only)";
@@ -179,6 +179,42 @@ test.describe("/summary on phones", () => {
   test("axe: 0 serious or critical", async ({ page }) => {
     await gotoApp(page, "/summary");
     await expectNoSeriousA11y(page);
+  });
+
+  test("every Tab stop stays clear of the review strip and the tab bar (WCAG 2.4.11)", async ({ page }) => {
+    await gotoApp(page, "/summary");
+    expect(await obscuredFocusStops(page, 45)).toEqual([]);
+  });
+
+  test("Share sheet: the FHIR download wraps instead of clipping, and 'Link copied' shows above the sheet", async ({ page, context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+    await gotoApp(page, "/summary");
+    await page.getByRole("checkbox").first().check();
+    await page.getByRole("button", { name: "Share", exact: true }).click();
+    const sheet = page.getByRole("dialog", { name: "Bring and share your summary" });
+    const fhir = sheet.getByRole("button", { name: "Download as FHIR (FamilyMemberHistory)" });
+    await expect(fhir).toBeVisible();
+    expect(await fhir.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+    await sheet.getByRole("button", { name: "Make a link for the practice" }).click();
+    await sheet.getByRole("button", { name: /^Copy/ }).first().click();
+    const toast = page.getByRole("status").filter({ hasText: /copied/i });
+    await expect(toast).toBeVisible();
+    const onTop = await toast.locator("li").first().evaluate((li) => {
+      const r = li.getBoundingClientRect();
+      const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      return !!hit && li.contains(hit);
+    });
+    expect(onTop).toBe(true);
+  });
+
+  test("the pedigree opens at its left edge, legible (≥ 12 px notes), and scrolls sideways", async ({ page }) => {
+    await gotoApp(page, "/summary");
+    const scroller = page.getByRole("region", { name: "Pedigree (scrolls sideways)" });
+    await expect(scroller).toBeVisible();
+    expect(await scroller.evaluate((el) => el.scrollLeft)).toBe(0);
+    await expect(scroller).toHaveAttribute("data-more", "right");
+    const sizes = await scroller.locator("svg text").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height));
+    expect(Math.min(...sizes)).toBeGreaterThanOrEqual(12);
   });
 });
 

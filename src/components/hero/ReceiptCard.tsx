@@ -41,7 +41,8 @@ export function receiptText({ node, state, entries, visitLine }: Pick<ReceiptCar
 /** Where the card's link goes: the same person in the live demo (Grandpa Luis: straight to his invite). */
 export function receiptLink(node: SceneNode, state: NodeState): { href: string; text: string; primary: boolean } {
   if (node.isSelf) return { href: "/tree", text: `Open ${node.name}’s tree`, primary: false };
-  if (state === "pending") return { href: `/tree?person=${node.id}&mode=invite`, text: `Ask ${node.name}`, primary: true };
+  // Only a living relative can be asked; the app never offers an invite to someone who passed away.
+  if (state === "pending" && !node.deceased) return { href: `/tree?person=${node.id}&mode=invite`, text: `Ask ${node.name}`, primary: true };
   return { href: `/tree?person=${node.id}`, text: `Open ${node.name} in the demo`, primary: false };
 }
 

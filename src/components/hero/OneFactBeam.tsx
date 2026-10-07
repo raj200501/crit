@@ -36,7 +36,7 @@ interface Spot {
   /** Where the name goes (default: the layout's). */
   label?: "below" | "right";
 }
-// Two layouts in viewBox units: wide (≥ 768 px, 640 × 360) and narrow (phones, 360 × 500).
+// Two layouts in viewBox units: wide (≥ 768 px, 640 × 360) and narrow (phones, 360 × 572).
 const WIDE = {
   w: 640,
   h: 360,
@@ -49,16 +49,18 @@ const WIDE = {
   path: "M 326 318 C 388 318, 382 92, 424 92",
   labelBelow: true,
 };
+// Narrow: every glyph and label sits ≥ 12 px inside the mist panel (which starts at 64% of the box); names and status
+// words stack on two lines, so the grandparents' labels never reach the panel's edges.
 const NARROW = {
   w: 360,
-  h: 500,
+  h: 572,
   spots: [
-    { id: "luis", name: "Grandpa Luis", shape: "square", x: 84, y: 368, label: "below" },
-    { id: "rosa", name: "Grandma Rosa", shape: "circle", x: 276, y: 368, label: "below" },
-    { id: "mom", name: "Mom", shape: "circle", x: 180, y: 432 },
-    { id: "alex", name: "Alex (you)", shape: "diamond", x: 180, y: 486 },
+    { id: "luis", name: "Grandpa Luis", shape: "square", x: 104, y: 394, label: "below" },
+    { id: "rosa", name: "Grandma Rosa", shape: "circle", x: 256, y: 394, label: "below" },
+    { id: "mom", name: "Mom", shape: "circle", x: 180, y: 484 },
+    { id: "alex", name: "Alex (you)", shape: "diamond", x: 180, y: 532 },
   ] as Spot[],
-  path: "M 180 302 C 180 332, 88 318, 84 346",
+  path: "M 180 343 C 180 366, 108 356, 104 374",
   labelBelow: false,
 };
 type Layout = typeof WIDE;
@@ -225,8 +227,9 @@ export function OneFactBeam() {
                 >
                   {went ? <Check className="size-3.5" strokeWidth={3} /> : <Minus className="size-3" strokeWidth={2.5} />}
                 </span>
-                <span className={cn("block min-w-0 flex-1 leading-tight", !went && "opacity-45")}>
-                  <span className="block text-ui text-fg">{r.label}</span>
+                {/* rows that stayed behind read quieter by colour, not opacity (AA contrast); the Minus box and the tag say it */}
+                <span className="block min-w-0 flex-1 leading-tight">
+                  <span className={cn("block text-ui", went ? "text-fg" : "text-fg-2")}>{r.label}</span>
                   <span className="block text-caption text-fg-3">{r.since}</span>
                 </span>
                 <span
@@ -305,18 +308,8 @@ export function OneFactBeam() {
       : { left: `${((s.x + 24) / L.w) * 100}%`, top: `${(s.y / L.h) * 100}%`, translate: "0 -50%" };
     return (
       <span key={s.id} className="absolute grid justify-items-start whitespace-nowrap data-[below]:justify-items-center" data-below={below || undefined} style={style}>
-        {/* Narrow boxes keep names and status on one line under the glyph, so the rows never collide. */}
-        {below && !L.labelBelow ? (
-          <span className={cn("text-caption font-medium text-fg", done && "text-record")}>
-            {s.name}
-            {word ? <span className={cn("font-normal text-fg-3", done && "font-medium text-record")}> · {word}</span> : null}
-          </span>
-        ) : (
-          <>
-            <span className={cn("text-caption font-medium text-fg", done && "text-record")}>{s.name}</span>
-            {word ? <span className={cn("text-caption text-fg-3", done && "font-medium text-record")}>{word}</span> : null}
-          </>
-        )}
+        <span className={cn("text-caption font-medium text-fg", done && "text-record")}>{s.name}</span>
+        {word ? <span className={cn("text-caption text-fg-3", done && "font-medium text-record")}>{word}</span> : null}
         {done ? <span className="text-caption text-record">{L.labelBelow ? "from a portal record (demo)" : "from a portal record"}</span> : null}
       </span>
     );
@@ -324,8 +317,8 @@ export function OneFactBeam() {
 
   return (
     <figure className="m-0 w-full" aria-labelledby={`${uid}-cap`}>
-      {/* One box: 360 × 500 on phones (card on top, pedigree below), 16:9 from 768 px (card left, pedigree right). */}
-      <div className="relative aspect-[360/500] w-full md:aspect-[16/9]">
+      {/* One box: 360 × 572 on phones (card on top, pedigree below), 16:9 from 768 px (card left, pedigree right). */}
+      <div className="relative aspect-[360/572] w-full md:aspect-[16/9]">
         <div className="absolute inset-x-0 top-[64%] bottom-0 rounded-lg bg-mist/60 bg-dots [--dots-size:20px] md:inset-y-0 md:right-0 md:left-[55%]" aria-hidden="true" />
         <div className="hidden md:contents">
           <Pedigree L={WIDE} luis={luis} phase={phase} ripple={ripple} squareRef={wideSquare} pathRef={widePath} trailRef={wideTrail} />

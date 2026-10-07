@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { cn } from "@/components/ui/cn";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { HONESTY, PILOT, pilotHref, SITE } from "@/content/site";
+import { HONESTY, PILOT, pilotCta, SITE } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Pilot",
@@ -92,9 +92,12 @@ export default function PilotPage() {
         aside={<PilotArc />}
       >
         <div className="mt-8 flex flex-wrap items-center gap-3 print:hidden">
-          <Button href={pilotHref()} size="lg" iconRight={<ArrowRight />} className="max-sm:w-full">
-            Request a pilot conversation
-          </Button>
+          {/* Without a contact address the CTA would only point back at this page, so the hero keeps just Print. */}
+          {pilotCta().contact ? (
+            <Button href={pilotCta().href} size="lg" iconRight={<ArrowRight />} className="max-sm:w-full">
+              {pilotCta().label}
+            </Button>
+          ) : null}
           <PrintButton variant="secondary" size="lg" className="max-sm:w-full" />
         </div>
         <ul className="mt-8 flex flex-wrap gap-2 print:hidden" aria-label="The pilot in brief">
@@ -154,12 +157,19 @@ export default function PilotPage() {
           {SITE.pilotEmail ? (
             <div className="flex flex-col gap-2">
               <p className="text-lead text-fg print:text-[11px]">Tell us about your practice, your EHR and a good time to talk.</p>
-              <Button href={pilotHref()} iconLeft={<Mail />} className="self-start print:hidden">
-                Request a pilot conversation
+              <Button href={pilotCta().href} iconLeft={<Mail />} className="self-start print:hidden">
+                {pilotCta().label}
               </Button>
             </div>
           ) : (
-            <p className="max-w-[48ch] text-lead text-fg print:text-[11px]">Contact details are shared at the pitch and in our Team Hub.</p>
+            <div className="flex max-w-[52ch] flex-col gap-3 print:gap-0.5">
+              <p className="font-mono text-eyebrow font-medium text-fg-3 uppercase print:text-[9px]">Team 709 · Product Studio · New York City</p>
+              <p className="text-lead text-fg print:text-[11px]">Raj Kashikar, Viha Srinivas and Unser Jaffry.</p>
+              <p className="text-body text-fg-2 print:text-[10px]">
+                Find us at Maker Day, or ask for our contact details in the Team Hub. We share them in person rather than publish an address on
+                a demo site.
+              </p>
+            </div>
           )}
           <PrintButton variant="secondary" />
         </div>

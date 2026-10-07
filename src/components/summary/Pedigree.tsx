@@ -3,6 +3,7 @@
 import { layoutTree } from "@/lib/layout";
 import type { PersonView } from "@/lib/status";
 import type { Person, Relation } from "@/lib/types";
+import type { CSSProperties } from "react";
 import { cn } from "@/components/ui/cn";
 import { PedigreeGlyph, shapeForSex } from "@/components/ui/PedigreeGlyph";
 import { annotations, hasFinding, nodeStatus } from "./model";
@@ -15,6 +16,9 @@ const ROW = 166;
 const NAME_DY = 50;
 const LINE_DY = 22;
 const MAX_NAME = 16;
+/** On screen: never smaller than this (12 px notes), never taller than this. */
+const MIN_SCALE = 0.6;
+const MAX_SCALE = 0.85;
 
 const clip = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
 
@@ -76,6 +80,8 @@ export function Pedigree({ views, className, label }: PedigreeProps) {
       role="img"
       aria-label={label ?? `Family pedigree, ${people.length} people across ${rowsPresent.length} generations. Filled symbols mean a heart condition was reported.`}
       className={cn("block h-auto w-full overflow-visible", className)}
+      // the legible screen size: notes (20 units) at ≥ 12 px and names (24 units) at ≥ 14 px; print ignores both
+      style={{ "--ped-min-w": `${Math.round(width * MIN_SCALE)}px`, "--ped-max-h": `${Math.round(height * MAX_SCALE)}px` } as CSSProperties}
       focusable="false"
     >
       <path d={lines.join("")} fill="none" stroke="var(--color-ink-3)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" data-pedigree-lines="" />

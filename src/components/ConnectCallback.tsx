@@ -1,10 +1,11 @@
 "use client";
 
 import { m, useReducedMotion } from "motion/react";
-import { Check, Info } from "lucide-react";
+import { Check, ChevronDown, Info } from "lucide-react";
 import { useEffect, useState } from "react";
 import { completeMyChartConnect, stashPortalResult } from "@/lib/smart";
 import { Lockup } from "./brand/Lockup";
+import { readInviteReturn } from "./relative/returnPoint";
 import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
 import { cn } from "./ui/cn";
@@ -13,6 +14,14 @@ import { HonestyRibbon } from "./ui/HonestyRibbon";
 
 // The OAuth code can be exchanged only once; guard against effects running twice.
 let started = false;
+
+/** Plain words for the errors a relative can actually hit; the raw message stays behind "Technical details". */
+function plainError(raw: string): string {
+  if (/state/i.test(raw) && /(no|not found|missing)/i.test(raw)) return "This page was opened without a sign-in.";
+  if (/fetch|network|load failed|timed? ?out/i.test(raw)) return "We couldn’t reach the sandbox. It may be offline.";
+  if (/denied|access_denied|cancel/i.test(raw)) return "The sign-in was cancelled.";
+  return "The sign-in didn’t finish.";
+}
 
 /**
  * /connect/callback (DESIGN §12.6): finishes the SMART sign-in, stashes the conditions for the invite that asked, and
@@ -27,8 +36,16 @@ export default function ConnectCallback() {
     started = true;
     completeMyChartConnect()
       .then(({ result, returnTo, owner }) => {
-        stashPortalResult(result, owner);
-        const target = new URL(returnTo, window.location.origin);
+        const saved = readInviteReturn();
+        let target = new URL(returnTo, window.location.origin);
+        let key = owner;
+        // The lib falls back to a bare /invite when its return key is gone (Back → Approve again): use ours instead.
+        if (saved && (target.origin !== window.location.origin || !target.hash)) {
+          target = new URL(saved.href);
+          key = saved.owner || owner;
+        }
+        // Ours is kept (not cleared) so Back from the picker → Approve again still finds the invite.
+        stashPortalResult(result, key);
         window.location.replace(target.origin === window.location.origin ? target.href : "/");
       })
       .catch((e: unknown) => setError(e instanceof Error ? e.message : String(e)));
@@ -46,7 +63,7 @@ export default function ConnectCallback() {
       </header>
       <main id="main" tabIndex={-1} className="flex flex-1 items-center justify-center px-4 py-12">
         <Card tier="overlay" className="w-full max-w-[440px] rounded-xl p-6 sm:p-8">
-          <Eyebrow>MyChart sandbox · made-up patients</Eyebrow>
+          <Eyebrow>SMART sandbox · made-up patients</Eyebrow>
           {error ? (
             <div className="mt-5 flex flex-col items-start gap-3">
               <span aria-hidden className="grid size-11 place-items-center rounded-full bg-mist text-fg-2">
@@ -54,16 +71,19 @@ export default function ConnectCallback() {
               </span>
               <h1 className="font-display text-[1.75rem] leading-tight font-book text-fg">Couldn&rsquo;t connect</h1>
               <p className="text-ui text-fg-2">
-                The sandbox may be offline, or this page was opened without a sign-in. Go back and try again, use the simulated record, or answer
-                yourself.
+                <span className="font-strong text-fg">{plainError(error)}</span> Go back to your invite and try again, use the simulated record, or
+                answer yourself.
               </p>
-              <p className="text-caption text-fg-3 [overflow-wrap:anywhere]">
-                <span className="font-mono text-eyebrow uppercase">Details · </span>
-                {error}
-              </p>
-              <Button onClick={() => history.back()} className="mt-2">
+              <Button onClick={() => window.location.replace(readInviteReturn()?.href ?? "/")} className="mt-2">
                 Go back
               </Button>
+              <details className="group mt-1 w-full text-caption text-fg-3">
+                <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-1.5 rounded-sm font-medium text-fg-2 select-none [&::-webkit-details-marker]:hidden">
+                  Technical details
+                  <ChevronDown aria-hidden className="size-4 transition-transform duration-(--dur-ui) group-open:rotate-180" />
+                </summary>
+                <p className="font-mono text-eyebrow [overflow-wrap:anywhere]">{error}</p>
+              </details>
             </div>
           ) : (
             <Reading />

@@ -22,7 +22,7 @@ export interface WelcomeProps {
   onDecline: () => void;
 }
 
-/** The letter: who asked, why, who sees it, the questions, 18+, Start. No time estimate (AMENDMENTS A2). */
+/** The letter: who asked, why, who sees it, the questions; then 18+ and Start in the sticky bar. No time estimate (AMENDMENTS A2). */
 export function Welcome({ me, asker, visit, others, adult, onAdult, onStart, onDecline }: WelcomeProps) {
   const hintId = useId();
   const about = others === 0 ? "about you" : others === 1 ? "about you and one relative" : "about you and a few relatives";
@@ -87,12 +87,13 @@ export function Welcome({ me, asker, visit, others, adult, onAdult, onStart, onD
           </div>
         </details>
 
-        <CheckboxCard size="lg" checked={adult} onChange={onAdult} title="I’m 18 or older." />
-        <Button variant="ghost" size="lg" fullWidth onClick={onDecline} className="-mt-1">
+        <Button variant="ghost" size="lg" fullWidth onClick={onDecline}>
           I&rsquo;d rather not share
         </Button>
       </div>
+      {/* The 18+ tick sits in the sticky bar, directly above Start, so the only control that enables Start is always on screen. */}
       <StepActions>
+        <CheckboxCard checked={adult} onChange={onAdult} title="I’m 18 or older." />
         <Button size="lg" fullWidth disabled={!adult} onClick={onStart} aria-describedby={adult ? undefined : hintId} iconRight={adult ? <ArrowGlyph /> : undefined}>
           Start
         </Button>

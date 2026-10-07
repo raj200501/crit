@@ -202,7 +202,8 @@ function ShareBody({ reviewed, link, qr, making, onMakeLink, copied, onCopy, onD
           </p>
         </div>
       ) : null}
-      <Button fullWidth variant="ghost" iconLeft={<Download />} onClick={onDownload} className="justify-start px-3">
+      {/* wraps to two lines in a narrow sheet instead of clipping (the accessible name is unchanged, §12.9) */}
+      <Button fullWidth variant="ghost" iconLeft={<Download />} onClick={onDownload} className="h-auto min-h-11 justify-start rounded-lg px-3 py-2 text-left whitespace-normal">
         Download as FHIR (FamilyMemberHistory)
       </Button>
     </>

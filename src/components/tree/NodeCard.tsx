@@ -2,8 +2,8 @@ import type { FocusEvent, KeyboardEvent, PointerEvent } from "react";
 import type { PersonView } from "@/lib/status";
 import { cn } from "@/components/ui/cn";
 import { PedigreeGlyph, shapeForSex } from "@/components/ui/PedigreeGlyph";
-import { STATUS_ICON, STATUS_TEXT } from "@/components/ui/status";
-import { hasFinding, nodeStatus, notAsked, statusWord } from "./model";
+import { STATUS_TEXT } from "@/components/ui/status";
+import { hasFinding, nodeAriaDetail, nodeDetail, nodeStatus, statusWord } from "./model";
 import { NODE_H, NODE_W } from "./geometry";
 
 export interface NodeCardProps {
@@ -55,18 +55,7 @@ export function NodeCard({
   const p = view.person;
   const isSelf = p.relation === "self";
   const ns = nodeStatus(view, pending);
-  const Icon = ns === "self" ? null : STATUS_ICON[ns];
-  const line3 = isSelf
-    ? view.headline
-    : view.status === "declined"
-      ? "Chose not to share"
-      : ns === "pending"
-        ? pending
-          ? "Waiting for their answers"
-          : notAsked(view)
-            ? "No answers yet"
-            : view.headline
-        : view.headline;
+  const line3 = nodeDetail(view, ns, pending);
 
   const hover = (fn?: (id: string) => void) => (e: PointerEvent<HTMLButtonElement>) => {
     if (e.pointerType === "mouse") fn?.(p.id);
@@ -78,7 +67,7 @@ export function NodeCard({
       data-person-id={p.id}
       data-tour-anchor={anchor || undefined}
       aria-pressed={!!selected}
-      aria-label={`${p.label}: ${isSelf ? "you" : view.status}. ${view.headline}`}
+      aria-label={`${p.label}: ${isSelf ? "you" : view.status}. ${isSelf ? view.headline : nodeAriaDetail(view)}`}
       tabIndex={tabbable ? 0 : -1}
       onClick={() => onSelect?.(p.id)}
       onFocus={(e) => onFocus?.(p.id, e)}
@@ -87,15 +76,16 @@ export function NodeCard({
       onPointerLeave={hover(onHoverEnd)}
       style={{ left: x, top: y, width: NODE_W, height: NODE_H, animationDelay: delay ? `${delay}ms` : undefined }}
       className={cn(
-        "group/node absolute flex cursor-pointer items-center gap-3 rounded-md border px-3 py-2.5 text-left",
+        "group/node absolute flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2.5 text-left",
         "transition-[translate,box-shadow,opacity,border-color,background-color] duration-(--dur-hover) ease-out-quart motion-safe:animate-fade-up",
-        isSelf ? "border-ink bg-ink text-white shadow-md" : "border-line bg-surface text-fg shadow-xs hover:border-line-strong",
+        isSelf ? "border-ink bg-ink text-white shadow-md" : dimmed ? "border-line/50 bg-surface/70 text-fg-3 shadow-none" : "border-line bg-surface text-fg shadow-xs hover:border-line-strong",
         "hover:-translate-y-0.5 not-aria-pressed:hover:shadow-md",
         "aria-pressed:-translate-y-0.5 aria-pressed:shadow-[0_0_0_3px_var(--color-canvas),0_0_0_5px_var(--color-ink),var(--shadow-md)]",
         "focus-visible:outline-offset-2 aria-pressed:focus-visible:outline-offset-[7px]",
         anchor &&
           "shadow-[0_0_0_3px_var(--color-canvas),0_0_0_5px_var(--color-evergreen-600),0_0_28px_6px_rgb(127_230_197/0.7)] not-aria-pressed:hover:shadow-[0_0_0_3px_var(--color-canvas),0_0_0_5px_var(--color-evergreen-600),0_0_28px_6px_rgb(127_230_197/0.7)]",
-        dimmed && "opacity-35",
+        // Dimmed by the legend filter: only the glyph, border and shadow fade; text stays ≥ 4.5:1 (WCAG 1.4.3)
+        dimmed && "[&>svg]:opacity-35",
         "motion-reduce:hover:translate-y-0 motion-reduce:aria-pressed:translate-y-0",
       )}
     >
@@ -115,16 +105,17 @@ export function NodeCard({
           {p.label}
           {p.deceased ? <span className="sr-only">, passed away</span> : null}
         </span>
+        {/* Line 2: the full A3 status word in sentence case (the glyph carries the shape, so no icon here) */}
         <span
+          data-node-status=""
           className={cn(
-            "mt-0.5 inline-flex items-center gap-1 font-mono text-eyebrow font-medium uppercase",
-            isSelf ? "text-lumen" : STATUS_TEXT[ns as keyof typeof STATUS_TEXT],
+            "mt-0.5 truncate text-caption leading-[1.3] font-medium",
+            isSelf ? "text-lumen" : dimmed ? "text-fg-3" : STATUS_TEXT[ns as keyof typeof STATUS_TEXT],
           )}
         >
-          {Icon ? <Icon aria-hidden className="size-3 shrink-0" strokeWidth={2.5} /> : null}
-          <span className="truncate">{statusWord(ns, pending)}</span>
+          {statusWord(ns, pending)}
         </span>
-        <span className={cn("mt-0.5 truncate text-caption", isSelf ? "text-ivory-2" : "text-fg-2")}>{line3}</span>
+        <span className={cn("mt-0.5 truncate text-caption", isSelf ? "text-ivory-2" : dimmed ? "text-fg-3" : "text-fg-2")}>{line3}</span>
       </span>
       {arrived || view.verified ? (
         <span aria-hidden className="pointer-events-none absolute -top-2.5 right-2.5 flex gap-1">

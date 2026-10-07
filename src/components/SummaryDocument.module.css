@@ -223,6 +223,8 @@
   }
   .pedScroll {
     overflow: visible !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
   }
   .pedSvg {
     min-width: 0 !important;

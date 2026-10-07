@@ -3,6 +3,8 @@
 import { AnimatePresence, m } from "motion/react";
 import { Check, X } from "lucide-react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
+import { subscribeModals, topModal } from "./modalStack";
 import { cn } from "./cn";
 import { DUR, EASE } from "./motion";
 
@@ -41,16 +43,29 @@ const subscribe = (l: () => void) => {
   return () => listeners.delete(l);
 };
 const EMPTY: ToastItem[] = [];
+const noopSubscribe = () => () => {};
 
-/** Mounted once in the root layout, inside <MotionProvider> (its m.li needs LazyMotion). Bottom-right; on phones it sits above the app tab bar. */
+/**
+ * Mounted once in the root layout, inside <MotionProvider> (its m.li needs LazyMotion). Bottom-right; on phones it sits
+ * above the app tab bar; /tree on desktop moves it over the canvas (globals.css, [data-toaster]). While a modal Sheet is
+ * open the region renders inside that <dialog>: a modal dialog makes the rest of the page inert and sits in the top
+ * layer, so a toast outside it would be covered, unclickable and never announced.
+ */
 export function Toaster() {
   const list = useSyncExternalStore(
     subscribe,
     () => items,
     () => EMPTY,
   );
-  return (
-    <section aria-label="Notifications" className="pointer-events-none fixed right-4 bottom-[calc(80px+env(safe-area-inset-bottom))] z-(--z-toast) w-[min(380px,calc(100vw-32px))] md:right-6 md:bottom-6 print:hidden">
+  const host = useSyncExternalStore(subscribeModals, topModal, () => null);
+  const mounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
+  if (!mounted) return null;
+  return createPortal(
+    <section
+      data-toaster=""
+      aria-label="Notifications"
+      className="pointer-events-none fixed right-4 bottom-[calc(80px+env(safe-area-inset-bottom))] z-(--z-toast) w-[min(380px,calc(100vw-32px))] md:right-6 md:bottom-6 print:hidden"
+    >
       <div role="status" aria-live="polite" aria-atomic="false">
         <ul className="flex flex-col gap-2">
           <AnimatePresence initial={false}>
@@ -60,7 +75,8 @@ export function Toaster() {
           </AnimatePresence>
         </ul>
       </div>
-    </section>
+    </section>,
+    host ?? document.body,
   );
 }
 
@@ -79,7 +95,6 @@ function ToastCard({ toast: t }: { toast: ToastItem }) {
 
   return (
     <m.li
-      layout="position"
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 8, transition: { duration: DUR.ui } }}

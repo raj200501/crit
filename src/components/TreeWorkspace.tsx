@@ -149,6 +149,7 @@ export default function TreeWorkspace() {
       initialEdit={s.edit}
       pending={pendingIds.has(v.person.id) && v.status === "unknown"}
       onClose={close}
+      inline={wide}
     />
   );
 
@@ -157,6 +158,7 @@ export default function TreeWorkspace() {
   return (
     <main
       id="main"
+      data-toasts="canvas"
       className="mx-auto flex w-full max-w-[1680px] flex-col px-4 pt-5 pb-10 sm:px-6 lg:h-[calc(100svh-var(--app-header-h))] lg:min-h-[680px] lg:pt-6 lg:pb-6"
     >
       <Suspense fallback={null}>

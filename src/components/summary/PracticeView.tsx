@@ -1,7 +1,7 @@
 "use client";
 
 // /practice (AMENDMENTS A1): what a paying cardiology practice sees. Upcoming new-patient visits (the first row is the demo
-// patient from this browser's tree; three clearly-labelled made-up demo rows), and the care-team document of
+// patient from this browser's tree; three clearly labeled made-up demo rows), and the care-team document of
 // shareableTree(tree) with Print · Copy as chart text · Download FHIR · Mark reviewed by clinician. No metrics, totals or
 // percentages anywhere.
 import { CalendarDays, Check, ChevronLeft, ChevronRight, CircleDashed, Info, Send } from "lucide-react";
@@ -130,7 +130,7 @@ export function PracticeView() {
                 <CalendarDays aria-hidden className="size-4 text-ink-3" />
                 Upcoming new-patient visits
               </h2>
-              <p className="font-mono text-eyebrow text-ink-3 uppercase">This week · made-up rows are labelled</p>
+              <p className="font-mono text-eyebrow text-ink-3 uppercase">This week · made-up rows are labeled</p>
             </div>
 
             {/* desktop: a table */}

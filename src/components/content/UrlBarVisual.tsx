@@ -16,9 +16,10 @@ export interface UrlBarVisualProps {
 }
 
 type View = "browser" | "server";
+// Short visible labels (they fit a 320 px screen); the accessible names keep the full question and contain the visible text.
 const VIEWS = [
-  { value: "browser", label: "In your browser" },
-  { value: "server", label: "What the server gets" },
+  { value: "browser", label: "Your browser", ariaLabel: "In your browser" },
+  { value: "server", label: "The server", ariaLabel: "What the server gets" },
 ] as const;
 
 // What each key of an invite payload means (src/lib/share.ts InvitePayload).
@@ -49,7 +50,7 @@ export function UrlBarVisual({ host, path, fragment, decoded }: UrlBarVisualProp
   return (
     <figure className="overflow-hidden rounded-xl border border-line bg-surface shadow-md">
       <div className="flex flex-col gap-4 border-b border-line bg-paper p-4 sm:p-6">
-        <SegmentedControl label="Who sees the link" options={VIEWS} value={view} onChange={setView} className="self-start" />
+        <SegmentedControl label="Who sees the link" options={VIEWS} value={view} onChange={setView} fullWidth className="sm:w-auto sm:self-start" />
         {/* the address bar */}
         <div className="glass flex h-12 min-w-0 items-center gap-2.5 rounded-full border border-line-strong px-4 font-mono text-small shadow-xs">
           <Globe aria-hidden className="size-4 shrink-0 text-fg-3" strokeWidth={1.75} />

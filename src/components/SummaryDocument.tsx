@@ -9,7 +9,7 @@ import { createElement, useId, type HTMLAttributes, type ReactNode } from "react
 import { CRITERIA_FOOTNOTE, reviewItems, stillToConfirm, type Flag } from "@/lib/clinical";
 import { formatCondition, viewTree, type PersonView } from "@/lib/status";
 import type { FamilyTree, Report } from "@/lib/types";
-import { HONESTY } from "@/content/site";
+import { HONESTY, PATIENT_QUESTIONS } from "@/content/site";
 import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import { cn } from "./ui/cn";
@@ -17,7 +17,7 @@ import { PedigreeGlyph, shapeForSex } from "./ui/PedigreeGlyph";
 import { SourceChip, sourceChipText } from "./ui/SourceChip";
 import { StatusLegend, type LegendItem } from "./ui/StatusLegend";
 import { StatusPill } from "./ui/StatusPill";
-import { CenterScroll } from "./summary/CenterScroll";
+import { SideScroll } from "./summary/SideScroll";
 import { Pedigree } from "./summary/Pedigree";
 import { ProvenancePopover } from "./summary/ProvenancePopover";
 import { ReviewStamp } from "./summary/ReviewStamp";
@@ -60,12 +60,7 @@ function Heading({ level, ...rest }: { level: number } & HTMLAttributes<HTMLHead
 
 const LEGEND: LegendItem[] = ["known", "conflicting", "unknown", "pending", "declined", "finding", "deceased", "record", "proband"];
 
-const QUESTIONS = [
-  "Does my family history change which tests I should have?",
-  "Should anyone else in my family be checked?",
-  "Would it help to see a genetic counselor?",
-  "Is there anything I should ask my relatives before my next visit?",
-];
+const QUESTIONS = PATIENT_QUESTIONS;
 
 export default function SummaryDocument({
   tree,
@@ -184,24 +179,27 @@ function PedigreeFigure({ views, ctx, uid }: { views: PersonView[]; ctx: Ctx; ui
       <div
         className={cn(
           styles.pedFrame,
-          "bg-dots flex flex-col gap-4 rounded-md border border-line bg-canvas/60 px-3 py-4 [--dots-size:18px] sm:px-5 md:flex-row md:items-center md:gap-6 md:py-5",
+          "bg-dots flex flex-col gap-3 rounded-md border border-line bg-canvas/60 px-3 py-4 [--dots-size:18px] sm:px-5 md:py-5",
         )}
       >
-        <div className={cn(styles.pedViewport, "relative min-w-0 md:flex-1")}>
-          <CenterScroll label="Pedigree (scrolls sideways)" className={cn(styles.pedScroll, "overflow-x-auto overscroll-x-contain rounded-sm")}>
-            <Pedigree views={views} className={cn(styles.pedSvg, "mx-auto max-h-[230px] min-w-[520px] md:min-w-0")} />
-          </CenterScroll>
-          {/* phones: the pedigree scrolls sideways (it opens centred); fades on both edges say there's more */}
-          <div aria-hidden className={cn(styles.pedFade, "pointer-events-none absolute inset-y-0 left-0 w-8 bg-linear-to-r from-canvas to-transparent md:hidden")} />
-          <div aria-hidden className={cn(styles.pedFade, "pointer-events-none absolute inset-y-0 right-0 w-8 bg-linear-to-l from-canvas to-transparent md:hidden")} />
+        {/* On screen the pedigree never renders below its legible size (names ≥ 14 px, notes ≥ 12 px: Pedigree sets
+            --ped-min-w); a narrower column scrolls sideways from the left edge, with a fade on the side that has more. */}
+        <div className={cn(styles.pedViewport, "relative min-w-0")}>
+          <SideScroll
+            label="Pedigree (scrolls sideways)"
+            className={cn(
+              styles.pedScroll,
+              "overflow-x-auto overscroll-x-contain rounded-sm",
+              "data-[more=right]:[mask-image:linear-gradient(to_right,#000_calc(100%-56px),transparent)]",
+              "data-[more=left]:[mask-image:linear-gradient(to_left,#000_calc(100%-56px),transparent)]",
+              "data-[more=both]:[mask-image:linear-gradient(to_right,transparent,#000_56px,#000_calc(100%-56px),transparent)]",
+            )}
+          >
+            <Pedigree views={views} className={cn(styles.pedSvg, "mx-auto max-h-(--ped-max-h) min-w-(--ped-min-w)")} />
+          </SideScroll>
         </div>
-        <figcaption className={cn(styles.legend, "md:w-48 md:shrink-0 md:border-l md:border-line md:pl-5")}>
-          <StatusLegend
-            compact
-            items={LEGEND}
-            context={ctx.audience === "clinician" ? "clinical" : "patient"}
-            className="md:flex-col md:flex-nowrap md:items-start md:gap-y-1.5"
-          />
+        <figcaption className={cn(styles.legend, "border-t border-line pt-3")}>
+          <StatusLegend compact items={LEGEND} context={ctx.audience === "clinician" ? "clinical" : "patient"} />
           <p className={cn(styles.pedHint, "mt-2 text-caption text-ink-3 md:hidden")}>Scroll sideways to see both sides of the family.</p>
         </figcaption>
       </div>

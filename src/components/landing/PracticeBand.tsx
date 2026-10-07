@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { pilotHref } from "@/content/site";
+import { pilotCta } from "@/content/site";
 
 /** §8.10 For cardiology practices: the evidence, the proposed pilot, and the way in. */
 export function PracticeBand() {
+  const cta = pilotCta();
   return (
     <Section id="practices" theme="white" aria-labelledby="practices-title" className="overflow-x-clip">
       <div className="mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8">
@@ -23,16 +24,18 @@ export function PracticeBand() {
             <ProofList />
             <div className="flex flex-col gap-5">
               <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-                <Button href={pilotHref()} size="lg">
-                  Request a pilot conversation
+                <Button href={cta.href} size="lg">
+                  {cta.label}
                 </Button>
                 {/* AMENDMENTS A1: the care-team view is the practice-side demo at /practice */}
                 <Button href="/practice" variant="secondary" size="lg">
                   See the care-team view
                 </Button>
-                <Button href="/pilot" variant="link" iconRight={<ArrowRight />} className="self-center sm:ml-2">
-                  Pilot details
-                </Button>
+                {cta.contact ? (
+                  <Button href="/pilot" variant="link" iconRight={<ArrowRight />} className="self-center sm:ml-2">
+                    Pilot details
+                  </Button>
+                ) : null}
               </div>
               <p className="font-mono text-eyebrow text-fg-3 uppercase">8–12 weeks · flat fee · you see results before any annual contract</p>
             </div>

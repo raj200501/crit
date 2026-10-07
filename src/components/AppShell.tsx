@@ -1,16 +1,15 @@
 "use client";
 
-import { m } from "motion/react";
 import { BookOpen, ChevronDown, FileText, Network } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import { useTree } from "@/lib/store";
 import { Lockup } from "./brand/Lockup";
 import { cn } from "./ui/cn";
 import { HonestyRibbon } from "./ui/HonestyRibbon";
-import { SPRING } from "./ui/motion";
 import { Popover } from "./ui/Popover";
+import { useGlide } from "./ui/useGlide";
 
 type Active = "tree" | "summary" | "how";
 
@@ -28,6 +27,8 @@ const NAV = [
 export default function AppShell({ children, active }: { children: ReactNode; active?: Active }) {
   const pathname = usePathname();
   const current: Active | undefined = active ?? NAV.find((n) => pathname === n.href || pathname?.startsWith(`${n.href}/`))?.key;
+  const pill = useRef<HTMLSpanElement>(null);
+  useGlide("appshell-nav-pill", pill, current);
 
   return (
     <div className="min-h-dvh bg-bg text-fg [--app-header-h:92px] print:min-h-0 print:bg-white">
@@ -47,7 +48,7 @@ export default function AppShell({ children, active }: { children: ReactNode; ac
               "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:z-(--z-nav) max-md:border-t max-md:border-line max-md:bg-surface max-md:pb-[env(safe-area-inset-bottom)]",
             )}
           >
-            <ul className="flex max-md:h-16 md:gap-0.5">
+            <ul data-glide-scope="" className="flex max-md:h-16 md:gap-0.5">
               {NAV.map((n) => {
                 const on = current === n.key;
                 const Icon = n.icon;
@@ -65,7 +66,7 @@ export default function AppShell({ children, active }: { children: ReactNode; ac
                       )}
                     >
                       {on ? (
-                        <m.span layoutId="appshell-nav-pill" transition={SPRING.glide} aria-hidden className="absolute inset-0 -z-10 rounded-full bg-surface shadow-sm max-md:hidden" />
+                        <span ref={pill} aria-hidden className="absolute inset-0 -z-10 rounded-full bg-surface shadow-sm max-md:hidden" />
                       ) : null}
                       {on ? <span aria-hidden className="absolute inset-x-6 top-0 h-0.5 rounded-full bg-brand md:hidden" /> : null}
                       <Icon aria-hidden className="size-5 md:hidden" strokeWidth={1.75} />

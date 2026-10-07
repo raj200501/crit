@@ -1,6 +1,5 @@
 "use client";
 
-import { m } from "motion/react";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -10,8 +9,8 @@ import { Lockup } from "../brand/Lockup";
 import { Button } from "../ui/Button";
 import { cn } from "../ui/cn";
 import { IconButton } from "../ui/IconButton";
-import { SPRING } from "../ui/motion";
 import { Sheet } from "../ui/Sheet";
+import { useGlide } from "../ui/useGlide";
 import { HonestyPill } from "./HonestyPill";
 
 const LINKS = [
@@ -33,6 +32,8 @@ const subscribeScroll = (cb: () => void) => {
  */
 export function SiteNav() {
   const pathname = usePathname();
+  const underline = useRef<HTMLSpanElement>(null);
+  useGlide("site-nav-underline", underline, pathname);
   const scrolled = useSyncExternalStore(
     subscribeScroll,
     () => window.scrollY > 40,
@@ -103,7 +104,7 @@ export function SiteNav() {
       >
         <Lockup href="/" className="max-lg:[&_svg]:size-6" />
         <HonestyPill size="sm" />
-        <ul className="ml-auto hidden items-center gap-0.5 lg:flex">
+        <ul data-glide-scope="" className="ml-auto hidden items-center gap-0.5 lg:flex">
           {LINKS.map((l) => {
             const active = isActive(l.href);
             return (
@@ -117,7 +118,7 @@ export function SiteNav() {
                   )}
                 >
                   {l.label}
-                  {active ? <m.span layoutId="site-nav-underline" transition={SPRING.glide} aria-hidden className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-brand" /> : null}
+                  {active ? <span ref={underline} aria-hidden className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-brand" /> : null}
                 </Link>
               </li>
             );

@@ -14,6 +14,7 @@ import {
   instrumentContext,
   MOBILE,
   noHorizontalOverflow,
+  obscuredFocusStops,
   RELATIVE_PHONE,
   SANDBOX_LAUNCH,
   test,
@@ -164,6 +165,9 @@ test.describe("relative flow (cross-device)", () => {
     await expect(m.getByRole("button", { name: /Send to Alex/ })).toBeVisible();
     await expect(m.locator("main")).toContainText("Got it. Alex will see that you’d rather not share. Nothing else is sent.");
     await expect(m.getByRole("button", { name: "Start over" })).toBeVisible();
+    // the preview uses the word Alex actually sees on the tree (AMENDMENTS A3)
+    await expect(m.locator("main")).toContainText("Chose not to share");
+    await expect(m.locator("main")).not.toContainText("Prefers not to share");
   });
 
   test("sandbox offline: Connect MyChart → Use a simulated record → share a fact", async ({ page }) => {
@@ -341,6 +345,46 @@ for (const viewport of [
   });
 }
 
+// The only control that enables Start (the 18+ tick) sits in the sticky bar directly above Start, so it is on screen on
+// first paint at every phone size (review: it used to sit under the bar).
+for (const viewport of [
+  { width: 390, height: 844 },
+  { width: 375, height: 667 },
+]) {
+  test.describe(`welcome at ${viewport.width}×${viewport.height}`, () => {
+    test.use({ ...MOBILE, viewport });
+    test("the 18+ tick is fully on screen above Start on first paint; ticking it enables Start", async ({ page }) => {
+      await gotoApp(page, luisInvite());
+      const tick = page.getByRole("checkbox", { name: /18 or older/ });
+      const start = page.getByRole("button", { name: "Start", exact: true });
+      await expect(tick).toBeInViewport({ ratio: 1 });
+      const [t, st] = [await tick.boundingBox(), await start.boundingBox()];
+      expect(t!.y + t!.height).toBeLessThanOrEqual(st!.y);
+      await expect(start).toBeDisabled();
+      await tick.check();
+      await expect(start).toBeEnabled();
+    });
+  });
+}
+
+// WCAG 2.4.11: Tab never lands on a control hidden under the sticky Start / Next bar (scroll-padding-bottom follows the bar).
+for (const viewport of [
+  { width: 390, height: 844 },
+  { width: 1440, height: 900 },
+]) {
+  test.describe(`focus not obscured at ${viewport.width}`, () => {
+    test.use(viewport.width < 768 ? { ...MOBILE, viewport } : { viewport });
+    test("welcome and the self step: every Tab stop is visible", async ({ page }) => {
+      await gotoApp(page, luisInvite());
+      expect(await obscuredFocusStops(page, 14), "welcome").toEqual([]);
+      await page.getByRole("checkbox", { name: /18 or older/ }).check();
+      await page.getByRole("button", { name: "Start", exact: true }).click();
+      await expect(h1(page)).toHaveText("About you");
+      expect(await obscuredFocusStops(page, 40), "self step").toEqual([]);
+    });
+  });
+}
+
 // The self step's answer form (P5's AnswerForm with `variant="page"` and `stickyActions`, DESIGN §11.4) sits under the
 // portal card. Once the form is on screen, its Next stays pinned to the bottom of the viewport while the rest of the long
 // form is still below the fold.
@@ -486,6 +530,23 @@ test.describe("callback and incomplete links", () => {
     await gotoApp(page, "/connect/callback");
     await expect(page.getByRole("heading", { name: "Couldn’t connect" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Go back" })).toBeVisible();
+    // plain words for a relative; the library's message only behind "Technical details"; the right sandbox name
+    const main = page.locator("main");
+    await expect(main).toContainText("This page was opened without a sign-in.");
+    await expect(main).toContainText("SMART sandbox · made-up patients");
+    await expect(main.getByText(/state/i)).toBeHidden();
+    await main.getByText("Technical details").click();
+    await expect(main.getByText(/state/i)).toBeVisible();
+  });
+
+  test("Go back on the callback returns to the invite that left for the sandbox, not to the sandbox's consent page", async ({ page }) => {
+    await gotoApp(page, luisInvite());
+    const invite = page.url();
+    await page.evaluate((href) => sessionStorage.setItem("fht:invite:return", JSON.stringify({ href, owner: "fht:invite:demo:mgf" })), invite);
+    await gotoApp(page, "/connect/callback");
+    await page.getByRole("button", { name: "Go back" }).click();
+    await page.waitForURL((u) => u.pathname === "/invite" && u.hash.length > 1);
+    await expect(h1(page)).toHaveText("Alex asked for your help.");
   });
 
   test("/invite and /reply without a payload explain the link is incomplete", async ({ page }) => {

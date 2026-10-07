@@ -153,6 +153,33 @@ for (const path of PATHS) {
       expect(text).not.toMatch(/\brisk\b/i);
     });
 
+    test("a pinned receipt never hides the controls: focus on them closes it, and Esc closes a hover card from anywhere", async ({ page }) => {
+      await openHero(page, path, "?scene-debug");
+      await waitLive(page);
+      await settleAtEnd(page);
+      await page.getByRole("button", { name: "Dad", exact: true }).click();
+      const card = page.getByRole("group", { name: "Dad: receipt" });
+      await expect(card).toBeVisible();
+      const pause = page.locator(HERO).getByRole("button", { name: /^(Pause|Play) animation$/ });
+      const uncovered = () =>
+        pause.evaluate((el) => {
+          const r = el.getBoundingClientRect();
+          const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+          return !!hit && el.contains(hit);
+        });
+      expect(await uncovered()).toBe(true);
+      await pause.focus();
+      await expect(card).toHaveCount(0);
+      expect(await uncovered()).toBe(true);
+      // WCAG 1.4.13: hover content dismissed with Esc while focus is on <body>
+      await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+      await page.mouse.move(5, 450);
+      await page.getByRole("button", { name: "Mom", exact: true }).hover();
+      await expect(page.getByRole("group", { name: "Mom: receipt" })).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(page.getByRole("group", { name: "Mom: receipt" })).toHaveCount(0);
+    });
+
     test("the Clearing: night nav during the chapters, one chapter at a time, paper at the end", async ({ page }) => {
       await openHero(page, path);
       const section = page.locator(HERO);
@@ -264,6 +291,15 @@ for (const path of PATHS) {
       await expect(card).toBeVisible();
       await expect(card).toBeInViewport();
       await expect(page.getByRole("button", { name: "Grandpa Ray", exact: true })).toHaveCount(1);
+      // the docked card sits above the controls bar: Skip the story stays visible and clickable
+      const skip = page.getByRole("button", { name: "Skip the story" });
+      expect(
+        await skip.evaluate((el) => {
+          const r = el.getBoundingClientRect();
+          const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+          return !!hit && el.contains(hit);
+        }),
+      ).toBe(true);
       await noHorizontalOverflow(page);
     });
 
@@ -337,6 +373,7 @@ test.describe("OneFactBeam", () => {
       await page.keyboard.press("Enter");
       await expect(page.getByText("Grandpa Luis shared one fact from his portal. Only that fact left the page.")).toBeVisible({ timeout: 4000 });
       await expect(page.getByRole("list", { name: "What Grandpa Luis shared" })).toContainText("Not shared · not stored");
+      await expectNoSeriousA11y(page, { include: [RELATIVES] }); // the rows that stayed behind keep AA contrast
       const reset = page.getByRole("button", { name: "Reset" });
       await expect(reset).toBeFocused();
       await page.keyboard.press("Enter");

@@ -4,7 +4,7 @@ import type { StoryModel } from "@/components/hero/story";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
-import { pilotHref, SITE } from "@/content/site";
+import { pilotCta, SITE } from "@/content/site";
 import { InView } from "./InView";
 
 /** §8.13 The closing night band: the hero's static night poster at 30% (no WebGL) whose lit relatives twinkle, then
@@ -36,8 +36,8 @@ export function FinalCta({ model }: { model: StoryModel }) {
           >
             Try the demo family
           </Button>
-          <Button href={pilotHref()} variant="secondary" size="lg">
-            Request a pilot conversation
+          <Button href={pilotCta().href} variant="secondary" size="lg">
+            {pilotCta().label}
           </Button>
         </div>
       </Reveal>

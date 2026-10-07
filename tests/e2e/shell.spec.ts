@@ -280,3 +280,37 @@ test.describe("/design-system never scrolls sideways", () => {
     });
   }
 });
+
+// FlowDiagram (SVG layout from 1280 px): no edge label is covered by a node ("YOU REVIEW" used to tuck under the summary).
+test.describe("FlowDiagram edge labels are never covered by a node", () => {
+  for (const [path, width] of [
+    ["/design-system", 1280],
+    ["/design-system", 1440],
+    ["/how-it-works", 1280],
+    ["/how-it-works", 1440],
+    ["/", 1440],
+  ] as const) {
+    test(`${path} at ${width} px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await gotoApp(page, path);
+      const fig = page.locator("figure:has(svg) [data-flow-edge-label]").first();
+      await fig.scrollIntoViewIfNeeded();
+      const overlaps = await page.evaluate(() => {
+        const out: string[] = [];
+        for (const label of document.querySelectorAll<HTMLElement>("[data-flow-edge-label]")) {
+          const l = label.getBoundingClientRect();
+          if (!l.width) continue;
+          const scope = label.closest("figure") ?? document;
+          for (const node of scope.querySelectorAll<HTMLElement>("[data-flow-node]")) {
+            const n = node.getBoundingClientRect();
+            const x = Math.min(l.right, n.right) - Math.max(l.left, n.left);
+            const y = Math.min(l.bottom, n.bottom) - Math.max(l.top, n.top);
+            if (x > 1 && y > 1) out.push(`${label.textContent?.trim()} under ${node.textContent?.trim().slice(0, 24)} (${Math.round(x)}px)`);
+          }
+        }
+        return out;
+      });
+      expect(overlaps).toEqual([]);
+    });
+  }
+});

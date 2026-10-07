@@ -30,7 +30,7 @@ export function PortalOptionCard({ asker, connecting, error, onConnect, onSimula
       <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,var(--color-evergreen-50),rgb(255_255_255/0)_62%)]" />
       <div className="flex flex-wrap gap-1.5">
         <Badge tone="brand" mono>
-          Fastest
+          From your own record
         </Badge>
         <Badge mono className="bg-white/80 ring-1 ring-line ring-inset">
           Demo sandbox

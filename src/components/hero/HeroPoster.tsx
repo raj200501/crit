@@ -64,6 +64,20 @@ function grains(model: StoryModel, crisp: (id: string) => number) {
   return out.map((g) => ({ x: f3(g.x), y: f3(g.y), r: f3(g.r), o: f3(g.o) }));
 }
 
+/** Groups grains into ≤ ~20 paths: diameter in 0.008-unit steps, opacity in 0.1 steps. */
+function grainPaths(list: { x: number; y: number; r: number; o: number }[]) {
+  const buckets = new Map<string, { w: number; o: number; d: string[] }>();
+  for (const g of list) {
+    const w = Math.max(0.008, Math.round((g.r * 2) / 0.008) * 0.008);
+    const o = Math.max(0.1, Math.round(g.o * 10) / 10);
+    const key = `${w.toFixed(3)}:${o.toFixed(1)}`;
+    const b = buckets.get(key) ?? { w: f3(w), o, d: [] };
+    b.d.push(`M${g.x} ${g.y}h0`);
+    buckets.set(key, b);
+  }
+  return [...buckets.entries()].map(([key, b]) => ({ key, w: b.w, o: b.o, d: b.d.join("") }));
+}
+
 export default function HeroPoster({ model, theme = "night", keyframe, invites = false, dust = true, names = false, twinkle = false, className }: HeroPosterProps) {
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const k = keyframe ?? model.keyframes.length - 1;
@@ -100,9 +114,11 @@ export default function HeroPoster({ model, theme = "night", keyframe, invites =
       ) : null}
 
       {night && dust ? (
-        <g fill="var(--fht-light)">
-          {grains(model, crisp).map((g, i) => (
-            <circle key={i} cx={g.x} cy={g.y} r={g.r} opacity={g.o} />
+        // ~210 grains drawn as a handful of paths (zero-length round-capped segments, bucketed by size and opacity)
+        // instead of 210 <circle>s: the landing draws this poster five times.
+        <g fill="none" stroke="var(--fht-light)" strokeLinecap="round">
+          {grainPaths(grains(model, crisp)).map((b) => (
+            <path key={b.key} d={b.d} strokeWidth={b.w} strokeOpacity={b.o} />
           ))}
         </g>
       ) : null}
@@ -174,7 +190,8 @@ export default function HeroPoster({ model, theme = "night", keyframe, invites =
             {names ? (
               // Chrome rasterizes sub-pixel font sizes badly: set 20 px type and scale the text down to 0.26 units.
               <text
-                transform={`translate(${x} ${f3(y + 0.5)}) scale(0.013)`}
+                // "you" is drawn larger with the proband arrow, so its name sits a little lower to clear the arrow
+                transform={`translate(${x} ${f3(y + (n.isSelf ? 0.56 : 0.5))}) scale(0.013)`}
                 textAnchor="middle"
                 fontSize={20}
                 fontWeight={560}

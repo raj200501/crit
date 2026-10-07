@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 const bottomLine = [
   {
     k: "The problem is measurable",
-    v: "Self-reports caught only 57.6% of heart attacks in parents and siblings (25,302 Swedes, 2026). Only 28% of offspring reports that Dad had a heart attack before 55 were confirmed by records (Framingham). Only about 11% of charted entries name both the relative and the age.",
+    v: "Self-reports caught only 57.6% of heart attacks in parents and siblings (25,302 Swedes, 2026). Only 28% of offspring reports that Dad had a heart attack before 55 were confirmed by records (Framingham). Only about 11% of positive heart family-history entries in UK primary-care records named both the relative and the age at onset.",
     cite: [87, 32, 89],
   },
   {
@@ -522,8 +522,8 @@ export default function HowItWorks() {
                 rows={market.map((r) => ({ head: r[0], cells: [r[1], <strong key="v" className="font-strong whitespace-nowrap text-fg tabular-nums">{r[2]}</strong>] }))}
               />
               <Note>
-                NYC is a pilot market, not a revenue market; 76–79% of NYC cardiologists sit inside large health systems that already run Epic. Growth would
-                come from larger groups, health systems, primary care (the Medicare wellness visit requires family history) and genetics programs.
+                NYC is a pilot market, not a revenue market; 76–79% of NYC cardiology clinicians sit inside six large health systems (NYU, Columbia, Mount Sinai,
+                Northwell, Montefiore, Weill Cornell). Growth would come from larger groups, health systems, primary care (the Medicare wellness visit requires family history) and genetics programs.
                 <Cite n={[99, 104]} />
               </Note>
               <Button href="/pilot" variant="link" iconRight={<ArrowRight />} className="self-start">

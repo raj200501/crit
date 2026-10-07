@@ -1,4 +1,5 @@
 import { Link2 } from "lucide-react";
+import { Fragment } from "react";
 import { cn } from "./cn";
 
 export type SourceKind = "self" | "relative" | "patient" | "record";
@@ -27,8 +28,7 @@ function parts(iso?: string) {
   return { md: `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`, year: String(d.getUTCFullYear()) };
 }
 
-/** The plain-text label a chip shows, e.g. "TOLD BY MOM · SEP 27". Exported for tests and copy-as-text. */
-export function sourceChipText(kind: SourceKind, who?: string, date?: string, system?: string): string {
+function segments(kind: SourceKind, who?: string, date?: string, system?: string): string[] {
   const p = parts(date);
   const bits =
     kind === "record"
@@ -36,14 +36,20 @@ export function sourceChipText(kind: SourceKind, who?: string, date?: string, sy
       : kind === "self"
         ? ["Self-reported", p?.md]
         : [`Told by ${who ?? (kind === "patient" ? "you" : "a relative")}`, p?.md];
-  return bits.filter(Boolean).join(" · ").toUpperCase();
+  return bits.filter((b): b is string => !!b).map((b) => b.toUpperCase());
+}
+
+/** The plain-text label a chip shows, e.g. "TOLD BY MOM · SEP 27". Exported for tests and copy-as-text. */
+export function sourceChipText(kind: SourceKind, who?: string, date?: string, system?: string): string {
+  return segments(kind, who, date, system).join(" · ");
 }
 
 /** Mono provenance chip. Never "verified": portal facts say where they came from. */
 export function SourceChip({ kind, who, date, system, onOpen, className }: SourceChipProps) {
-  const text = sourceChipText(kind, who, date, system);
+  const bits = segments(kind, who, date, system);
   const classes = cn(
-    "inline-flex max-w-full items-center gap-1 rounded-xs px-1.5 py-0.5 font-mono text-eyebrow font-medium whitespace-nowrap [&_svg]:size-3",
+    // In a narrow column the chip wraps between segments (never inside one, never an ellipsis): the year is the provenance
+    "inline-flex max-w-full items-start gap-1 rounded-xs px-1.5 py-0.5 text-left font-mono text-eyebrow font-medium [&_svg]:mt-px [&_svg]:size-3 [&_svg]:shrink-0",
     kind === "record" ? "bg-record-bg text-record dark:bg-record/15" : "bg-sunken text-fg-2",
     // As a button: a hairline ring marks it as tappable, and an invisible ::after grows the hit area to ~44 px without moving layout
     onOpen &&
@@ -53,7 +59,14 @@ export function SourceChip({ kind, who, date, system, onOpen, className }: Sourc
   const content = (
     <>
       {kind === "record" ? <Link2 aria-hidden strokeWidth={2.25} /> : null}
-      <span className="truncate">{text}</span>
+      <span className="min-w-0">
+        {bits.map((b, i) => (
+          <Fragment key={i}>
+            {i ? " · " : null}
+            <span className="whitespace-nowrap">{b}</span>
+          </Fragment>
+        ))}
+      </span>
     </>
   );
   return onOpen ? (

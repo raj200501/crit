@@ -11,7 +11,7 @@ Turn "heart problems run in the family" into **who, what, and at what age**, bef
 | Route | What it does |
 | --- | --- |
 | `/` | Landing page: the three.js "Night Window" hero and its scroll story, the problem, the live product tour, the relative's phone flow, privacy, two readers, practices, what we heard |
-| `/tree` | The patient's tree. Tap a relative to add what you know (guided cardiac questions with examples), invite them, or edit them. Statuses are derived, never typed: **known**, **conflicting**, **unknown**, **declined** |
+| `/tree` | The patient's tree. Tap a relative to add what you know (guided cardiac questions with examples), invite them, or edit them. Statuses are derived, never typed: **Known**, **Reports disagree**, **Unknown**, **Chose not to share**, **Not asked yet** (and **Invited · waiting**) |
 | `/invite#…` | What a relative sees on their phone: answer for themselves, optionally share one fact from MyChart, add what they know about others, then send it back |
 | `/connect/callback` | SMART on FHIR redirect handler for the MyChart demo |
 | `/reply#…` | The patient opens a relative's reply link and adds the answers to their tree |
@@ -39,7 +39,7 @@ Turn "heart problems run in the family" into **who, what, and at what age**, bef
 - **Honest labels.** A portal fact is shown as "from a portal record", not "verified". A record date can be when a problem was listed, not when it was diagnosed, so the relative confirms the age.
 - **FHIR export.** The summary exports as FamilyMemberHistory resources. Statuses map to `status` and `dataAbsentReason`, and every reported condition keeps who said it.
 - **Validation.** Everything arriving from a link or from storage is validated (`src/lib/sanitize.ts`). Replies are accepted only from invited relatives, only about themselves and the people they were asked about.
-- **Content-Security-Policy.** Scripts load only from this site, and the browser may connect only to this site and the SMART sandboxes.
+- **Content-Security-Policy.** Scripts load only from this site, and the browser may connect only to this site and two public FHIR sandboxes (SMART Health IT, plus Epic's developer sandbox, allowed as a backup and not used today).
 - **Clinician alerts, not patient alerts.** Under FDA's 2026 clinical decision support guidance, recommendations shown to patients make software a device. The patient sees facts and generic questions; guideline criteria appear only on the care-team document, each with its guideline and year.
 
 What changes before any real patient data (see `docs/research.md`): BAA-covered hosting and storage, a BAA with each paying practice, audit logging, a breach-response plan (FTC Health Breach Notification Rule), an explicit consent flow for relatives, and production Epic app registration. **Never describe this as "HIPAA certified".** No such certification exists.
@@ -57,7 +57,7 @@ npm run build && npx next start -p 3100 &   # e2e always runs against the produc
 E2E_PORT=3100 npx playwright test           # e2e contract, axe, CSP, print (E2E_SANDBOX=1 adds the live SMART sandbox test)
 ```
 
-Stack: Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4 (tokens in `src/app/globals.css`; CSS modules only for the summary's print rules, the hero stage and the `/research` prose), `motion`, `three` (lazy-loaded hero), Lenis, `fhirclient`, `qrcode`. No backend.
+Stack: Next.js 16 (App Router), React 19, TypeScript. **Styling: Tailwind CSS v4 + CSS modules for print** (tokens and utilities in `src/app/globals.css`; the only CSS modules are the summary's one-page print rules, the hero stage geometry and the `/research` prose). `motion` (LazyMotion, `domAnimation`), `three` (lazy-loaded hero, only with WebGL2 and motion allowed), Lenis (marketing routes, fine pointer only), `fhirclient`, `qrcode`. Fonts through `next/font/google` (self-hosted at build). No backend.
 
 ## Deploy (free, Vercel Hobby)
 
@@ -66,7 +66,8 @@ Deployed as the Vercel project `family-health-tree` at https://family-health-tre
 To set it up again elsewhere:
 
 1. Install the Vercel GitHub app on the repo: https://github.com/apps/vercel/installations/new
-2. Import the repo at https://vercel.com/new. The framework is detected as Next.js and needs no settings or environment variables.
+2. Import the repo at https://vercel.com/new. The framework is detected as Next.js and needs no other settings.
+3. Optional: set `NEXT_PUBLIC_PILOT_EMAIL` (a contact address for practices) and redeploy, since it is inlined at build time. With it, the practice CTAs read "Request a pilot conversation" and open an email; without it they read "See the pilot brief" and go to `/pilot`, and the contact card names the team.
 
 Vercel Hobby is for non-commercial use and has no BAA. That is fine for this synthetic-data prototype and not fine for real patient data.
 

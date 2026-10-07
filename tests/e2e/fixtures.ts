@@ -209,6 +209,46 @@ export async function noHorizontalOverflow(page: Page) {
   expect(scrollWidth, `page is ${scrollWidth}px wide in a ${innerWidth}px viewport`).toBeLessThanOrEqual(innerWidth);
 }
 
+/**
+ * WCAG 2.4.11 (Focus Not Obscured): presses Tab `steps` times and returns every stop whose focused element is fully
+ * hidden — its centre is covered by something else (sticky bars, sheets, cards) or lies outside the viewport. Elements
+ * inside a clipped pan/zoom canvas (`.group\/vp`) count as visible when their centre is inside the canvas.
+ */
+export async function obscuredFocusStops(page: Page, steps = 30) {
+  const bad: string[] = [];
+  for (let i = 0; i < steps; i++) {
+    await page.keyboard.press("Tab");
+    await page.waitForTimeout(80); // focus scrolling settles
+    const probe = () => page.evaluate(() => {
+      const el = document.activeElement as HTMLElement | null;
+      if (!el || el === document.body || el.tagName === "MAIN") return null;
+      const b = el.getBoundingClientRect();
+      if (b.width < 1 || b.height < 1) return null;
+      const name = (el.getAttribute("aria-label") || el.textContent || el.tagName).trim().replace(/\s+/g, " ").slice(0, 48);
+      const x = b.left + b.width / 2;
+      const y = b.top + b.height / 2;
+      const canvas = el.closest<HTMLElement>(".group\\/vp");
+      if (canvas) {
+        const c = canvas.getBoundingClientRect();
+        return x >= c.left && x <= c.right && y >= c.top && y <= c.bottom && y >= 0 && y <= innerHeight ? null : `${name} (outside the canvas)`;
+      }
+      if (x < 0 || y < 0 || x > innerWidth || y > innerHeight) return `${name} (off screen)`;
+      const top = document.elementFromPoint(x, y);
+      if (!top || el === top || el.contains(top) || top.contains(el)) return null;
+      // a label wrapping the control (checkbox cards) or the control's own <label>
+      if (top.closest("label")?.contains(el)) return null;
+      return `${name} (under ${top.tagName.toLowerCase()}.${String(top.className).split(" ").slice(0, 2).join(".")})`;
+    });
+    let r = await probe();
+    if (r?.endsWith("(outside the canvas)")) {
+      await page.waitForTimeout(600); // the canvas glides to a focused node or slot over 420 ms
+      r = await probe();
+    }
+    if (r) bad.push(r);
+  }
+  return bad;
+}
+
 /** Number of pages in a PDF produced by page.pdf() (reads the page tree's /Count, falling back to counting /Type /Page). */
 export function pdfPageCount(pdf: Buffer | Uint8Array): number {
   const text = Buffer.from(pdf).toString("latin1");

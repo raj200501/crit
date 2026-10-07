@@ -193,11 +193,11 @@ export function Gallery({ tone }: { tone: Tone }) {
               className="max-w-[18ch] font-display text-display-l font-book"
             />
             <div className="mt-10">
-              <SectionHeading eyebrow="Provenance" title="Every answer keeps its receipt." lead="Known, conflicting, unknown, declined. Shown by shape and words, never by color alone." />
+              <SectionHeading eyebrow="Provenance" title="Every answer keeps its receipt." lead="Known, reports disagree, unknown, chose not to share. Shown by shape and words, never by color alone, and never as a risk score." />
             </div>
             <Row className="mt-8 gap-6">
               <p className="text-body">
-                57.6% of heart attacks were caught by self-report.
+                57.6% {STATS[0].label}
                 <Cite n={87} />
               </p>
               <p className="text-body">

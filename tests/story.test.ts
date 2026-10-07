@@ -181,6 +181,10 @@ test("receipts keep who said it, and the hero never says “verified”", () => 
   assert.equal(receiptLink(node("mgf"), "pending").href, "/tree?person=mgf&mode=invite");
   assert.equal(receiptLink(node("mgf"), "pending").text, "Ask Grandpa Luis");
   assert.equal(receiptLink(node("dad"), "conflicting").text, "Open Dad in the demo");
+  // someone who passed away is never "asked", even before anyone has answered about them
+  assert.equal(receiptLink(node("dad"), "pending").text, "Open Dad in the demo");
+  assert.equal(receiptLink(node("dad"), "pending").href, "/tree?person=dad");
+  assert.equal(receiptLink(node("pgf"), "pending").href, "/tree?person=pgf");
   const all = JSON.stringify(model) + model.nodes.map((n) => receiptText({ node: n, state: model.keyframes[last].states[n.id], entries: receiptsAt(model, n.id, last) })).join(" ");
   assert.doesNotMatch(all, /verified/i);
   assert.doesNotMatch(all, /risk/i);

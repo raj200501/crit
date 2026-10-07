@@ -6,7 +6,7 @@ export type Draft = Omit<Report, "id">;
 
 /** One plain line for an answer, e.g. "Atrial fibrillation, age 34" or "Doesn’t know". */
 export function describeAnswer(d: Draft): string {
-  if (d.kind === "declined") return "Prefers not to share";
+  if (d.kind === "declined") return "Chose not to share";
   if (d.kind === "dont-know") return "Doesn’t know";
   if (d.kind === "no-history") return "No heart history";
   return `${d.condition}${d.ageAtOnset != null ? `, ${d.approximate ? "about " : ""}age ${d.ageAtOnset}` : ""}`;

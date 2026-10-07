@@ -1,12 +1,12 @@
 import { ArrowRight } from "lucide-react";
-import { PILOT, pilotHref } from "@/content/site";
+import { PILOT, pilotCta } from "@/content/site";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { cn } from "../ui/cn";
 
 export interface PilotCardProps {
   compact?: boolean;
-  /** Show "Request a pilot conversation" and "Pilot details". Default true. */
+  /** Show the pilot CTA (pilotCta(): "Request a pilot conversation", or "See the pilot brief" without a contact address) and "Pilot details". Default true. */
   ctas?: boolean;
   /** Heading level for the headline (default h3). */
   headingAs?: "h2" | "h3";
@@ -32,10 +32,12 @@ export function PilotCard({ compact, ctas = true, headingAs: H = "h3", className
       <p className="mt-1 text-fg-2">{PILOT.free}</p>
       {ctas ? (
         <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
-          <Button href={pilotHref()}>Request a pilot conversation</Button>
-          <Button href="/pilot" variant="link" iconRight={<ArrowRight />}>
-            Pilot details
-          </Button>
+          <Button href={pilotCta().href}>{pilotCta().label}</Button>
+          {pilotCta().contact ? (
+            <Button href="/pilot" variant="link" iconRight={<ArrowRight />}>
+              Pilot details
+            </Button>
+          ) : null}
         </div>
       ) : null}
     </Card>

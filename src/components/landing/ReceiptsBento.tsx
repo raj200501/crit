@@ -91,7 +91,7 @@ export function ReceiptsBento({ receipts }: { receipts: Record<string, PersonRec
           id="receipts-title"
           eyebrow="Provenance"
           title="Every answer keeps its receipt."
-          lead="Known, conflicting, unknown, declined. Shown by shape and words, never by color alone, and never as a risk score."
+          lead="Known, reports disagree, unknown, chose not to share. Shown by shape and words, never by color alone, and never as a risk score."
         />
         <Reveal className="mt-12 grid gap-4 md:grid-cols-2 lg:mt-16 lg:auto-rows-[minmax(12rem,auto)] lg:grid-cols-6">
           {/* 1 · 4×2 */}

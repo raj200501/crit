@@ -87,6 +87,9 @@ export function InviteBox({ tree, view, onDone }: { tree: FamilyTree; view: Pers
           rows={4}
           value={message}
           onFocus={(e) => e.currentTarget.select()}
+          // a copy by hand (Ctrl/Cmd+C, long-press Copy) sends the link too, so the reply is accepted later
+          onCopy={markSent}
+          onCut={markSent}
           className={cn(
             "block w-full max-w-[34ch] resize-none rounded-[20px_20px_20px_6px] bg-mist px-4 py-3 text-ui leading-snug text-fg shadow-xs",
             // the long link fades out visually; the value always carries the full URL

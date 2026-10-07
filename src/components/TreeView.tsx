@@ -179,6 +179,16 @@ function WorkspaceTree({ views, selectedId, onSelect, pendingIds, arrivedIds, hi
 
   useEffect(() => () => window.clearTimeout(hoverTimer.current), []);
 
+  // WCAG 1.4.13: hover content is dismissible with Esc wherever focus is (it may be on <body>, not in the canvas)
+  useEffect(() => {
+    if (!hover) return;
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (e.key === "Escape") setHover(null);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [hover]);
+
   /** Desktop centres exactly on you; phones frame you with your parents (the same view as the default). */
   const centerSelf = () => {
     if (!selfCenter) return;
@@ -303,6 +313,8 @@ function WorkspaceTree({ views, selectedId, onSelect, pendingIds, arrivedIds, hi
                 key={g.relation}
                 className="absolute motion-safe:animate-fade-up [animation-delay:240ms]"
                 style={{ left: g.x, top: g.y, width: GHOST_W, height: GHOST_H }}
+                // a focused "+" slot pans into view like a focused relative (WCAG 2.4.7 / 2.4.11)
+                onFocus={() => api.ensureVisible({ x: g.x, y: g.y, w: GHOST_W, h: GHOST_H }, 24)}
               >
                 {renderGhost(g)}
               </div>
@@ -340,7 +352,7 @@ function WorkspaceTree({ views, selectedId, onSelect, pendingIds, arrivedIds, hi
 }
 
 // ---------------------------------------------------------------------------------------------------------------
-// Embed (landing, content pages): fit to the container width with k in [0.87, 1] (names ≥ 13 px), computed in CSS so the
+// Embed (landing, content pages): fit to the container width with k in [0.92, 1] (status and detail lines ≥ 12 px; a narrower pane scrolls), computed in CSS so the
 // server HTML has the final size (CLS 0). Narrower containers scroll sideways, starting centred on "you". No wheel capture.
 
 const PAD = 14;
@@ -363,7 +375,7 @@ function EmbedTree({ views, selectedId, onSelect, pendingIds, arrivedIds, highli
     <div className={cn("w-full [container-type:inline-size]", className)}>
       <div ref={scroller} className="overflow-x-auto overflow-y-hidden overscroll-x-contain [scrollbar-width:thin]">
         <div
-          className="relative mx-auto [--k:clamp(0.87,tan(atan2(100cqw,var(--ew))),1)]"
+          className="relative mx-auto [--k:clamp(0.92,tan(atan2(100cqw,var(--ew))),1)]"
           style={{ "--ew": `${w}px`, width: `calc(${w} * var(--k) * 1px)`, height: `calc(${h} * var(--k) * 1px)` } as CSSProperties}
         >
           <div className="absolute top-0 left-0 origin-top-left" style={{ width: w, height: h, transform: "scale(var(--k))" }}>

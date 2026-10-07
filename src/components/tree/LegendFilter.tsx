@@ -47,6 +47,8 @@ export function LegendFilter({ counts, value, onChange, className }: LegendFilte
                 type="button"
                 aria-pressed={on}
                 onClick={() => onChange(on ? null : key)}
+                // phones: the chips scroll sideways; a chip that gets keyboard focus slides fully into view
+                onFocus={(e) => e.currentTarget.scrollIntoView({ block: "nearest", inline: "nearest" })}
                 className={cn(
                   "group inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border pr-2 pl-2.5 text-small font-medium whitespace-nowrap lg:h-9",
                   "transition-[background-color,border-color,color,box-shadow] duration-(--dur-ui) ease-out-quart",

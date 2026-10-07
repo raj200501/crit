@@ -18,6 +18,7 @@ import { BorderBeam } from "./ui/BorderBeam";
 import { Button } from "./ui/Button";
 import { cn } from "./ui/cn";
 import { Sheet } from "./ui/Sheet";
+import { useStickyInset } from "./ui/StickyActionBar";
 import { toast } from "./ui/Toast";
 
 type Shared = { key: string; link: string; qr: string | null };
@@ -34,6 +35,8 @@ export default function SummaryPage() {
   // Bumped when the patient ticks the review in this session: the sheet's border beam runs one lap.
   const [lap, setLap] = useState(0);
   const copiedTimer = useRef<number | undefined>(undefined);
+  const stripRef = useRef<HTMLDivElement>(null);
+  useStickyInset(stripRef);
   useEffect(() => () => window.clearTimeout(copiedTimer.current), []);
 
   // A link is only shown while the content it was made from is unchanged.
@@ -159,7 +162,11 @@ export default function SummaryPage() {
         </div>
 
         {/* phones and tablets: a sticky review strip + Share (the review box stays the first checkbox in the DOM) */}
-        <div className="sticky bottom-[calc(76px+env(safe-area-inset-bottom))] z-(--z-sticky) mx-auto mt-5 max-w-[816px] md:bottom-4 lg:hidden print:hidden">
+        <div
+          ref={stripRef}
+          data-sticky-actions=""
+          className="sticky bottom-[calc(76px+env(safe-area-inset-bottom))] z-(--z-sticky) mx-auto mt-5 max-w-[816px] md:bottom-4 lg:hidden print:hidden"
+        >
           <div className="glass flex items-center gap-2 rounded-lg border border-line p-1.5 shadow-lg">
             <ReviewCheck variant="strip" checked={reviewed} onChange={onReview} className="min-w-0 flex-1" />
             <Button variant={reviewed ? "primary" : "secondary"} iconLeft={<Send />} onClick={() => setShareOpen(true)} aria-haspopup="dialog" className="shrink-0">

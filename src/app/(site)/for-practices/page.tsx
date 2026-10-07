@@ -20,7 +20,7 @@ import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SourceChip } from "@/components/ui/SourceChip";
 import { StatusPill } from "@/components/ui/StatusPill";
-import { FDA_LINE, PILOT, pilotHref } from "@/content/site";
+import { FDA_LINE, PILOT, pilotCta } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "For practices",
@@ -85,8 +85,8 @@ export default function ForPracticesPage() {
         aside={<HeroWindow />}
       >
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          <Button href={pilotHref()} size="lg" className="max-sm:w-full">
-            Request a pilot conversation
+          <Button href={pilotCta().href} size="lg" className="max-sm:w-full">
+            {pilotCta().label}
           </Button>
           <Button href="/practice" variant="secondary" size="lg" iconRight={<ArrowRight />} className="max-sm:w-full">
             Open the care-team view
@@ -152,7 +152,7 @@ export default function ForPracticesPage() {
           <SectionHeading
             id="receive-title"
             eyebrow="What your patients receive"
-            title="Two short texts. No health information in either."
+            title="Two short texts. Neither names a condition or an answer."
             lead="Your practice sends one. The patient sends one to each relative. The private page explains who is asking and why; the texts don’t."
           />
           <PatientMessages className="mt-12" />

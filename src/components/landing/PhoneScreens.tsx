@@ -87,7 +87,17 @@ function Shell({ step, label, children, cta }: { step?: number; label?: string; 
 
 function Welcome() {
   return (
-    <Shell cta={<span className={buttonClasses({ size: "md", fullWidth: true })}>Start</span>}>
+    <Shell
+      cta={
+        // The same order as the real bar: the 18+ tick (ticked, so Start is enabled as the app would show it), then Start.
+        <div className="flex flex-col gap-2">
+          <span className="flex items-center gap-2.5 rounded-md border border-brand bg-evergreen-50 px-3 py-2 text-small font-strong">
+            <Box on /> I&rsquo;m 18 or older.
+          </span>
+          <span className={buttonClasses({ size: "md", fullWidth: true })}>Start</span>
+        </div>
+      }
+    >
       <div className="flex flex-col gap-3">
         <span aria-hidden className="relative grid size-11 place-items-center">
           <span className="absolute size-8 rotate-45 rounded-[6px] bg-evergreen-600" />
@@ -114,9 +124,6 @@ function Welcome() {
             );
           })}
         </ul>
-        <span className="flex items-center gap-2.5 rounded-md border border-line-strong px-3 py-2.5 text-small font-strong">
-          <Box /> I&rsquo;m 18 or older.
-        </span>
       </div>
     </Shell>
   );
@@ -129,7 +136,7 @@ function Choose() {
         <div className="flex flex-col gap-2 rounded-md border border-evergreen-600/40 bg-evergreen-50/60 p-3">
           <span className="flex gap-1.5">
             <Badge tone="brand" mono>
-              Fastest
+              From your own record
             </Badge>
             <Badge mono>Demo sandbox</Badge>
           </span>

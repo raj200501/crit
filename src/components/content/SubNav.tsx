@@ -1,9 +1,8 @@
 "use client";
 
-import { m } from "motion/react";
 import { useEffect, useRef } from "react";
 import { cn } from "@/components/ui/cn";
-import { SPRING } from "@/components/ui/motion";
+import { useGlide } from "@/components/ui/useGlide";
 import { useScrollSpy } from "./useScrollSpy";
 
 export interface SubNavProps {
@@ -23,6 +22,8 @@ export function SubNav({ items, label, className }: SubNavProps) {
     160,
   );
   const track = useRef<HTMLUListElement>(null);
+  const pill = useRef<HTMLSpanElement>(null);
+  useGlide("subnav-pill", pill, active);
 
   // Keep the current link visible in the sideways-scrolling track (scrolls the track only, never the page).
   useEffect(() => {
@@ -40,6 +41,7 @@ export function SubNav({ items, label, className }: SubNavProps) {
       <div className="glass mx-auto w-fit max-w-full -translate-y-1/2 rounded-full border border-line p-1 shadow-md">
         <ul
           ref={track}
+          data-glide-scope=""
           data-lenis-prevent
           className="flex snap-x gap-0.5 overflow-x-auto overscroll-x-contain [mask-image:linear-gradient(90deg,transparent,#000_16px,#000_calc(100%-16px),transparent)] [scrollbar-width:none] sm:[mask-image:none] [&::-webkit-scrollbar]:hidden"
         >
@@ -55,7 +57,7 @@ export function SubNav({ items, label, className }: SubNavProps) {
                     current ? "text-cta-fg" : "text-fg-2 hover:bg-sunken hover:text-fg",
                   )}
                 >
-                  {current ? <m.span layoutId="subnav-pill" transition={SPRING.glide} aria-hidden className="absolute inset-0 -z-10 rounded-full bg-cta shadow-sm" /> : null}
+                  {current ? <span ref={pill} aria-hidden className="absolute inset-0 -z-10 rounded-full bg-cta shadow-sm" /> : null}
                   {it.label}
                 </a>
               </li>

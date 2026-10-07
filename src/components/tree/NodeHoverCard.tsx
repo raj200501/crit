@@ -3,7 +3,7 @@ import type { PersonView } from "@/lib/status";
 import { cn } from "@/components/ui/cn";
 import { SourceChip } from "@/components/ui/SourceChip";
 import { StatusPill } from "@/components/ui/StatusPill";
-import { factLine, nodeStatus } from "./model";
+import { factLine, nodeStatus, statusWord } from "./model";
 
 export interface NodeHoverCardProps {
   view: PersonView;
@@ -40,7 +40,7 @@ export function NodeHoverCard({ view, pending, rect, viewport, onOpen, onPointer
     >
       <div className="flex items-center justify-between gap-3">
         <p className="truncate text-ui font-strong">{view.person.label}</p>
-        {ns !== "self" ? <StatusPill status={ns} size="sm" /> : null}
+        {ns !== "self" ? <StatusPill status={ns} size="sm" label={ns === "pending" && pending ? statusWord(ns, pending) : undefined} /> : null}
       </div>
       {latest.length ? (
         <ul className="mt-3 flex flex-col gap-2.5 border-t border-line pt-3">

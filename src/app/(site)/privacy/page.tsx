@@ -28,7 +28,7 @@ const CSP: { directive: string; value: string; plain: string }[] = [
   { directive: "style-src", value: "'self' 'unsafe-inline'", plain: "Styles from this site only." },
   { directive: "img-src", value: "'self' data: blob:", plain: "Images from this site, or generated in the page (the QR code)." },
   { directive: "font-src", value: "'self'", plain: "Fonts are served from this site, never a font CDN." },
-  { directive: "connect-src", value: "'self' https://launch.smarthealthit.org https://fhir.epic.com", plain: "The page may talk to this site and the SMART sandbox, nothing else." },
+  { directive: "connect-src", value: "'self' https://launch.smarthealthit.org https://fhir.epic.com", plain: "This site, the public SMART sandbox, and Epic’s developer sandbox (fhir.epic.com, allowed as a backup and not used today). Nothing else." },
   { directive: "object-src", value: "'none'", plain: "No plugins." },
   { directive: "base-uri", value: "'self'", plain: "Links can't be re-pointed to another site." },
   { directive: "form-action", value: "'self'", plain: "Forms can only submit to this site." },
@@ -98,7 +98,6 @@ export default function PrivacyPage() {
   const { fragment, payload } = inviteFragment("mom");
   const dev = report("r-dev-record");
   const june = viewOf("pgm");
-  const retrieved = new Date(dev.reportedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 
   return (
     <main id="main">
@@ -205,7 +204,7 @@ export default function PrivacyPage() {
             title="The patient-portal demo"
             lead="A real SMART on FHIR standalone launch (OAuth 2 with PKCE) against the public SMART Health IT sandbox, with made-up patients."
           >
-            <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:items-start">
+            <div className="grid grid-cols-[minmax(0,1fr)] gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:items-start">
               <ul className="flex flex-col gap-4 text-body text-fg-2">
                 <li className="flex gap-3">
                   <Check aria-hidden className="mt-1 size-4 shrink-0 text-known" strokeWidth={2.5} />
@@ -214,7 +213,8 @@ export default function PrivacyPage() {
                 <li className="flex gap-3">
                   <Check aria-hidden className="mt-1 size-4 shrink-0 text-known" strokeWidth={2.5} />
                   <span>
-                    Shared facts are labeled &ldquo;From a portal record (demo sandbox), retrieved {retrieved}&rdquo;. Never &ldquo;verified&rdquo;.
+                    Shared facts are labeled &ldquo;from a portal record&rdquo;, with &ldquo;on problem list since {dev.record?.recordedDate?.slice(0, 4) ?? "2009"}&rdquo;. Never
+                    &ldquo;verified&rdquo;.
                   </span>
                 </li>
                 <li className="flex gap-3">
@@ -238,7 +238,7 @@ export default function PrivacyPage() {
                     <li key={t} className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md border border-line px-3.5 py-2.5">
                       <span aria-hidden className="size-5 shrink-0 rounded-xs border-2 border-ink-4" />
                       <span className="min-w-0 flex-1 text-small text-fg-2">{t}</span>
-                      <span className="basis-full pl-8 font-mono text-eyebrow whitespace-nowrap text-fg-3 uppercase sm:basis-auto sm:pl-0">Not shared · not stored</span>
+                      <span className="basis-full pl-8 font-mono text-eyebrow text-fg-3 uppercase sm:basis-auto sm:pl-0 sm:whitespace-nowrap">Not shared · not stored</span>
                     </li>
                   ))}
                 </ul>
@@ -360,7 +360,7 @@ export default function PrivacyPage() {
           </Part>
 
           <p className="border-t border-line pt-8">
-            <Button href="/research#2-privacy-and-compliance" variant="link" iconRight={<ArrowRight />}>
+            <Button href="/research#2-privacy-and-compliance" variant="link" iconRight={<ArrowRight />} className="h-auto max-w-full text-left whitespace-normal">
               Read the research on privacy and compliance
             </Button>
           </p>

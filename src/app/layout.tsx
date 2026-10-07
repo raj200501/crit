@@ -8,14 +8,29 @@ import { PresentModeHotkey } from "@/components/ui/PresentMode";
 import { SkipLink } from "@/components/ui/SkipLink";
 import { Toaster } from "@/components/ui/Toast";
 
-const sans = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap" });
-const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap", preload: false });
+// Sans: the same metric overrides next/font generates for Arial, declared in globals.css ("Geist Fallback") so they also
+// apply to Arial's metric twins (Liberation Sans, Arimo) on Linux, where local(Arial) doesn't resolve.
+const sans = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap", adjustFontFallback: false, fallback: ["Geist Fallback"] });
+// Mono is preloaded and falls back to a real monospace (not Arial at 134%): a mono meta row that wraps in the fallback and
+// unwraps on swap shifted /summary by 15 px.
+const mono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+  display: "swap",
+  adjustFontFallback: false,
+  fallback: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "Liberation Mono", "monospace"],
+});
+// One generated fallback face can't match both styles (Newsreader italic is ~10% narrower than its roman against Times),
+// so the roman and italic fallback faces are declared in globals.css ("Newsreader Fallback"), with metric-compatible
+// Liberation Serif / Tinos as local sources so Linux and Android get the adjustment too.
 const display = Newsreader({
   subsets: ["latin"],
   axes: ["opsz"], // optical size: crisp at 72px, sturdy at 10pt in print
   style: ["normal", "italic"], // italic = the family's "vague voice" in the H1
   variable: "--font-newsreader",
   display: "swap",
+  adjustFontFallback: false,
+  fallback: ["Newsreader Fallback"],
 });
 
 export const metadata: Metadata = {

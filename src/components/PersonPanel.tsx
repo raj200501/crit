@@ -1,7 +1,7 @@
 "use client";
 
 import { Link2, PenLine, Plus, Send, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { actions } from "@/lib/store";
 import type { PersonView } from "@/lib/status";
 import type { FamilyTree, Report } from "@/lib/types";
@@ -19,7 +19,7 @@ import { EditPerson } from "./person/EditPerson";
 import { InviteBox } from "./person/InviteBox";
 import { ReceiptTimeline } from "./person/ReceiptTimeline";
 import { VoicePair, voicesOf } from "./person/VoicePair";
-import { canRemove, hasFinding, nodeStatus, notAsked, pronoun, relationLine, shortDate, shortName } from "./tree/model";
+import { canRemove, hasFinding, nodeStatus, notAsked, pronoun, relationLine, shortDate, shortName, statusWord } from "./tree/model";
 
 export { shortName } from "./tree/model";
 
@@ -37,6 +37,11 @@ export interface PersonPanelProps {
   initialEdit?: "age" | "cause";
   /** Invited and waiting. */
   pending?: boolean;
+  /**
+   * The desktop inspector (inline, not in a Sheet): Esc steps back from a form to the overview, then closes. In the phone
+   * Sheet the dialog's own Esc closes it.
+   */
+  inline?: boolean;
 }
 
 /**
@@ -44,12 +49,14 @@ export interface PersonPanelProps {
  * voices), what's still unknown, and the actions. The root stays `<section aria-label="{label} details">` on desktop
  * (inline inspector) and on phones (inside the bottom sheet); the h2 is the sheet's label and the focus target.
  */
-export default function PersonPanel({ view, tree, onClose, focusOnOpen, initialMode, initialEdit, pending }: PersonPanelProps) {
+export default function PersonPanel({ view, tree, onClose, focusOnOpen, initialMode, initialEdit, pending, inline }: PersonPanelProps) {
   const p = view.person;
   const isSelf = p.relation === "self";
   const short = shortName(p.label);
   const them = p.sex === "male" ? "him" : p.sex === "female" ? "her" : "them";
-  const [mode, setMode] = useState<PanelMode>(initialEdit ? "edit" : (initialMode ?? "view"));
+  // ?mode=invite can't open a composer the overview would never offer (someone who passed away, or you)
+  const startMode = initialMode === "invite" && (p.deceased || isSelf) ? "view" : (initialMode ?? "view");
+  const [mode, setMode] = useState<PanelMode>(initialEdit ? "edit" : startMode);
   const [editField, setEditField] = useState(initialEdit);
   const heading = useRef<HTMLHeadingElement>(null);
   const body = useRef<HTMLDivElement>(null);
@@ -72,12 +79,37 @@ export default function PersonPanel({ view, tree, onClose, focusOnOpen, initialM
       return;
     }
     const raf = requestAnimationFrame(() => {
+      const section = heading.current?.closest("section");
+      // In the desktop inspector the column may be scrolled down to the button that opened the form: bring the panel's
+      // header (whose history this is) and the form's question back into view.
+      const column = section ? scrollParent(section) : null;
+      if (column && section && mode !== "view") {
+        const top = section.getBoundingClientRect().top - column.getBoundingClientRect().top + column.scrollTop - 16;
+        if (top < column.scrollTop) column.scrollTo({ top: Math.max(0, top), behavior: reducedMotion() ? "auto" : "smooth" });
+      }
       // a form that already took focus (a gap's "Add" focuses its field) keeps it
       if (mode !== "view" && body.current?.contains(document.activeElement)) return;
-      (mode === "view" ? heading.current : body.current)?.focus({ preventScroll: true });
+      // focus the new content's question or title (not the tall wrapper), without scrolling
+      const target = mode === "view" ? heading.current : (body.current?.querySelector<HTMLElement>("legend, h3") ?? body.current);
+      if (target && !target.hasAttribute("tabindex")) {
+        target.setAttribute("tabindex", "-1");
+        target.classList.add("outline-none");
+      }
+      target?.focus({ preventScroll: true });
     });
     return () => cancelAnimationFrame(raf);
   }, [mode]);
+
+  // Desktop inspector: Esc goes back to the overview from a form, then closes (focus returns to the node).
+  const onKeyDown = (e: KeyboardEvent<HTMLElement>) => {
+    if (!inline || e.key !== "Escape" || e.defaultPrevented) return;
+    const t = e.target as HTMLElement;
+    if (t.closest("[popover]")) return;
+    if ((t instanceof HTMLInputElement && t.type !== "checkbox" && t.type !== "radio" && t.value) || (t instanceof HTMLTextAreaElement && !t.readOnly && t.value)) return;
+    e.preventDefault();
+    if (mode !== "view") go("view");
+    else onClose();
+  };
 
   const go = (next: PanelMode, field?: "age" | "cause") => {
     setEditField(field);
@@ -103,7 +135,7 @@ export default function PersonPanel({ view, tree, onClose, focusOnOpen, initialM
   const invite = [...tree.invites].filter((i) => i.personId === p.id).sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
 
   return (
-    <section aria-label={`${p.label} details`} className="flex flex-col">
+    <section aria-label={`${p.label} details`} className="flex flex-col" onKeyDown={onKeyDown}>
       <header className="flex items-start gap-4 pb-5">
         <span className={cn("mt-1 grid size-14 shrink-0 place-items-center rounded-2xl", isSelf ? "bg-ink" : "bg-canvas ring-1 ring-line")}>
           <PedigreeGlyph
@@ -134,7 +166,7 @@ export default function PersonPanel({ view, tree, onClose, focusOnOpen, initialM
           ) : null}
           {!isSelf ? (
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              {ns !== "self" ? <StatusPill status={ns} /> : null}
+              {ns !== "self" ? <StatusPill status={ns} label={ns === "pending" && pending ? statusWord(ns, pending) : undefined} /> : null}
               {view.verified ? (
                 <Badge tone="record" icon={<Link2 />}>
                   From a portal record
@@ -272,3 +304,14 @@ function Overview({
     </div>
   );
 }
+
+/** The nearest scrolling ancestor (the desktop inspector column), or null when the page itself scrolls. */
+function scrollParent(el: HTMLElement): HTMLElement | null {
+  for (let n = el.parentElement; n && n !== document.body; n = n.parentElement) {
+    const o = getComputedStyle(n).overflowY;
+    if ((o === "auto" || o === "scroll") && n.scrollHeight > n.clientHeight) return n;
+  }
+  return null;
+}
+
+const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;

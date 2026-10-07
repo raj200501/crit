@@ -2,7 +2,7 @@
 //   /how-it-works · /research · /for-practices · /privacy · /pilot
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { FDA_LINE, HONESTY, PILOT, pilotHref, PROOF_POINTS, STATS } from "../../src/content/site";
+import { FDA_LINE, HONESTY, PILOT, pilotCta, PROOF_POINTS, STATS } from "../../src/content/site";
 import { DESKTOP, expect, expectNoSeriousA11y, gotoApp, MOBILE, noHorizontalOverflow, pdfPageCount, scrollThrough, test } from "./fixtures";
 import type { Page } from "@playwright/test";
 
@@ -163,7 +163,9 @@ test.describe("/how-it-works", () => {
 test.describe("/for-practices", () => {
   test("hero CTAs (A1: the care-team view is /practice), annotated sheet, how it arrives, intake, FDA line, evidence, pilot", async ({ page }) => {
     await gotoApp(page, "/for-practices");
-    await expect(page.getByRole("link", { name: "Request a pilot conversation" }).first()).toHaveAttribute("href", pilotHref());
+    // without a contact address the CTA says what it is ("See the pilot brief" → /pilot), never a dead-end "Request…"
+    await expect(page.getByRole("link", { name: pilotCta().label }).first()).toHaveAttribute("href", pilotCta().href);
+    if (!pilotCta().contact) await expect(page.getByRole("link", { name: "Request a pilot conversation" })).toHaveCount(0);
     await expect(page.getByRole("link", { name: /Open the care-team view/ })).toHaveAttribute("href", "/practice");
     const callouts = page.getByRole("list", { name: "What's on the care-team page" }).getByRole("button");
     await expect(callouts).toHaveCount(5);
@@ -284,14 +286,17 @@ test.describe("layout and accessibility", () => {
     });
   }
 
-  test("no horizontal overflow at 375 px without mobile emulation", async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 812 });
-    for (const p of PAGES) {
-      await gotoApp(page, p.path);
-      await scrollThrough(page, 900);
-      await noHorizontalOverflow(page);
-    }
-  });
+  for (const width of [375, 320]) {
+    // 320 CSS px = WCAG 1.4.10 reflow (400% zoom of a 1280 px window)
+    test(`no horizontal overflow at ${width} px without mobile emulation`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 812 });
+      for (const p of PAGES) {
+        await gotoApp(page, p.path);
+        await scrollThrough(page, 900);
+        await noHorizontalOverflow(page);
+      }
+    });
+  }
 
   test("open states pass axe: research TOC on phones, privacy server view, a chosen callout", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });

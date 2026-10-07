@@ -131,9 +131,11 @@
 .windowLabel {
   position: absolute;
   z-index: 3;
-  top: calc(var(--clip-t) + 16px + 60px * var(--expand));
-  left: calc(var(--clip-l) + 20px);
-  right: calc(var(--clip-r) + 20px);
+  /* Moved with `translate`, never by top/left: the expanding window then shifts no layout (CLS) on every scroll frame. */
+  top: 16px;
+  left: 20px;
+  width: calc(100% - var(--clip-l) - var(--clip-r) - 40px);
+  translate: var(--clip-l) calc(var(--clip-t) + 60px * var(--expand));
   margin: 0;
   display: flex;
   justify-content: space-between;
@@ -351,14 +353,16 @@
 .bar {
   position: absolute;
   z-index: 3;
-  left: calc(var(--clip-l) + 14px);
-  right: calc(var(--clip-r) + 14px);
-  bottom: calc(var(--clip-b) + 12px);
+  /* same as .windowLabel: fixed layout box, moved by `translate` as the clip changes */
+  left: 14px;
+  bottom: 12px;
+  width: calc(100% - var(--clip-l) - var(--clip-r) - 28px);
+  translate: var(--clip-l) calc(-1 * var(--clip-b));
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-.window[data-dock="bottom"] .bar,
+/* a card docked to the top covers the label; the bar is never covered (placeCard reserves its height) */
 .window[data-dock="top"] .windowLabel {
   opacity: 0;
   pointer-events: none;
@@ -580,6 +584,36 @@ html:not([data-js]) .seg {
   background: repeating-linear-gradient(to bottom, var(--color-mist-2) 0 4px, transparent 4px 9px);
   width: 80%;
 }
+/* Below 1024 px the cards are text only (number, title, body): the window above is the visual. The card for the
+   chapter the window is showing gets an evergreen edge. */
+@media (max-width: 1023.98px) {
+  .chapterFigure {
+    display: none;
+  }
+  .chapter {
+    padding: 18px 18px 20px;
+    transition:
+      border-color var(--dur-ui) var(--ease-out-quart),
+      box-shadow var(--dur-ui) var(--ease-out-quart);
+  }
+  .chapter[data-current] {
+    border-color: rgb(14 107 87 / 0.45);
+    box-shadow:
+      inset 3px 0 0 var(--color-evergreen-600),
+      var(--shadow-sm);
+  }
+  .chapter .chapterNum,
+  .chapter .chapterTitle {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .chapter .chapterTitle {
+    font-size: 1.3125rem;
+  }
+  .chapter .chapterBody {
+    margin: 8px 0 0;
+  }
+}
 .chapterNum {
   display: flex;
   align-items: center;
@@ -654,15 +688,17 @@ html:not([data-js]) .seg {
     visibility 0s;
 }
 .sheet {
-  /* the page: a white card whose header sits --sheet-head above the pedigree slot (the plate) */
+  /* the page: a white card whose header sits --sheet-head above the pedigree slot (the plate); everything else flows
+     under the slot (rows, then a footer line) */
   --sheet-head: 88px;
   --sheet-pad: 14px;
+  --sheet-pt: 16px;
   position: absolute;
   left: calc(var(--cx) * 1cqw - var(--plate) / 2 - var(--sheet-pad));
   width: calc(var(--plate) + 2 * var(--sheet-pad));
   top: calc(var(--cy) * 1cqh - var(--plate) * 0.25 - var(--sheet-head));
   bottom: -24px;
-  padding: 16px var(--sheet-pad) 0;
+  padding: var(--sheet-pt) var(--sheet-pad) 0;
   border-radius: 4px 4px 0 0;
   background: var(--color-white);
   color: var(--color-ink);
@@ -695,6 +731,12 @@ html:not([data-js]) .seg {
   font: 400 var(--text-caption) / 1.4 var(--font-sans);
   color: var(--color-ink-3);
 }
+.sheetHead {
+  height: calc(var(--sheet-head) - var(--sheet-pt));
+}
+.sheetSlot {
+  height: calc(var(--plate) * 0.5 + 20px);
+}
 .sheetHead::after {
   content: "";
   display: block;
@@ -721,27 +763,48 @@ html:not([data-js]) .seg {
   }
 }
 .sheetBody {
-  position: absolute;
-  left: var(--sheet-pad);
-  right: var(--sheet-pad);
-  top: calc(var(--sheet-head) + var(--plate) * 0.5 + 20px);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
   padding-top: 14px;
-  border-top: 1px solid var(--ui-line);
+  border-top: 1px solid var(--color-line);
 }
 .sheetBody > div {
   display: grid;
-  gap: 6px;
+  gap: 8px;
   align-content: start;
   min-width: 0;
 }
-.skel {
+.sheetBody .sheetEyebrow {
+  white-space: normal;
+}
+.sheetRows {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: 400 var(--text-caption) / 1.4 var(--font-sans);
+  color: var(--color-ink-2);
+}
+.sheetRows b {
   display: block;
-  height: 6px;
-  border-radius: 3px;
-  background: var(--color-mist-2);
+  font-weight: var(--font-weight-strong, 600);
+  color: var(--color-ink);
+}
+/* the small flow-mode page (the "Page" chapter on phones) keeps one row per column */
+.sheetRows li:nth-child(n + 2) {
+  display: none;
+}
+.sheetFoot {
+  display: none;
+  margin: 18px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-line);
+  font: 500 var(--text-eyebrow) / 1.3 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
 }
 .clearingCaption {
   display: none;
@@ -1038,9 +1101,25 @@ html:not([data-js]) .seg {
   :global(html[data-js]) .sheet {
     --sheet-head: 132px;
     --sheet-pad: 56px;
-    bottom: -40px;
-    padding-top: 30px;
+    --sheet-pt: 30px;
+    /* a whole page, as tall as its content (pedigree + rows + footer), not a sheet running off the screen */
+    bottom: auto;
+    padding-bottom: 28px;
+    border-radius: 4px;
     transform: translateY(calc((1 - var(--clear-o)) * 28px));
+  }
+  :global(html[data-js]) .sheetRows li:nth-child(n + 2) {
+    display: list-item;
+  }
+  :global(html[data-js]) .sheetFoot {
+    display: block;
+  }
+  /* a narrow stage (1024–1100 px) keeps two rows per column and drops the footer, so the page still fits the screen */
+  @container (max-width: 1100px) {
+    :global(html[data-js]) .sheetRows li:nth-child(n + 3),
+    :global(html[data-js]) .sheetFoot {
+      display: none;
+    }
   }
   :global(html[data-js]) .sheetPedigree {
     transform: translateY(calc((1 - var(--clear-o)) * 28px));

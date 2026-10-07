@@ -1,10 +1,9 @@
 "use client";
 
-import { m } from "motion/react";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 import { cn } from "@/components/ui/cn";
-import { SPRING } from "@/components/ui/motion";
+import { useGlide } from "@/components/ui/useGlide";
 import type { TocItem } from "./researchHtml";
 import { useScrollSpy } from "./useScrollSpy";
 
@@ -68,6 +67,8 @@ export function Toc({ items, label = "On this page", offset = 140, className }: 
   const active = useScrollSpy(ids, offset);
   const openGroup = activeGroupOf(groups, active);
   const listRef = useRef<HTMLElement>(null);
+  const rule = useRef<HTMLSpanElement>(null);
+  useGlide("toc-rule", rule, active);
 
   // Keep the current entry visible inside the TOC's own scroll box (never scrolls the page).
   useEffect(() => {
@@ -91,7 +92,7 @@ export function Toc({ items, label = "On this page", offset = 140, className }: 
           current ? "font-medium text-fg" : "text-fg-2 hover:border-line-strong hover:text-fg",
         )}
       >
-        {current ? <m.span layoutId="toc-rule" transition={SPRING.glide} aria-hidden className="absolute inset-y-1 -left-px w-0.5 rounded-full bg-brand" /> : null}
+        {current ? <span ref={rule} aria-hidden className="absolute inset-y-1 -left-px w-0.5 rounded-full bg-brand" /> : null}
         <Label text={it.text} numbered={numbered} />
       </a>
     );
@@ -105,7 +106,7 @@ export function Toc({ items, label = "On this page", offset = 140, className }: 
       className={cn("sticky top-24 max-h-[calc(100svh-8rem)] overflow-y-auto overscroll-contain pr-1 pb-6 [scrollbar-width:thin]", className)}
     >
       <p className="mb-3 font-mono text-eyebrow text-fg-3 uppercase">{label}</p>
-      <ol className="border-l border-line">
+      <ol data-glide-scope="" className="border-l border-line">
         {groups.map((g) => {
           const open = openGroup === g.item.id;
           return (

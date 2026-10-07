@@ -33,6 +33,17 @@ function writeSeen(treeId: string, ids: Set<string>) {
   }
 }
 
+/**
+ * Called just before this tab imports a reply (/reply's "Add to my tree", or the relative's flow writing straight into
+ * the tree in the demo browser). If this tab has never shown the tree, its baseline is the tree *before* the import, so
+ * the /tree it opens next plays the arrival (ripple, toast, NEW) instead of counting the new answers as already seen.
+ * An existing baseline is left alone.
+ */
+export function seedArrivalBaseline(tree: FamilyTree) {
+  if (readSeen(tree.id)) return;
+  writeSeen(tree.id, new Set(tree.reports.map((r) => r.id)));
+}
+
 const fromRelative = (r: Report) => r.reportedById !== "self" && r.source !== "patient";
 
 function bodyFor(r: Report, nameOf: (id: string) => string): string {

@@ -1,9 +1,8 @@
 "use client";
 
-import { m } from "motion/react";
-import { useId } from "react";
+import { useId, useRef } from "react";
 import { cn } from "./cn";
-import { SPRING } from "./motion";
+import { useGlide } from "./useGlide";
 
 export interface SegmentedControlProps<T extends string = string> {
   /** The group's accessible name. */
@@ -29,8 +28,10 @@ const SIZE = {
 
 export function SegmentedControl<T extends string = string>({ label, options, value, onChange, size = "md", fullWidth, className }: SegmentedControlProps<T>) {
   const pill = useId();
+  const indicator = useRef<HTMLSpanElement>(null);
+  useGlide(`seg-${pill}`, indicator, value);
   return (
-    <div role="group" aria-label={label} className={cn("inline-flex rounded-full bg-sunken p-1", fullWidth && "flex w-full", className)}>
+    <div role="group" aria-label={label} data-glide-scope="" className={cn("inline-flex rounded-full bg-sunken p-1", fullWidth && "flex w-full", className)}>
       {options.map((o) => {
         const active = o.value === value;
         return (
@@ -47,7 +48,7 @@ export function SegmentedControl<T extends string = string>({ label, options, va
               active ? "text-fg" : "text-fg-2 hover:text-fg",
             )}
           >
-            {active ? <m.span layoutId={`seg-${pill}`} transition={SPRING.glide} className="absolute inset-0 -z-10 rounded-full bg-surface shadow-sm" /> : null}
+            {active ? <span ref={indicator} className="absolute inset-0 -z-10 rounded-full bg-surface shadow-sm" /> : null}
             {o.label}
           </button>
         );

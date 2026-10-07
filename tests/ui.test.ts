@@ -6,7 +6,8 @@ import path from "node:path";
 import { describe, test } from "node:test";
 import { cn } from "../src/components/ui/cn";
 import { sourceChipText } from "../src/components/ui/SourceChip";
-import { HONESTY, pilotHref, SITE, STATS } from "../src/content/site";
+import { HONESTY, PATIENT_QUESTIONS, pilotCta, pilotHref, SITE, STATS } from "../src/content/site";
+import { statusWord } from "../src/components/tree/model";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const GLOBALS = readFileSync(path.join(ROOT, "src/app/globals.css"), "utf8");
@@ -182,6 +183,23 @@ describe("content and primitives", () => {
   test("pilot CTAs fall back to /pilot#contact without NEXT_PUBLIC_PILOT_EMAIL", () => {
     if (!SITE.pilotEmail) assert.equal(pilotHref(), "/pilot#contact");
     else assert.match(pilotHref(), /^mailto:/);
+  });
+  test("the pilot CTA never promises a conversation it can't start", () => {
+    const cta = pilotCta();
+    if (!SITE.pilotEmail) assert.deepEqual(cta, { href: "/pilot", label: "See the pilot brief", contact: false });
+    else assert.deepEqual(cta, { href: pilotHref(), label: "Request a pilot conversation", contact: true });
+  });
+  test("tree status words are the A3 labels, never abbreviated or clinical, and fit a node's status line", () => {
+    const words = (["known", "conflicting", "unknown", "declined", "pending"] as const).map((s) => statusWord(s));
+    assert.deepEqual(words, ["Known", "Reports disagree", "Unknown", "Chose not to share", "Not asked yet"]);
+    assert.equal(statusWord("pending", true), "Invited · waiting");
+    assert.equal(statusWord("self"), "You");
+    // the node's 188 px card leaves ~122 px for the status line at 13 px: 18 characters is the longest that fits
+    for (const w of [...words, statusWord("pending", true)]) assert.ok(w.length <= 18, w);
+    assert.doesNotMatch(words.join(" "), /\bDeclined\b|^Disagree$|\bNot asked\b(?! yet)/);
+  });
+  test("patient questions are generic (never a recommendation or a risk)", () => {
+    for (const q of PATIENT_QUESTIONS) assert.doesNotMatch(q, /risk|should get|you have|diagnos/i);
   });
   test("every stat carries a citation; honesty copy is present", () => {
     for (const s of STATS) assert.ok(s.cite > 0 && s.source.length > 0);

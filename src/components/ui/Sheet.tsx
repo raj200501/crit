@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode, type RefObject } from "react";
+import { popModal, pushModal } from "./modalStack";
 import { cn } from "./cn";
 import { useMediaQuery } from "./useMediaQuery";
 
@@ -69,6 +70,7 @@ export function Sheet({
     if (open && !d.open) {
       opener.current = document.activeElement as HTMLElement | null;
       d.showModal();
+      pushModal(d);
       document.documentElement.style.overflow = "hidden";
       const raf = requestAnimationFrame(() => {
         setSnapIndex(0);
@@ -85,6 +87,7 @@ export function Sheet({
     if (!open && d.open) {
       const finishClose = () => {
         if (d.open) d.close();
+        popModal(d);
         document.documentElement.style.removeProperty("overflow");
         setPhase("closed");
         const target = returnFocusTo?.current ?? opener.current;
@@ -100,12 +103,13 @@ export function Sheet({
   }, [open, reduce, returnFocusTo]);
 
   // unmounting while open: release the page
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    const d = dialogRef.current;
+    return () => {
+      if (d) popModal(d);
       document.documentElement.style.removeProperty("overflow");
-    },
-    [],
-  );
+    };
+  }, []);
 
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     if (resolved !== "bottom" || !panelRef.current) return;

@@ -13,6 +13,8 @@ import { Frame } from "./relative/Frame";
 import { OthersList } from "./relative/OthersList";
 import { PortalOptionCard } from "./relative/PortalOptionCard";
 import { ProgressHeader } from "./relative/ProgressHeader";
+import { saveInviteReturn } from "./relative/returnPoint";
+import { seedArrivalBaseline } from "./tree/useArrivals";
 import { RecordPicker } from "./relative/RecordPicker";
 import { SentScreen } from "./relative/SentScreen";
 import { ActionHint, STEP_BACK, STEP_FORWARD, StepLayout, StepTitle, StepTransition } from "./relative/StepLayout";
@@ -170,6 +172,8 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
     setConnecting(true);
     setConnectError(null);
     try {
+      // Our own return point for /connect/callback's Go back and its fallback (src/lib's key is consumed on success).
+      saveInviteReturn(window.location.href, keyFor(payload));
       await startMyChartConnect(window.location.href, keyFor(payload));
     } catch (e) {
       setConnecting(false);
@@ -182,6 +186,7 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
     const reply: ReplyPayload = { v: 1, t: payload.t, p: payload.p, b: me, at, reports: drafts.map((d) => ({ ...d, reportedAt: at })) };
     // Only when this is the patient's own browser (the demo) do the answers go straight into their tree.
     const same = !!payload.d && payload.d === deviceId() && hasSavedTree() && getTree().id === payload.t;
+    if (same) seedArrivalBaseline(getTree()); // "Open Alex's tree" in this tab then plays the arrival (DESIGN §11.3)
     const imported = same ? actions.importReply(reply) : null;
     setSameBrowser(!!imported && !imported.error);
     setReplyLink(replyUrl(window.location.origin, reply));

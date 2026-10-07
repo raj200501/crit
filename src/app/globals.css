@@ -7,6 +7,36 @@
 @custom-variant dark (&:where([data-theme="night"], [data-theme="night"] *):not(:where([data-theme="night"] [data-theme="paper"], [data-theme="night"] [data-theme="paper"] *)));
 @custom-variant present (&:where([data-present], [data-present] *));
 
+/* Geist's swap fallback: next/font's Arial overrides, with Arial's metric-compatible twins as extra local sources. */
+@font-face {
+  font-family: "Geist Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("LiberationSans"), local("Arimo"), local("Arimo-Regular");
+  size-adjust: 104.76%;
+  ascent-override: 95.94%;
+  descent-override: 28.16%;
+  line-gap-override: 0%;
+}
+/* Newsreader's swap fallbacks (layout.tsx sets adjustFontFallback: false). Display sizes: Newsreader roman runs ~8%
+   wider than Times, its italic ~2% narrower, so each style gets its own size-adjust; ascent/descent keep the line box. */
+@font-face {
+  font-family: "Newsreader Fallback";
+  font-style: normal;
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"), local("Liberation Serif"), local("LiberationSerif"), local("Tinos"), local("Tinos-Regular");
+  size-adjust: 108%;
+  ascent-override: 68.06%;
+  descent-override: 24.53%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Newsreader Fallback";
+  font-style: italic;
+  src: local("Times New Roman Italic"), local("TimesNewRomanPS-ItalicMT"), local("Liberation Serif Italic"), local("LiberationSerif-Italic"), local("Tinos Italic"), local("Tinos-Italic");
+  size-adjust: 98.5%;
+  ascent-override: 74.62%;
+  descent-override: 26.9%;
+  line-gap-override: 0%;
+}
+
 @theme static {
   /* Guardrail: only brand colors exist (no bg-red-500). `static` emits every var so SVG/three.js can read them. */
   --color-*: initial;
@@ -310,6 +340,14 @@
 }
 @keyframes beam-rotate { to { rotate: 1turn; } }
 @keyframes beam-travel { to { stroke-dashoffset: 0; } }
+/* Below-the-fold landing bands: skip style/layout until near the viewport; the last rendered size is remembered. */
+@utility cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1000px;
+  @media print {
+    content-visibility: visible;
+  }
+}
 /* FlowDiagram pulse: with stroke-dasharray 0.14 1.14 on pathLength=1 the dash is hidden at both ends, so it vanishes when the cycles end */
 @keyframes beam-pulse { from { stroke-dashoffset: 0.14; } to { stroke-dashoffset: -1; } }
 
@@ -327,7 +365,16 @@
 
 /* ---------- Base ---------- */
 @layer base {
-  html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--header-h) + 16px); }
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--header-h) + 16px);
+    /* WCAG 2.4.11: focus scrolling keeps a focused control clear of sticky bottom chrome (the phone tab bar, and the bars
+       that publish --fht-sticky-h: StickyActionBar, the /summary phone strip) */
+    scroll-padding-bottom: calc(max(var(--fht-tabbar-h, 0px), var(--fht-sticky-h, 0px)) + 16px);
+  }
+  @media (max-width: 767px) {
+    html:has(header[data-shell="app"]) { --fht-tabbar-h: calc(64px + env(safe-area-inset-bottom)); }
+  }
   body {
     background: var(--ui-bg);
     color: var(--ui-fg);
@@ -373,8 +420,15 @@ html.lenis, html.lenis body { height: auto; }
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }
 
+/* /tree on desktop: toasts sit over the canvas, clear of the inspector's actions and the canvas toolbar */
+@media (min-width: 1024px) {
+  html:has(main[data-toasts="canvas"]) [data-toaster] { right: auto; left: 2.5rem; bottom: 6rem; }
+}
+
 @media print {
   .grain::after { display: none !important; }
+  /* a focus ring left on a chip or button never prints on the document */
+  *:focus, *:focus-visible { outline: none !important; box-shadow: none !important; }
   body { background: #fff; color: #000; }
   /* A Reveal armed below the fold (never scrolled to) must still print. page.pdf() fires no beforeprint, so CSS only. */
   [data-reveal] { opacity: 1 !important; translate: none !important; }

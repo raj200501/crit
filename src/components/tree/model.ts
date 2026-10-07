@@ -1,7 +1,7 @@
 // Presentation-only derivations for the /tree workspace (DESIGN §12.1–12.3). Reads src/lib, never writes it.
 import type { PersonView } from "@/lib/status";
 import type { FamilyTree, Person, Relation, Report } from "@/lib/types";
-import type { UiStatus } from "@/components/ui/status";
+import { STATUS_LABEL, type UiStatus } from "@/components/ui/status";
 
 /** What a node shows: the lib status, split so "not asked yet" and "invited, waiting" read differently from "nobody knows". */
 export type NodeStatus = UiStatus | "self";
@@ -22,22 +22,27 @@ export function nodeStatus(v: PersonView, pending?: boolean): NodeStatus {
 /** NSGC "affected": a heart condition was reported (never for someone who declined). */
 export const hasFinding = (v: PersonView) => v.cardiac && v.status !== "declined";
 
-/** Mono status word on a node (DESIGN §12.2). */
+/**
+ * The status word on a node and in the list view (DESIGN §12.2, AMENDMENTS A3): the app's own labels, never the clinical
+ * "Declined", and never abbreviated. Invited relatives read "Invited · waiting"; everyone else gets STATUS_LABEL.
+ */
 export function statusWord(ns: NodeStatus, pending?: boolean): string {
-  switch (ns) {
-    case "known":
-      return "Known";
-    case "conflicting":
-      return "Disagree";
-    case "unknown":
-      return "Unknown";
-    case "declined":
-      return "Declined";
-    case "pending":
-      return pending ? "Invited · waiting" : "Not asked";
-    default:
-      return "You";
-  }
+  if (ns === "self") return "You";
+  if (ns === "pending" && pending) return "Invited · waiting";
+  return STATUS_LABEL[ns];
+}
+
+/** The node's third line: the lib headline, except where the status word already says it (no duplicate lines). */
+export function nodeDetail(v: PersonView, ns: NodeStatus, pending?: boolean): string {
+  if (ns === "self") return v.headline;
+  if (v.status === "declined") return "Their choice is kept";
+  if (ns === "pending") return pending || notAsked(v) ? "No answers yet" : v.headline;
+  return v.headline;
+}
+
+/** The node's accessible-name detail: the headline, in the patient's words for someone who declined (A3). */
+export function nodeAriaDetail(v: PersonView): string {
+  return v.status === "declined" ? STATUS_LABEL.declined : v.headline;
 }
 
 export function matchesHighlight(v: PersonView, ns: NodeStatus, h: Highlight) {

@@ -10,6 +10,7 @@ import { useHash } from "@/lib/useHash";
 import { describeAnswer } from "./relative/describe";
 import { ReplyDiff } from "./relative/ReplyDiff";
 import { replyDiff, type DiffRow } from "./relative/replyPreview";
+import { seedArrivalBaseline } from "./tree/useArrivals";
 import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
 import { Eyebrow } from "./ui/Eyebrow";
@@ -122,6 +123,8 @@ export default function ReplyImport() {
                   fullWidth
                   onClick={() => {
                     setFrozen(live);
+                    // the /tree this tab opens next plays the arrival for these answers (DESIGN §11.3)
+                    seedArrivalBaseline(tree);
                     setResult(actions.importReply(reply));
                   }}
                 >

@@ -13,6 +13,17 @@ export function pilotHref(): string {
   return `mailto:${SITE.pilotEmail}?subject=${subject}&body=${body}`; // a plain link, not a form, so CSP form-action doesn't apply
 }
 
+/**
+ * The primary B2B call to action. With a contact address it asks for the conversation (mailto). Without one
+ * (NEXT_PUBLIC_PILOT_EMAIL unset at build time) a "Request" button would lead nowhere, so it says what it really is:
+ * the pilot brief. `contact` is false then, and pages already on /pilot hide it.
+ */
+export function pilotCta(): { href: string; label: string; contact: boolean } {
+  return SITE.pilotEmail
+    ? { href: pilotHref(), label: "Request a pilot conversation", contact: true }
+    : { href: "/pilot", label: "See the pilot brief", contact: false };
+}
+
 export const HONESTY = {
   navChip: "Synthetic demo",
   navChipShort: "Demo",
@@ -74,8 +85,8 @@ export const FLOW = {
   nodes: [
     { id: "relative", label: "Relative", sub: "text link", icon: "Smartphone", x: 16, y: 22 },
     { id: "portal", label: "Their portal", sub: "one fact · sandbox", icon: "Link2", x: 16, y: 68 },
-    { id: "tree", label: "Your tree", sub: "this browser", icon: "Network", x: 62, y: 45 },
-    { id: "summary", label: "One-page summary", sub: "you review", icon: "FileText", x: 104, y: 45 },
+    { id: "tree", label: "Your tree", sub: "this browser", icon: "Network", x: 56, y: 45 },
+    { id: "summary", label: "One-page summary", sub: "you review", icon: "FileText", x: 110, y: 45 },
     { id: "practice", label: "Practice", sub: "read-only link or QR", icon: "QrCode", x: 146, y: 22 },
     { id: "chart", label: "Chart", sub: "FHIR FamilyMemberHistory", icon: "Download", x: 146, y: 68 },
   ],
@@ -93,7 +104,7 @@ export const FLOW = {
 export const MECHANISMS = [
   { icon: "ShieldCheck", title: "Nothing stored on a server.", body: "Your tree lives in this browser. The prototype has no account and no database." },
   { icon: "Link2", title: "Links carry their own data.", body: "Everything after the # in an invite or summary link stays in the browser and is never sent to a server. Pages send no referrer." },
-  { icon: "Lock", title: "A strict content security policy.", body: "Scripts load only from this site. The browser may connect only to this site and the SMART sandbox." },
+  { icon: "Lock", title: "A strict content security policy.", body: "Scripts load only from this site. The browser may connect only to this site and two public FHIR sandboxes (SMART Health IT, plus Epic’s as a backup)." },
   { icon: "EyeOff", title: "No analytics, ads or data sales.", body: "No third-party scripts, no tracking, nothing to sell." },
 ] as const;
 
@@ -108,6 +119,14 @@ export const PROTOTYPE_VS_PILOT = {
   ],
   refusal: "There's no such thing as “HIPAA certified”, so we'll never say it.",
 } as const;
+
+/** "Questions you could ask" on the patient's summary (and the Clearing's page). Generic: never a recommendation. */
+export const PATIENT_QUESTIONS = [
+  "Does my family history change which tests I should have?",
+  "Should anyone else in my family be checked?",
+  "Would it help to see a genetic counselor?",
+  "Is there anything I should ask my relatives before my next visit?",
+] as const;
 
 export const NEVER = [
   "Sell or rent your data, or share it with insurers, employers, advertisers or brokers.",

@@ -17,6 +17,7 @@ import { PedigreeGlyph } from "@/components/ui/PedigreeGlyph";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { STATUS_ICON, STATUS_LABEL } from "@/components/ui/status";
 import { useMediaQuery } from "@/components/ui/useMediaQuery";
+import { PATIENT_QUESTIONS } from "@/content/site";
 import { CHAPTER_COLUMN, CHAPTER_STARTS, clearingBootScript, PINNED_QUERY, type ClearingFrame, type Plate } from "./clearing-constants";
 import type { FamilyConstellation, Tier } from "./FamilyConstellation";
 import HeroPoster from "./HeroPoster";
@@ -107,6 +108,38 @@ function stateShort(n: SceneNode, s: NodeState, visit: string | undefined) {
   return n.isSelf ? (visit ?? "The patient") : STATUS_LABEL[s];
 }
 
+/** "Heart attack, age 60" → "Heart attack 60"; "Angina, about age 58" → "Angina ~58" (the page's one-line facts). */
+function shortFact(text: string) {
+  return text
+    .replace(/^Atrial fibrillation/, "AFib")
+    .replace(/, about age (\d+)/, " ~$1")
+    .replace(/, age (\d+)/, " $1");
+}
+const NOT_A_FACT = new Set(["No heart history", "Doesn’t know", "Chose not to share"]);
+
+/** The Clearing's page: real one-line rows from the finished story (facts with sources kept, gaps, questions). */
+function pageRows(model: StoryModel) {
+  const last = model.keyframes[model.keyframes.length - 1];
+  const facts: { name: string; text: string; rank: number }[] = [];
+  const gaps: { name: string; text: string; rank: number }[] = [];
+  for (const n of model.nodes) {
+    if (n.isSelf) continue;
+    const s = last.states[n.id];
+    const said = model.receipts.filter((r) => r.personId === n.id && !NOT_A_FACT.has(r.text)).map((r, i) => {
+      const t = shortFact(r.text);
+      return i ? t.charAt(0).toLowerCase() + t.slice(1) : t;
+    });
+    if ((s === "known" || s === "conflicting") && said.length) {
+      const tail = s === "conflicting" ? " · both kept" : last.fromRecord[n.id] ? " · portal record" : "";
+      facts.push({ name: n.name, text: `${said.join(" / ")}${tail}`, rank: s === "conflicting" ? 0 : last.fromRecord[n.id] ? 1 : 2 });
+    } else if (s === "unknown" || s === "pending" || s === "declined") {
+      gaps.push({ name: n.name, text: s === "declined" ? STATUS_LABEL.declined : last.headlines[n.id], rank: s === "unknown" ? 0 : s === "pending" ? 1 : 2 });
+    }
+  }
+  const top = <T extends { rank: number }>(a: T[]) => a.sort((x, y) => x.rank - y.rank).slice(0, 3);
+  return { facts: top(facts), gaps: top(gaps), questions: [PATIENT_QUESTIONS[1], PATIENT_QUESTIONS[0]] };
+}
+
 export function HeroStage({ model, children }: HeroStageProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -116,6 +149,7 @@ export function HeroStage({ model, children }: HeroStageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const progressRef = useRef<HTMLSpanElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<FamilyConstellation | null>(null);
   const labelRefs = useRef(new Map<string, HTMLLIElement>());
   const points = useRef(new Map<string, { x: number; y: number }>());
@@ -133,6 +167,9 @@ export function HeroStage({ model, children }: HeroStageProps) {
   // Server snapshot = "reduced": the poster is always what SSR and hydration render.
   const reduced = useSyncExternalStore(subscribeReducedMotion, getReducedMotion, () => true);
   const pinned = useMediaQuery(PINNED_QUERY, false);
+  // SSR (and no-JS) keeps the chapter posters for wide screens; after hydration only the wide flow layout renders them.
+  const wideScreen = useMediaQuery("(min-width: 1024px)", true);
+  const chapterPosters = wideScreen && !pinned;
   const [mode, setMode] = useState<"poster" | "live">("poster");
   const [paused, setPaused] = useState(false);
   const [keyframe, setKeyframe] = useState(model.keyframes.length - 1);
@@ -155,6 +192,7 @@ export function HeroStage({ model, children }: HeroStageProps) {
   const active = pinnedId ?? focusId ?? domHover ?? canvasHover;
   const showCard = active !== null && active !== dismissed;
   const chapterList = chapters(model);
+  const page = useMemo(() => pageRows(model), [model]);
   const visitLine = model.visit ? `${model.visit.specialty} visit · ${model.visit.date}` : undefined;
   // Reading order for screen readers and Tab: you, then parents' generation, then grandparents;
   // within a generation mother's side first (she sits on the right, as in a standard pedigree).
@@ -175,7 +213,9 @@ export function HeroStage({ model, children }: HeroStageProps) {
     const v = visRef.current ?? { l: 0, t: 0, r: W, b: H, w: W, h: H };
     // Pinned, mid-story: the chapter card owns the left column (left max(32, (W − 1240) / 2 + 32), 26rem wide).
     const chapterRight = (frameRef.current?.chapter ?? -1) >= 0 ? CHAPTER_COLUMN.left(W) + CHAPTER_COLUMN.width + 16 : 0;
-    const vis = { ...v, l: Math.max(v.l, chapterRight) };
+    // The card never covers the controls bar (Pause is the WCAG 2.2.2 mechanism; a focused control must stay visible).
+    const barH = barRef.current ? barRef.current.offsetHeight + 12 : 0;
+    const vis = { ...v, l: Math.max(v.l, chapterRight), b: v.b - barH };
     const pt = points.current.get(id) ?? posterPoint(node, plateRef.current ?? readPlate(win), W, H);
     if (narrowRef.current) {
       // Narrow windows: dock the compact card to the bottom of the window (over the caption), or to the top when the relative
@@ -237,9 +277,22 @@ export function HeroStage({ model, children }: HeroStageProps) {
     const labels = labelRefs.current;
 
     const boot = async () => {
-      booting = true;
+      if (engine || cancelled) return; // at most one engine per canvas
+      // No WebGL2: keep the poster without downloading three. Same attributes three.js r186 requests, so its renderer
+      // gets this very context back.
+      const gl = canvas.getContext("webgl2", {
+        alpha: true,
+        depth: false,
+        stencil: false,
+        antialias: false,
+        premultipliedAlpha: true,
+        preserveDrawingBuffer: false,
+        powerPreference: "default",
+        failIfMajorPerformanceCaveat: false,
+      });
+      if (!gl) return;
       const { FamilyConstellation } = await import("./FamilyConstellation");
-      if (cancelled) return;
+      if (cancelled || engine) return;
       try {
         engine = new FamilyConstellation(canvas, {
           model,
@@ -307,7 +360,10 @@ export function HeroStage({ model, children }: HeroStageProps) {
       ([e]) => {
         inView = e.isIntersecting;
         if (e.intersectionRatio >= 0.5 || (pinned && e.isIntersecting)) started = true;
-        if (inView && !booting && !cancelled) {
+        // Boot once, and only when the story would actually play (flow mode autoplays at ≥ 50% in view): a visitor who
+        // never scrolls to the window never pays for three.js. The SSR poster covers the gap.
+        if (started && inView && !booting && !cancelled) {
+          booting = true;
           const ric = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 120));
           ric(() => void boot(), { timeout: 1200 });
         }
@@ -478,6 +534,18 @@ export function HeroStage({ model, children }: HeroStageProps) {
     setDismissed(active);
   };
 
+  // WCAG 1.4.13: a card shown on hover is dismissible with Esc wherever focus is (often <body>).
+  useEffect(() => {
+    if (!showCard || !active || (active !== domHover && active !== canvasHover)) return;
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setPinnedId(null);
+      setDismissed(active);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [showCard, active, domHover, canvasHover]);
+
   // While the receipt card is pinned, a press anywhere outside the window closes it.
   useEffect(() => {
     if (!pinnedId) return;
@@ -537,7 +605,15 @@ export function HeroStage({ model, children }: HeroStageProps) {
             </p>
 
             {/* Controls first in the focus order (Pause is the WCAG 2.2.2 mechanism); drawn at the bottom of the window. */}
-            <div className={styles.bar}>
+            <div
+              ref={barRef}
+              className={styles.bar}
+              // focus entering the controls closes an open receipt, so Pause / Replay / Skip are never hidden under it
+              onFocus={() => {
+                setPinnedId(null);
+                if (active) setDismissed(active);
+              }}
+            >
               <div className={styles.controls}>
                 <span className={styles.badge}>
                   <span aria-hidden className={styles.badgeDot} />
@@ -679,7 +755,10 @@ export function HeroStage({ model, children }: HeroStageProps) {
             {chapterList.map((c, i) => {
               const p = posterForChapter(model, i);
               return (
-                <li key={c.id} className={styles.chapter} data-active={chapter === i || undefined}>
+                <li key={c.id} className={styles.chapter} data-active={chapter === i || undefined} data-current={(!pinned && flowChapter === i) || undefined}>
+                  {/* Posters only where they add something: the wide flow layout (reduced motion, coarse pointer, no JS).
+                      Phones get text-only cards (the window above already plays the story); pinned mode hides them. */}
+                  {chapterPosters ? (
                   <figure className={styles.chapterFigure} aria-hidden="true">
                     {c.id === "page" ? (
                       <div className={styles.miniSheet}>
@@ -691,6 +770,7 @@ export function HeroStage({ model, children }: HeroStageProps) {
                       <HeroPoster model={model} keyframe={p.keyframe} invites={p.invites} />
                     )}
                   </figure>
+                  ) : null}
                   <p className={styles.chapterNum}>
                     <span>{String(i + 1).padStart(2, "0")}</span>
                     {c.label}
@@ -710,16 +790,39 @@ export function HeroStage({ model, children }: HeroStageProps) {
                 <p className={styles.sheetTitle}>{model.patientName}’s family heart history</p>
                 <p className={styles.sheetMeta}>{visitLine ?? "Before the visit"} · Facts, gaps and questions</p>
               </div>
+              {/* the pedigree slot (placed absolutely below, by the plate formula) */}
+              <div className={styles.sheetSlot} />
               <div className={styles.sheetBody}>
-                {["Facts", "Gaps", "Questions for your visit"].map((h, i) => (
-                  <div key={h}>
-                    <p className={styles.sheetEyebrow}>{h}</p>
-                    <span className={styles.skel} style={{ width: `${92 - i * 9}%` }} />
-                    <span className={styles.skel} style={{ width: `${70 + i * 6}%` }} />
-                    <span className={styles.skel} style={{ width: `${54 + i * 11}%` }} />
-                  </div>
-                ))}
+                <div>
+                  <p className={styles.sheetEyebrow}>Facts</p>
+                  <ul className={styles.sheetRows}>
+                    {page.facts.map((r) => (
+                      <li key={r.name}>
+                        <b>{r.name}</b> {r.text}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p className={styles.sheetEyebrow}>Gaps</p>
+                  <ul className={styles.sheetRows}>
+                    {page.gaps.map((r) => (
+                      <li key={r.name}>
+                        <b>{r.name}</b> {r.text}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p className={styles.sheetEyebrow}>Questions</p>
+                  <ul className={styles.sheetRows}>
+                    {page.questions.map((q) => (
+                      <li key={q}>{q}</li>
+                    ))}
+                  </ul>
+                </div>
               </div>
+              <p className={styles.sheetFoot}>One page · every fact keeps who said it, and when</p>
             </div>
             {/* Placed by the plate formula, not by the sheet's flow, so it lands exactly where the flattened canvas was. */}
             <div className={styles.sheetPedigree}>
