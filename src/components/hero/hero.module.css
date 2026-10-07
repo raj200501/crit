@@ -1,0 +1,1098 @@
+/* Hero stage geometry (DESIGN §9.3). Tokens only (var(--color-…)); no @apply.
+   One DOM, two layouts:
+   - flow (default): mobile, tablets, coarse pointers, reduced motion and no-JS. The window is a card, the chapters are
+     stacked cards with static posters.
+   - pinned (the media block at the end, under html[data-js]): a 360svh section with a sticky 100svh stage. The window
+     is full-bleed underneath and clip-path cuts it down to the slot; useClearing animates the custom properties. */
+
+/* ---------------------------------------------------------------- section + stage */
+.section {
+  position: relative;
+  background: var(--color-paper);
+}
+.stage {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  --clip-t: 0px;
+  --clip-r: 0px;
+  --clip-b: 0px;
+  --clip-l: 0px;
+  --clip-rad: 24px;
+  --expand: 0;
+  --copy-o: 1;
+  --frame-o: 1;
+  --clear-o: 0;
+  --chapter-p: 0;
+}
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 28px;
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding: 104px 16px 72px;
+}
+@media (min-width: 640px) {
+  .inner {
+    padding-inline: 24px;
+  }
+}
+.copy {
+  grid-row: 1;
+  grid-column: 1;
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+}
+.slot {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- the Night Window (flow: a card) */
+.window {
+  grid-row: 2;
+  grid-column: 1;
+  position: relative;
+  z-index: 1;
+  aspect-ratio: 3 / 4;
+  margin: 9px;
+  border-radius: 24px;
+  overflow: hidden;
+  isolation: isolate;
+  container-type: size;
+  background: var(--color-night);
+  color: var(--color-ivory);
+  /* double bezel: white/70 shell, hairline, then the mint-tinted window shadow */
+  box-shadow:
+    0 0 0 8px rgb(255 255 255 / 0.72),
+    0 0 0 9px rgb(10 31 27 / 0.08),
+    var(--shadow-window);
+  /* plate: where the pedigree sits, in % of the window (the engine reads the same four numbers) */
+  --cx: 50;
+  --cy: 42;
+  --pw: 96;
+  --ph: 54;
+  --plate: min(calc(var(--pw) * 1cqw), calc(var(--ph) * 2cqh));
+}
+@media (min-width: 640px) {
+  .window {
+    aspect-ratio: 5 / 4;
+    --cy: 45;
+    --pw: 84;
+    --ph: 60;
+  }
+}
+.window:focus-within {
+  outline: none;
+}
+
+.poster {
+  position: absolute;
+  left: calc(var(--cx) * 1cqw - var(--plate) / 2);
+  top: calc(var(--cy) * 1cqh - var(--plate) * 0.25);
+  width: var(--plate);
+  height: calc(var(--plate) * 0.5);
+  transition: opacity 600ms var(--ease-out-quart) 150ms;
+}
+.poster svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 600ms var(--ease-out-quart);
+  touch-action: pan-y;
+  cursor: grab;
+}
+.section[data-mode="live"] .canvas {
+  opacity: 1;
+}
+.section[data-mode="live"] .poster {
+  opacity: 0;
+}
+
+/* Atmosphere over the canvas: mint light spilling in from the top-left, and a floor so captions stay legible. */
+.atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 50% at calc(var(--clip-l) + 4%) calc(var(--clip-t) + 0%), rgb(127 230 197 / 0.1), transparent 70%),
+    linear-gradient(to top, rgb(11 21 20 / 0.92) calc(var(--clip-b) + 0px), rgb(11 21 20 / 0) calc(var(--clip-b) + 150px));
+}
+
+.windowLabel {
+  position: absolute;
+  z-index: 3;
+  top: calc(var(--clip-t) + 16px + 60px * var(--expand));
+  left: calc(var(--clip-l) + 20px);
+  right: calc(var(--clip-r) + 20px);
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font: 500 var(--text-eyebrow) / 1.3 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ivory-3);
+  pointer-events: none;
+}
+.hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-lumen);
+  transition: opacity 400ms var(--ease-out-quart);
+}
+.hint::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 0 10px 2px rgb(127 230 197 / 0.6);
+}
+.hintGone {
+  opacity: 0;
+}
+.hintCoarse {
+  display: none;
+}
+@media (hover: none) {
+  .hintFine {
+    display: none;
+  }
+  .hintCoarse {
+    display: inline;
+  }
+}
+
+/* ---------------------------------------------------------------- relatives (real buttons over the glyphs) */
+.labels {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+  transition: opacity 500ms var(--ease-out-quart);
+}
+.section[data-mode="live"][data-phase="fog"] .labels {
+  opacity: 0;
+}
+.label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+.label[data-active] {
+  z-index: 5;
+}
+/* Poster mode: the same "meet" fit as the SVG viewBox (9.2 × 6), in container units. */
+.section[data-mode="poster"] .label {
+  left: calc(var(--cx) * 1cqw + var(--x) * var(--plate));
+  top: calc(var(--cy) * 1cqh + var(--y) * var(--plate) * 0.5);
+  transform: none !important;
+}
+.labelInner {
+  position: absolute;
+  translate: -50% calc(var(--plate) * 0.0228 + 7px);
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+/* Compact plates (phones, the small window at p = 0): grandparents' names go above their glyphs, so the rows never collide. */
+.stage:not([data-names]) .label[data-gen="0"] .labelInner {
+  translate: -50% calc(-100% - var(--plate) * 0.0228 - 6px);
+}
+@container (max-width: 480px) {
+  .labelInner button {
+    min-height: 26px;
+    padding: 2px 9px;
+  }
+  .hint {
+    display: none;
+  }
+}
+.label[data-gen="2"] .labelInner {
+  translate: -50% calc(var(--plate) * 0.0283 + 8px);
+}
+.labelInner button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 3px 11px;
+  border-radius: 999px;
+  border: 1px solid rgb(242 245 241 / 0.16);
+  background: rgb(11 21 20 / 0.66);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  color: var(--color-ivory);
+  font: 560 var(--text-caption) / 1.2 var(--font-sans);
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-hover) var(--ease-out-quart),
+    background-color var(--dur-hover) var(--ease-out-quart),
+    box-shadow var(--dur-hover) var(--ease-out-quart),
+    scale var(--dur-hover) var(--ease-out-quart);
+}
+.labelInner button:hover,
+.label[data-active] .labelInner button {
+  border-color: rgb(127 230 197 / 0.6);
+  background: rgb(23 40 38 / 0.9);
+  box-shadow: 0 0 0 4px rgb(127 230 197 / 0.1), 0 6px 18px -6px rgb(0 0 0 / 0.6);
+}
+.labelInner button[aria-expanded="true"] {
+  border-color: var(--color-lumen);
+  background: var(--color-night-800);
+}
+.labelInner button:focus-visible {
+  outline: 2px solid var(--color-lumen);
+  outline-offset: 2px;
+}
+.labelInner button:active {
+  scale: 0.97;
+}
+.full {
+  display: none;
+}
+.short {
+  display: inline;
+}
+.state {
+  /* visually hidden until the plate leaves room (data-states); always the button's description */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font: 500 var(--text-eyebrow) / 1.3 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ivory-2);
+}
+.stateIcon {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  stroke-width: 2.25;
+}
+.stateIcon[data-state="known"] {
+  color: var(--fht-known);
+}
+.stateIcon[data-state="conflicting"] {
+  color: var(--fht-conflict);
+}
+.stateIcon[data-state="unknown"] {
+  color: var(--fht-unknown);
+}
+.stateIcon[data-state="declined"] {
+  color: #a597b6;
+}
+.stateIcon[data-state="pending"] {
+  color: var(--fht-fog);
+}
+.stage[data-names] .full {
+  display: inline;
+}
+.stage[data-names] .short {
+  display: none;
+}
+.stage[data-states] .state {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip-path: none;
+}
+.recordChip {
+  width: 7px;
+  height: 7px;
+  border-radius: 1.5px;
+  background: var(--fht-record);
+  flex: none;
+}
+.label[data-active] .state {
+  color: var(--color-ivory);
+}
+
+/* The receipt card: a paper card floating over the night, anchored next to its relative (JS sets `translate`). */
+.card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 6;
+  animation: card-in var(--dur-panel) var(--ease-out-quart) both;
+}
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+}
+
+/* ---------------------------------------------------------------- bottom bar: caption, controls, story progress */
+.bar {
+  position: absolute;
+  z-index: 3;
+  left: calc(var(--clip-l) + 14px);
+  right: calc(var(--clip-r) + 14px);
+  bottom: calc(var(--clip-b) + 12px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.window[data-dock="bottom"] .bar,
+.window[data-dock="top"] .windowLabel {
+  opacity: 0;
+  pointer-events: none;
+}
+.bar,
+.windowLabel {
+  transition: opacity var(--dur-ui) var(--ease-out-quart);
+}
+.caption {
+  order: -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 24px;
+  margin: 0 4px;
+  color: var(--color-ivory-2);
+  font: 400 var(--text-small) / 1.4 var(--font-sans);
+  animation: caption-in var(--dur-ui) var(--ease-out-quart) both;
+}
+.captionGlyph {
+  flex: none;
+}
+@keyframes caption-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 28px;
+  padding: 0 11px;
+  border-radius: 999px;
+  background: rgb(242 245 241 / 0.08);
+  color: var(--color-ivory-2);
+  font: 500 var(--text-caption) / 1 var(--font-sans);
+  white-space: nowrap;
+}
+.badgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-lumen);
+}
+.ctlGroup {
+  display: inline-flex;
+  gap: 6px;
+}
+.ctl {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgb(242 245 241 / 0.16);
+  background: rgb(11 21 20 / 0.5);
+  color: var(--color-ivory-2);
+  font: 500 var(--text-small) / 1 var(--font-sans);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color var(--dur-hover) var(--ease-out-quart),
+    background-color var(--dur-hover) var(--ease-out-quart),
+    border-color var(--dur-hover) var(--ease-out-quart);
+}
+.ctl svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+.ctl:hover {
+  color: var(--color-ivory);
+  background: rgb(242 245 241 / 0.08);
+  border-color: rgb(242 245 241 / 0.28);
+}
+.ctl[aria-pressed="true"] {
+  color: var(--color-ivory);
+  border-color: rgb(127 230 197 / 0.5);
+}
+.ctl:focus-visible {
+  outline: 2px solid var(--color-lumen);
+  outline-offset: 2px;
+}
+.ctl:active {
+  scale: 0.97;
+}
+.ctlText {
+  white-space: nowrap;
+}
+/* Icon-only when the window is narrow; the text stays the accessible name. Flow: by the window's own width. */
+@container (max-width: 620px) {
+  .ctlText {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+@container (min-width: 621px) {
+  .ctl {
+    height: 36px;
+  }
+}
+@media (pointer: coarse) {
+  .ctl {
+    height: 44px;
+  }
+}
+.skipPinned {
+  display: none;
+}
+.progress {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: -12px;
+  height: 2px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: rgb(242 245 241 / 0.07);
+}
+.progress > span {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  transform: scaleX(0.83);
+  background: linear-gradient(90deg, rgb(127 230 197 / 0.25), var(--color-lumen));
+}
+.section[data-mode="poster"] .progress {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- chapter control + stacked chapters (flow) */
+.seg {
+  grid-row: 3;
+  grid-column: 1;
+  margin-top: 8px;
+}
+html:not([data-js]) .seg {
+  display: none;
+}
+.chapters {
+  grid-row: 4;
+  grid-column: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 640px) {
+  .chapters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.chapter {
+  position: relative;
+  min-width: 0;
+  padding: 10px 10px 20px;
+  border: 1px solid var(--ui-line);
+  border-radius: 20px;
+  background: rgb(255 255 255 / 0.72);
+  box-shadow: var(--shadow-sm);
+}
+.chapterFigure {
+  margin: 0 0 16px;
+  aspect-ratio: 16 / 10;
+  border-radius: 12px;
+  overflow: hidden;
+  background:
+    radial-gradient(80% 70% at 15% 0%, rgb(127 230 197 / 0.12), transparent 70%),
+    var(--color-night);
+  display: grid;
+  place-items: center;
+  padding: 10px 14px;
+}
+.chapterFigure > svg {
+  width: 100%;
+  height: 100%;
+}
+.miniSheet {
+  position: relative;
+  width: 74%;
+  height: 112%;
+  margin-top: 18%;
+  padding: 14px 16px 0;
+  border-radius: 4px 4px 0 0;
+  background: var(--color-white);
+  box-shadow: 0 -8px 30px -6px rgb(127 230 197 / 0.35);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 6px;
+}
+.miniSheet svg {
+  width: 100%;
+  height: 100%;
+}
+.miniRule {
+  height: 2px;
+  width: 46%;
+  background: var(--color-ink);
+  border-radius: 2px;
+}
+.miniLines {
+  height: 18px;
+  background: repeating-linear-gradient(to bottom, var(--color-mist-2) 0 4px, transparent 4px 9px);
+  width: 80%;
+}
+.chapterNum {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 8px 8px;
+  font: 500 var(--text-eyebrow) / 1.3 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+.chapterNum > span {
+  color: var(--color-evergreen-600);
+}
+.chapterTitle {
+  margin: 0 8px;
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-book);
+  font-size: 1.5rem;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--color-ink);
+}
+.chapterBody {
+  margin: 10px 8px 0;
+  font: 400 var(--text-small) / 1.55 var(--font-sans);
+  color: var(--color-ink-2);
+}
+.chapterProgress {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- the paper layer (pinned: the Clearing; flow: the "Page" chapter) */
+.clearing {
+  grid-row: 2;
+  grid-column: 1;
+  position: relative;
+  z-index: 3;
+  margin: 9px;
+  border-radius: 24px;
+  overflow: hidden;
+  container-type: size;
+  aspect-ratio: 3 / 4;
+  background:
+    radial-gradient(70% 50% at 50% 0%, rgb(207 245 231 / 0.7), transparent 70%),
+    var(--color-paper);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 500ms var(--ease-out-quart),
+    visibility 0s linear 500ms;
+  pointer-events: none;
+  /* same plate as the window, so the paper pedigree lands where the flattened constellation was */
+  --cx: 50;
+  --cy: 42;
+  --pw: 96;
+  --ph: 54;
+  --plate: min(calc(var(--pw) * 1cqw), calc(var(--ph) * 2cqh));
+}
+@media (min-width: 640px) {
+  .clearing {
+    aspect-ratio: 5 / 4;
+    --cy: 45;
+    --pw: 84;
+    --ph: 60;
+  }
+}
+.stage[data-flow-page] .clearing {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 500ms var(--ease-out-quart) 450ms,
+    visibility 0s;
+}
+.sheet {
+  /* the page: a white card whose header sits --sheet-head above the pedigree slot (the plate) */
+  --sheet-head: 88px;
+  --sheet-pad: 14px;
+  position: absolute;
+  left: calc(var(--cx) * 1cqw - var(--plate) / 2 - var(--sheet-pad));
+  width: calc(var(--plate) + 2 * var(--sheet-pad));
+  top: calc(var(--cy) * 1cqh - var(--plate) * 0.25 - var(--sheet-head));
+  bottom: -24px;
+  padding: 16px var(--sheet-pad) 0;
+  border-radius: 4px 4px 0 0;
+  background: var(--color-white);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-paper);
+}
+.sheetEyebrow {
+  margin: 0;
+  font: 500 var(--text-eyebrow) / 1.3 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sheetTitle {
+  margin: 6px 0 0;
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-book);
+  font-size: 1.25rem;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sheetMeta {
+  display: none;
+  margin: 4px 0 0;
+  font: 400 var(--text-caption) / 1.4 var(--font-sans);
+  color: var(--color-ink-3);
+}
+.sheetHead::after {
+  content: "";
+  display: block;
+  height: 2px;
+  margin-top: 10px;
+  background: var(--color-ink);
+}
+.sheetPedigree {
+  position: absolute;
+  left: calc(var(--cx) * 1cqw - var(--plate) / 2);
+  top: calc(var(--cy) * 1cqh - var(--plate) * 0.25);
+  width: var(--plate);
+  height: calc(var(--plate) * 0.5);
+}
+.sheetPedigree svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* Names on the paper pedigree only where they render at a legible size (narrow sheets keep the glyphs). */
+@container (max-width: 1100px) {
+  .sheetPedigree text {
+    display: none;
+  }
+}
+.sheetBody {
+  position: absolute;
+  left: var(--sheet-pad);
+  right: var(--sheet-pad);
+  top: calc(var(--sheet-head) + var(--plate) * 0.5 + 20px);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ui-line);
+}
+.sheetBody > div {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  min-width: 0;
+}
+.skel {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-mist-2);
+}
+.clearingCaption {
+  display: none;
+}
+
+.dots {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- flow at ≥ 1024 px (reduced motion, coarse pointers) */
+@media (min-width: 1024px) {
+  .inner {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 32px;
+    align-items: center;
+    padding: 128px 32px 96px;
+  }
+  .copy {
+    grid-column: 1 / span 6;
+    max-width: 36rem;
+  }
+  .window,
+  .clearing {
+    grid-column: 7 / span 6;
+    grid-row: 1;
+  }
+  .seg {
+    grid-column: 7 / span 6;
+    grid-row: 2;
+    margin-top: 0;
+  }
+  .chapters {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 40px;
+  }
+}
+
+/* ================================================================ PINNED MODE (desktop, fine pointer, motion, JS) */
+@media (min-width: 1024px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  :global(html[data-js]) .section {
+    height: 360svh;
+  }
+  :global(html[data-js]) .stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 600px;
+    container-type: size;
+    /* before JS takes over, the inline boot script has measured the slot (no full-bleed flash at p = 0) */
+    --clip-t: var(--hero-clip-t, 18svh);
+    --clip-r: var(--hero-clip-r, 6vw);
+    --clip-b: var(--hero-clip-b, 14svh);
+    --clip-l: var(--hero-clip-l, 52vw);
+    --clip-rad: 20px;
+    --cx: var(--hero-cx, 74);
+    --cy: var(--hero-cy, 46);
+    --pw: var(--hero-pw, 34);
+    --ph: var(--hero-ph, 36);
+  }
+  :global(html[data-js]) .inner {
+    height: 100%;
+    grid-template-rows: minmax(0, 1fr);
+    align-items: center;
+    padding: 92px 32px 40px;
+  }
+  :global(html[data-js]) .copy {
+    grid-row: 1;
+    opacity: var(--copy-o);
+    transform: translateX(calc((1 - var(--copy-o)) * -40px));
+    will-change: opacity, transform;
+  }
+  :global(html[data-js]) .slot {
+    display: block;
+    grid-column: 7 / span 6;
+    grid-row: 1;
+    align-self: center;
+    width: 100%;
+    max-height: 600px;
+    aspect-ratio: 5 / 4;
+    justify-self: end;
+    position: relative;
+    border-radius: 28px;
+    border: 1px solid rgb(10 31 27 / 0.08);
+    background: rgb(255 255 255 / 0.7);
+    box-shadow: var(--shadow-window);
+    opacity: var(--frame-o);
+  }
+  /* mint light spilling from the window's top-left onto the page */
+  :global(html[data-js]) .slot::before {
+    content: "";
+    position: absolute;
+    inset: -18% 30% 40% -22%;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgb(127 230 197 / 0.32), transparent);
+    filter: blur(24px);
+    pointer-events: none;
+  }
+  :global(html[data-js]) .window {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    aspect-ratio: auto;
+    border-radius: 0;
+    box-shadow: none;
+    clip-path: inset(var(--clip-t) var(--clip-r) var(--clip-b) var(--clip-l) round var(--clip-rad));
+    --cx: inherit;
+    --cy: inherit;
+    --pw: inherit;
+    --ph: inherit;
+  }
+  :global(html[data-js]) .stage[data-cheap-clip][data-expanded] .window {
+    animation: window-in 300ms var(--ease-out-quart) both;
+  }
+  :global(html[data-js]) .stage:not([data-wide]) .ctlMinor .ctlText {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  :global(html[data-js]) .stage:not([data-wide]) .ctlMinor {
+    padding: 0;
+    width: 36px;
+    min-width: 36px;
+  }
+  :global(html[data-js]) .skipPinned {
+    display: inline;
+  }
+  :global(html[data-js]) .skipFlow {
+    display: none;
+  }
+  :global(html[data-js]) .seg {
+    display: none;
+  }
+
+  /* chapter cards: one at a time, glass on night-800, in the left column */
+  :global(html[data-js]) .chapters {
+    position: absolute;
+    z-index: 5;
+    left: max(32px, calc((100cqw - 1240px) / 2 + 32px));
+    top: 50%;
+    width: 26rem;
+    height: 0;
+    margin: 0;
+    display: block;
+    pointer-events: none;
+  }
+  :global(html[data-js]) .chapter {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 28px 28px 30px;
+    border: 1px solid rgb(242 245 241 / 0.1);
+    border-radius: 20px;
+    background: rgb(23 40 38 / 0.7);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(140%);
+    box-shadow: var(--shadow-raise-night);
+    color: var(--color-ivory);
+    opacity: 0;
+    transform: translateY(calc(-50% + 14px));
+    transition:
+      opacity 360ms var(--ease-out-quart),
+      transform 520ms var(--ease-out-expo);
+  }
+  :global(html[data-js]) .chapterFigure {
+    display: none;
+  }
+  :global(html[data-js]) .chapterNum {
+    margin: 0 0 14px;
+    color: var(--color-ivory-3);
+  }
+  :global(html[data-js]) .chapterNum > span {
+    color: var(--color-lumen);
+  }
+  :global(html[data-js]) .chapterTitle {
+    margin: 0;
+    font-size: 1.75rem;
+    line-height: 1.12;
+    color: var(--color-ivory);
+  }
+  :global(html[data-js]) .chapterBody {
+    margin: 14px 0 0;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--color-ivory-2);
+  }
+  :global(html[data-js]) .chapterProgress {
+    display: block;
+    position: absolute;
+    left: 28px;
+    right: 28px;
+    bottom: 14px;
+    height: 2px;
+    border-radius: 2px;
+    background: rgb(242 245 241 / 0.08);
+    overflow: hidden;
+  }
+  :global(html[data-js]) .chapterProgress::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform-origin: left;
+    transform: scaleX(var(--chapter-p));
+    background: var(--color-lumen);
+  }
+  :global(html[data-js]) .stage[data-chapter="0"] .chapter:nth-child(1),
+  :global(html[data-js]) .stage[data-chapter="1"] .chapter:nth-child(2),
+  :global(html[data-js]) .stage[data-chapter="2"] .chapter:nth-child(3),
+  :global(html[data-js]) .stage[data-chapter="3"] .chapter:nth-child(4) {
+    opacity: 1;
+    transform: translateY(-50%);
+  }
+
+  /* chapter dots on the right edge */
+  :global(html[data-js]) .dots {
+    position: absolute;
+    z-index: 6;
+    right: 22px;
+    top: 50%;
+    translate: 0 -50%;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 0;
+    border-radius: 999px;
+    background: rgb(11 21 20 / 0.55);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    opacity: calc(var(--expand) * (1 - var(--clear-o)));
+    transition: opacity 200ms linear;
+  }
+  :global(html[data-js]) .stage:not([data-expanded]) .dots:not(:focus-within) {
+    visibility: hidden;
+  }
+  :global(html[data-js]) .dots:focus-within {
+    opacity: 1;
+  }
+  :global(html[data-js]) .dots button {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  :global(html[data-js]) .dots button > span {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: rgb(242 245 241 / 0.4);
+    transition:
+      height 280ms var(--ease-out-expo),
+      background-color 200ms;
+  }
+  :global(html[data-js]) .dots button:hover > span {
+    background: var(--color-ivory);
+  }
+  :global(html[data-js]) .dots button[aria-current="step"] > span {
+    height: 20px;
+    background: var(--color-lumen);
+  }
+  :global(html[data-js]) .dots button:focus-visible {
+    outline: 2px solid var(--color-lumen);
+    outline-offset: -2px;
+  }
+
+  /* the Clearing: paper fades in over the whole stage; the sheet's pedigree slot is PLATE_SHEET (60, 42, 40, 38) */
+  :global(html[data-js]) .clearing {
+    position: absolute;
+    inset: 0;
+    z-index: 7;
+    margin: 0;
+    border-radius: 0;
+    aspect-ratio: auto;
+    visibility: visible;
+    opacity: var(--clear-o);
+    transition: none;
+    background:
+      radial-gradient(42% 46% at 50% 6%, rgb(207 245 231 / 0.75), transparent 70%),
+      radial-gradient(30% 40% at 92% 10%, rgb(214 233 255 / 0.6), transparent 70%),
+      var(--color-paper);
+    --cx: 60;
+    --cy: 42;
+    --pw: 40;
+    --ph: 38;
+  }
+  :global(html[data-js]) .stage[data-cleared] .clearing {
+    pointer-events: auto;
+  }
+  :global(html[data-js]) .sheet {
+    --sheet-head: 132px;
+    --sheet-pad: 56px;
+    bottom: -40px;
+    padding-top: 30px;
+    transform: translateY(calc((1 - var(--clear-o)) * 28px));
+  }
+  :global(html[data-js]) .sheetPedigree {
+    transform: translateY(calc((1 - var(--clear-o)) * 28px));
+  }
+  :global(html[data-js]) .sheetTitle {
+    font-size: 1.75rem;
+  }
+  :global(html[data-js]) .sheetMeta {
+    display: block;
+  }
+  :global(html[data-js]) .clearingCaption {
+    display: block;
+    position: absolute;
+    left: max(32px, calc((100cqw - 1240px) / 2 + 32px));
+    top: 50%;
+    width: calc(var(--cx) * 1cqw - var(--plate) / 2 - 56px - max(32px, calc((100cqw - 1240px) / 2 + 32px)) - 48px);
+    max-width: 22rem;
+    translate: 0 -50%;
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: var(--font-weight-book);
+    font-size: clamp(1.375rem, 1rem + 1vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+  }
+  :global(html[data-js]) .clearingCaption > span {
+    display: block;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--color-ink-3);
+  }
+}
+
+@keyframes window-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Reduced motion: the CSS safety net in globals.css stops transitions; the card and caption appear without travel. */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .caption {
+    animation: none;
+  }
+}
+
+@media print {
+  .canvas,
+  .bar,
+  .seg {
+    display: none;
+  }
+}
