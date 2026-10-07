@@ -1,6 +1,7 @@
+import { useId } from "react";
 import { cn } from "../ui/cn";
 
-/** Named surfaces the mark's knockout can match; any other CSS color string is used as is (e.g. "var(--color-mist)"). */
+/** The surface a mark sits on. Accepted for older call sites; the knockout is a real cut-out now, so it has no effect. */
 export type MarkSurface = "paper" | "white" | "night" | (string & {});
 
 export interface LogoMarkProps {
@@ -9,16 +10,13 @@ export interface LogoMarkProps {
   /** Omit to follow the surrounding theme (ink + evergreen on paper, ivory + lumen on night). */
   tone?: "paper" | "night";
   /**
-   * The color the mark sits on. The snake's knockout strokes are drawn in it, so the staff breaks where the snake passes in
-   * front and the snake breaks where it passes behind. Defaults to the tone's background (paper or night), or the theme's
-   * background when there is no tone. Pass "white" on white cards and headers.
+   * Ignored. The knockout (the gap where the snake passes in front of the staff, and where it passes behind) is cut out
+   * with SVG masks, so the mark shows whatever is behind it, translucent glass included. Kept so call sites don't change.
    */
   surface?: MarkSurface;
   className?: string;
   title?: string;
 }
-
-const SURFACES: Record<string, string> = { paper: "var(--color-paper)", white: "var(--color-white)", night: "var(--color-night)" };
 
 /** The snake: one coil up the staff, from the tail (lower left) to the head (upper right). Same path as the brand SVGs. */
 const SNAKE =
@@ -30,14 +28,15 @@ const SNAKE =
 /**
  * "Rod and Lineage": a pedigree couple (square = father, circle = mother) joined by the couple line, whose descent line
  * continues down as the Rod of Asclepius, with one snake coiling up it. The snake passes in front of the staff at the
- * bottom crossing, behind it at the middle crossing (the staff is redrawn over a knockout) and in front at the top; the
- * head is at the upper right. Only the snake is colored.
+ * bottom crossing, behind it at the middle crossing (the staff is redrawn over a gap cut in the snake) and in front at the
+ * top; the head is at the upper right. Only the snake is colored. The gaps are masks, not surface-colored strokes (the same
+ * construction as public/brand), so they stay true over glass, gradients and photos.
  */
-export function LogoMark({ size = 28, tone, surface, className, title }: LogoMarkProps) {
+export function LogoMark({ size = 28, tone, className, title }: LogoMarkProps) {
+  // Unique per instance: a page can hold many marks, and mask ids are document-global.
+  const id = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const ink = tone === "night" ? "text-ivory" : tone === "paper" ? "text-ink" : undefined;
   const accent = tone === "night" ? "var(--color-lumen)" : tone === "paper" ? "var(--color-evergreen-600)" : "var(--ui-brand, #0E6B57)";
-  const ground = surface ?? (tone === "night" ? "night" : tone === "paper" ? "paper" : "var(--ui-bg, var(--color-paper))");
-  const knockout = SURFACES[ground] ?? ground;
   return (
     <svg
       viewBox="0 0 32 32"
@@ -49,13 +48,25 @@ export function LogoMark({ size = 28, tone, surface, className, title }: LogoMar
       focusable="false"
     >
       {title ? <title>{title}</title> : null}
-      <rect x="4.5" y="2.5" width="7" height="7" rx="1.6" stroke="currentColor" strokeWidth="2" />
-      <circle cx="24" cy="6" r="3.6" stroke="currentColor" strokeWidth="2" />
-      <path d="M11.5 6h8.9M16 6v24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      <path d={SNAKE} style={{ stroke: knockout }} strokeWidth="4.5" strokeLinecap="round" />
-      <path d={SNAKE} style={{ stroke: accent }} strokeWidth="2.3" strokeLinecap="round" />
-      {/* the middle crossing: the staff is redrawn over the snake, so the snake goes behind it */}
-      <path d="M16 20.10V23.90" style={{ stroke: knockout }} strokeWidth="4" />
+      <defs>
+        {/* a: the snake's outline, cut out of the couple and staff (so the snake passes in front with a gap around it) */}
+        <mask id={`${id}a`} maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32">
+          <rect width="32" height="32" fill="#fff" />
+          <path d={SNAKE} stroke="#000" strokeWidth="4.5" strokeLinecap="round" />
+        </mask>
+        {/* b: the middle crossing, cut out of the snake (so it passes behind the staff) */}
+        <mask id={`${id}b`} maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32">
+          <rect width="32" height="32" fill="#fff" />
+          <path d="M16 20.10V23.90" stroke="#000" strokeWidth="4" />
+        </mask>
+      </defs>
+      <g mask={`url(#${id}a)`}>
+        <rect x="4.5" y="2.5" width="7" height="7" rx="1.6" stroke="currentColor" strokeWidth="2" />
+        <circle cx="24" cy="6" r="3.6" stroke="currentColor" strokeWidth="2" />
+        <path d="M11.5 6h8.9M16 6v24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      </g>
+      <path d={SNAKE} style={{ stroke: accent }} strokeWidth="2.3" strokeLinecap="round" mask={`url(#${id}b)`} />
+      {/* the middle crossing: the staff is redrawn over the gap in the snake, so the snake goes behind it */}
       <path d="M16 19.60V24.40" stroke="currentColor" strokeWidth="2" />
       <ellipse
         cx="19.81"

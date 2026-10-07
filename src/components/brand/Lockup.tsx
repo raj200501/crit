@@ -7,7 +7,7 @@ export interface LockupProps {
   /** Mark size in px (default 28); the wordmark scales with it (20 px at 28). */
   size?: number;
   tone?: "paper" | "night";
-  /** The color the lockup sits on, for the mark's knockout (see LogoMark). */
+  /** Ignored: the mark's knockout is a cut-out that shows whatever the lockup sits on (see LogoMark). */
   surface?: MarkSurface;
   /**
    * "THE FAMILY HEALTH TREE" under the name: `true` always, `"lg"` from 1024 px up. Leave it off in tight places

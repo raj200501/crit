@@ -27,7 +27,7 @@ const subscribeScroll = (cb: () => void) => {
 };
 
 /**
- * Floating pill nav for marketing routes. Transparent at the top; glass after 40 px, narrowing to 920 px (≥ 1024 px).
+ * Floating pill nav for marketing routes. Transparent at the top; glass after 40 px, narrowing to 960 px (≥ 1024 px).
  * Turns into night glass over any band marked data-nav-theme="night". Phones: Lockup, "Demo" and a Menu sheet.
  */
 export function SiteNav() {
@@ -99,10 +99,10 @@ export function SiteNav() {
         className={cn(
           "pointer-events-auto mx-auto flex h-14 max-w-[1240px] items-center gap-2 rounded-full border pr-1.5 pl-3 text-fg sm:gap-3 sm:pl-4",
           "transition-[max-width,background-color,border-color,box-shadow] duration-(--dur-panel) ease-out-quart motion-reduce:transition-none",
-          scrolled || menuOpen ? "glass border-line shadow-sm lg:max-w-[920px]" : "border-transparent",
+          scrolled || menuOpen ? "glass border-line shadow-sm lg:max-w-[960px]" : "border-transparent",
         )}
       >
-        <Lockup href="/" size={32} descriptor="lg" className="[--wordmark-size:20px] max-lg:[&_svg]:size-6" />
+        <Lockup href="/" size={32} descriptor="lg" className="[--wordmark-size:20px] max-lg:[&_svg]:size-7" />
         <HonestyPill size="sm" />
         <ul data-glide-scope="" className="ml-auto hidden items-center gap-0.5 lg:flex">
           {LINKS.map((l) => {

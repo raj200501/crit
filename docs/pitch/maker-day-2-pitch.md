@@ -349,7 +349,7 @@ Two more if there's time: **"Does it save the practice time?"** Unproven; a 2026
 12. **FamGenix hands-on** (free tier, one synthetic cardiac family) before Oct 16, so the comparison isn't from its marketing pages and app-store listing.
 13. **Company and counsel.** A practice will expect a company, not three students, to sign the BAA and send the invoice (NY LLC publication rules [S53]). Agree who forms it and when (proposed Nov 15), and book a Cornell law clinic for the BAA template, privacy policy and the care-team page question.
 14. **Label the genetics counselor D021** (not ID021) and keep her first name off slides. She has not agreed to review anything; don't list her as a reviewer.
-15. **Name and trademark.** "Stemma" is fine as a class-project name, but there is a pending US trademark application for **STEMMAMD** (Stemma Inc, filed Aug 25, 2026, classes 9 and 38, patient medical-information software), close to our name and our field. Ask counsel (item 13) for a clearance search before incorporating, registering a domain or filing under the name, and keep a fallback name ready.
+15. **Name and trademark.** "Stemma" is fine as a class-project name, but there is a pending US trademark application for **STEMMAMD** (Stemma Inc, filed Aug 25, 2026, classes 9 and 38, patient medical-information software), close to our name and our field. Ask counsel (item 13) for a clearance search before incorporating, registering a domain or filing under the name, and keep a fallback name ready. The plain word STEMMA is also a live US registration (Teradata US, Inc., Serial 90801129, class 42, data-catalog software): a different field, but the clearance search should cover it.
 
 ---
 

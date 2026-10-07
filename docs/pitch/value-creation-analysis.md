@@ -588,6 +588,7 @@ If the redesign is not on production by end of day Oct 13, capture these from th
 7. Use **D021** (not ID021) for the genetics counselor and keep her first name off the board.
 8. **Product fixes before screenshots** (redesign): (a) the patient's Print button prints the patient's copy, the patient-side care-team preview goes, and the care-team copy reaches the practice only by read-only link, QR or fax; otherwise ask counsel before showing a patient carrying it. (b) In `src/lib/clinical.ts`, label a second-degree relative's reported high cholesterol "Simon Broome criteria (first- or second-degree adult relative with total cholesterol > 290 mg/dL; level not reported)" and use Dutch Lipid Clinic only for first-degree relatives. (c) Invite text: no health information and no "about 2 minutes" claim. Screenshot cutoff: if the redesign is not on production by end of day Oct 13, capture from the current build that day.
 9. **Five independent practices' intake forms** (test 7), so the first business-logic clause rests on the wedge's own forms, not one health-system form.
+10. **Name and trademark.** There is a pending US trademark application for **STEMMAMD** (Stemma Inc, filed Aug 25, 2026, classes 9 and 38, patient medical-information software), close to our name and field. Get a clearance search from counsel before incorporating or filing under the name, and keep a fallback name (see the Maker Day 2 pitch, open item 15).
 
 ---
 

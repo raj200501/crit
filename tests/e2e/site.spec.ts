@@ -83,6 +83,19 @@ test.describe("brand (Stemma)", () => {
       expect(await page.locator("body").innerText()).not.toMatch(/Family Health Tree/);
     });
   }
+
+  // Link previews: og:title follows each page's own <title> (the root layout sets only siteName and type), so a texted
+  // /invite link or a practice-facing /pilot link doesn't preview as the home page.
+  for (const route of ["/", "/privacy", "/pilot", "/invite", "/view"]) {
+    test(`${route}: og:title and twitter:title match the page's own <title>`, async ({ page }) => {
+      await gotoApp(page, route);
+      const title = await page.title();
+      expect(title).toContain("Stemma");
+      await expect(page.locator('meta[property="og:title"]')).toHaveAttribute("content", title);
+      await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute("content", title);
+      await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute("content", "Stemma");
+    });
+  }
 });
 
 test.describe("/research", () => {

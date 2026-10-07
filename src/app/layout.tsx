@@ -42,7 +42,9 @@ export const metadata: Metadata = {
   title: { default: "Stemma — the family health tree", template: "%s · Stemma" },
   applicationName: "Stemma",
   description: DESCRIPTION,
-  openGraph: { siteName: "Stemma", type: "website", title: "Stemma — the family health tree", description: DESCRIPTION },
+  // Site-wide fields only: without an og/twitter title or description, Next fills them from each page's own resolved
+  // title and description, so a texted /invite link previews as the invite, not as the home page.
+  openGraph: { siteName: "Stemma", type: "website" },
   robots: { index: false, follow: false },
 };
 export const viewport: Viewport = { themeColor: "#F6F8F7", colorScheme: "light" };

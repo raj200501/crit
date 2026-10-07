@@ -147,7 +147,7 @@ export function Gallery({ tone }: { tone: Tone }) {
         <div className="mt-10 flex flex-col gap-12">
           <Group
             title="Brand"
-            note="Rod and Lineage: a pedigree couple whose descent line is the Rod of Asclepius. The snake's knockout follows the surface (paper, white or night)."
+            note="Rod and Lineage: a pedigree couple whose descent line is the Rod of Asclepius. The gaps where the snake crosses the staff are cut out, so they show whatever the mark sits on."
           >
             <Row className="gap-6">
               <LogoMark />
@@ -422,7 +422,7 @@ export function Gallery({ tone }: { tone: Tone }) {
           <Group title="ProductFrame · PhoneFrame">
             <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-10 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
               <ProductFrame
-                title="stemma · demo"
+                title="Stemma · demo"
                 tabs={[
                   { id: "tree", label: "Tree" },
                   { id: "summary", label: "My summary" },
