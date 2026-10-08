@@ -291,6 +291,24 @@ def f_5av2():
     return f.finish4()
 
 
+# ------------------------------------------------------------------ Step 5b (replacement: clinical safety line now says the fix shipped)
+def f_5bv2():
+    f = B4("s5bv2", "Step 5b · Operational feasibility", 3960)
+    f.header(CHIP5, "5.2 Operational feasibility")
+    h, rows = mdrow(383, 387)
+    f.mtable(h, rows, widths([1.2, 2.2, 2.6], f.inner), fs=22, zebra=False)
+    bl = [L(i) for i in range(389, 395)]
+    bl = [b.replace(' Never "HIPAA compliant" or "certified" [55][39].', '') for b in bl]
+    assert not any("compliant" in b for b in bl)
+    assert "Since Oct 7, 2026" in bl[1]
+    f.text(bullets2(bl), fs=22)
+    f.text(md2(L(395).lstrip("- ")), fs=22, color=INK)
+    h, rows = mdrow(397, 404)
+    f.mtable(h, rows, widths([0.6, 3, 1.3], f.inner), fs=22, zebra=False)
+    f.panel(md2(L(406)), fs=33, fill=YELLOW["light"], color=INK)
+    return f.finish4()
+
+
 # ------------------------------------------------------------------ Sources (replacement, three frames)
 def source_entries():
     ents = [("head", "<b>" + re.sub(r"</?b>", "", md2(L(596))) + "</b>")]
@@ -421,6 +439,7 @@ def build(links=None):
     fr["choices"] = f_choices()
     fr["s3v2"] = f_3v2()
     fr["s5av2"] = f_5av2()
+    fr["s5bv2"] = f_5bv2()
     for f in f_sources_v2():
         fr[f.key] = f
     fr["hdrv2"] = f_header4(links or {})
@@ -434,7 +453,7 @@ def positions(fr):
         pos[k] = (XA, y)
         y += fr[k].h + GXY
     y = YC
-    for k in ("s3v2", "s5av2", "srcv2_1", "srcv2_2", "srcv2_3"):
+    for k in ("s3v2", "s5av2", "srcv2_1", "srcv2_2", "srcv2_3", "s5bv2"):
         pos[k] = (XB, y)
         y += fr[k].h + GXY
     pos["hdrv2"] = (XA, 8600)

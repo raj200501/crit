@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg">
-<g id="srcv2_3" transform="translate(16480,16319)" data-frame="Sources (3 of 3)">
+<g id="srcv2_3" transform="translate(16480,16361)" data-frame="Sources (3 of 3)">
 <rect data-type="frame" x="0" y="0" width="3960" height="1659" fill="#ffffff" data-title="Sources (3 of 3)" />
 <rect id="srcv2_3-r1" x="64" y="64" width="149" height="48" fill="#c6dcff" stroke="none" rx="24" data-content="&lt;b&gt;SOURCES&lt;/b&gt;" data-font-family="noto_sans" data-font-size="22" data-text-color="#305bab" />
 <textArea id="srcv2_3-t2" x="64" y="132" width="3832" height="94" font-family="noto_sans" font-size="67" fill="#1a1a1a" font-weight="bold"><b>Sources (3 of 3)</b></textArea>

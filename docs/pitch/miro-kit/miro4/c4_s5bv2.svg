@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+<g id="s5bv2" transform="translate(16480,18180)" data-frame="Step 5b · Operational feasibility">
+<rect data-type="frame" x="0" y="0" width="3960" height="1676" fill="#ffffff" data-title="Step 5b · Operational feasibility" />
+<rect id="s5bv2-r1" x="64" y="64" width="396" height="48" fill="#c6dcff" stroke="none" rx="24" data-content="&lt;b&gt;STEP 5 · CAN WE MAKE IT?&lt;/b&gt;" data-font-family="noto_sans" data-font-size="22" data-text-color="#305bab" />
+<textArea id="s5bv2-t2" x="64" y="132" width="3832" height="94" font-family="noto_sans" font-size="67" fill="#1a1a1a" font-weight="bold"><b>5.2 Operational feasibility</b></textArea>
+<rect id="s5bv2-r3" x="64" y="258" width="3832" height="67" fill="#c6dcff" stroke="none" />
+<textArea id="s5bv2-t4" x="78" y="276.0" width="738" height="31" font-family="noto_sans" font-size="22" fill="#1a1a1a" font-weight="bold"><b>Stage</b></textArea>
+<textArea id="s5bv2-t5" x="844" y="276.0" width="1377" height="31" font-family="noto_sans" font-size="22" fill="#1a1a1a" font-weight="bold"><b>What governs us</b></textArea>
+<textArea id="s5bv2-t6" x="2249" y="276.0" width="1633" height="31" font-family="noto_sans" font-size="22" fill="#1a1a1a" font-weight="bold"><b>What we must have</b></textArea>
+<textArea id="s5bv2-t7" x="78" y="343.0" width="738" height="31" font-family="noto_sans" font-size="22" fill="#1a1a1a"><b>Prototype (now)</b></textArea>
+<textArea id="s5bv2-t8" x="844" y="343.0" width="1377" height="31" font-family="noto_sans" font-size="22" fill="#595959">Synthetic data only; Vercel Hobby signs no BAA and is non-commercial [58]</textArea>
+<textArea id="s5bv2-t9" x="2249" y="343.0" width="1633" height="31" font-family="noto_sans" font-size="22" fill="#595959">Synthetic-data banner; no analytics; no condition names in URLs. No paid pilot on Hobby</textArea>
+<textArea id="s5bv2-t10" x="78" y="425.5" width="738" height="31" font-family="noto_sans" font-size="22" fill="#1a1a1a"><b>Patient uses it alone</b></textArea>
+<textArea id="s5bv2-t11" x="844" y="410.0" width="1377" height="62" font-family="noto_sans" font-size="22" fill="#595959">Not HIPAA; FTC Health Breach Notification Rule (60-day notice) and state laws (WA, CA, CT, NV; NY pending) [33][36][41][44]</textArea>
+<textArea id="s5bv2-t12" x="2249" y="425.5" width="1633" height="31" font-family="noto_sans" font-size="22" fill="#595959">Consent-first design; breach runbook; no pixels</textArea>
+<textArea id="s5bv2-t13" x="78" y="508.0" width="738" height="31" font-family="noto_sans" font-size="22" fill="#1a1a1a"><b>Practice pays and summaries reach its chart</b></textArea>
+<textArea id="s5bv2-t14" x="844" y="508.0" width="1377" height="31" font-family="noto_sans" font-size="22" fill="#595959"><b>We become a HIPAA business associate</b> [35]; NY breach notice within 30 days [43]</textArea>
+<textArea id="s5bv2-t15" x="2249" y="508.0" width="1633" height="31" font-family="noto_sans" font-size="22" fill="#595959">BAA with each practice and each vendor; Security Rule risk analysis; vendor-BAA register; MFA; audit log; breach plan</textArea>
+<line id="s5bv2-d16" data-type="divider" x1="64" y1="557" x2="3896" y2="557" stroke="#b0b0b0" stroke-width="2" />
+<textArea id="s5bv2-t17" x="64" y="589" width="3832" height="293" font-family="noto_sans" font-size="22" fill="#595959">• <b>Consent:</b> each relative owns their branch, can decline, correct or delete; a decline wins over others' secondhand reports; adults 18+ only [research §2.4].<br/>• <b>Clinical safety line:</b> patients see facts, gaps and questions; guideline criteria appear only on the care-team copy, addressed to the clinician, cited and versioned, as options not orders (FDA CDS guidance, Jan 2026 [95]). Since Oct 7, 2026 the patient sees and prints only their own copy; the care-team copy reaches the practice by read-only link or check-in QR (fax in the pilot), so it never passes through the patient's hands. Whether a care-team page carried by the patient would change the FDA analysis stays a question for counsel before any patient-upload channel (research §3.5 rule 1, open question 5).<br/>• <b>Wording we use:</b> "Prototype uses synthetic data only." "Built to operate as a HIPAA business associate."<br/>• <b>Onboarding one practice:</b> pilot letter + BAA → security questionnaire → which EHR, pick PDF channel → practice adds our link to new-patient paperwork → staff accounts with MFA → baseline staff minutes → weekly check-in.<br/>• <b>Support load (assumption):</b> a 2-cardiologist practice ≈ 42 invites a month (21 × 2), ≈ 17 completions at 40%; if 26% need help [90], about 4–11 help requests, at 10 minutes each ≈ 1–2 founder hours per practice per month. At the BLS median wage the VCA uses ($135,980 ÷ 2,080 h ≈ $65 an hour [S23]), that is $65–131 a month, against $83 a month from a 2-cardiologist practice at $500 per cardiologist per year.<br/>• <b>Who does what (proposed, Team Hub doesn't record roles):</b> tech lead (backend, Epic registration, security controls, FHIR validation); clinical and user lead (rule-table sign-off, usability with older adults, consent wording, help line); business lead (practice-manager calls, letters of intent, company formation, BAA with counsel, insurance quotes).</textArea>
+<textArea id="s5bv2-t18" x="64" y="902" width="3832" height="31" font-family="noto_sans" font-size="22" fill="#1a1a1a"><b>Critical path to a January pilot (proposed dates; names to assign, open item 4):</b></textArea>
+<rect id="s5bv2-r19" x="64" y="953" width="3832" height="67" fill="#c6dcff" stroke="none" />
+<textArea id="s5bv2-t20" x="78" y="971.0" width="441" height="31" font-family="noto_sans" font-size="22" fill="#1a1a1a" font-weight="bold"><b>By</b></textArea>
+<textArea id="s5bv2-t21" x="547" y="971.0" width="2318" height="31" font-family="noto_sans" font-size="22" fill="#1a1a1a" font-weight="bold"><b>Step</b></textArea>
+<textArea id="s5bv2-t22" x="2893" y="971.0" width="989" height="31" font-family="noto_sans" font-size="22" fill="#1a1a1a" font-weight="bold"><b>Owner (role)</b></textArea>
+<textArea id="s5bv2-t23" x="78" y="1038.0" width="441" height="31" font-family="noto_sans" font-size="22" fill="#1a1a1a"><b>Oct 23</b></textArea>
+<textArea id="s5bv2-t24" x="547" y="1038.0" width="2318" height="31" font-family="noto_sans" font-size="22" fill="#595959">5 practice-manager conversations; 1 letter of intent (test 1)</textArea>
+<textArea id="s5bv2-t25" x="2893" y="1038.0" width="989" height="31" font-family="noto_sans" font-size="22" fill="#595959">Business lead</textArea>
+<textArea id="s5bv2-t26" x="78" y="1105.0" width="441" height="31" font-family="noto_sans" font-size="22" fill="#1a1a1a"><b>Nov 15</b></textArea>
+<textArea id="s5bv2-t27" x="547" y="1105.0" width="2318" height="31" font-family="noto_sans" font-size="22" fill="#595959">Company formed, so a business signs the BAA and sends the invoice [S53]</textArea>
+<textArea id="s5bv2-t28" x="2893" y="1105.0" width="989" height="31" font-family="noto_sans" font-size="22" fill="#595959">Business lead</textArea>
+<textArea id="s5bv2-t29" x="78" y="1172.0" width="441" height="31" font-family="noto_sans" font-size="22" fill="#1a1a1a"><b>Dec 1</b></textArea>
+<textArea id="s5bv2-t30" x="547" y="1172.0" width="2318" height="31" font-family="noto_sans" font-size="22" fill="#595959">Counsel reviews the BAA template, privacy policy and the care-team page question</textArea>
+<textArea id="s5bv2-t31" x="2893" y="1172.0" width="989" height="31" font-family="noto_sans" font-size="22" fill="#595959">Business lead</textArea>
+<textArea id="s5bv2-t32" x="78" y="1239.0" width="441" height="31" font-family="noto_sans" font-size="22" fill="#1a1a1a"><b>Dec 15</b></textArea>
+<textArea id="s5bv2-t33" x="547" y="1239.0" width="2318" height="31" font-family="noto_sans" font-size="22" fill="#595959">A cardiologist signs the rule table</textArea>
+<textArea id="s5bv2-t34" x="2893" y="1239.0" width="989" height="31" font-family="noto_sans" font-size="22" fill="#595959">Clinical and user lead</textArea>
+<textArea id="s5bv2-t35" x="78" y="1306.0" width="441" height="31" font-family="noto_sans" font-size="22" fill="#1a1a1a"><b>Dec 15</b></textArea>
+<textArea id="s5bv2-t36" x="547" y="1306.0" width="2318" height="31" font-family="noto_sans" font-size="22" fill="#595959">Pilot backend running on synthetic data</textArea>
+<textArea id="s5bv2-t37" x="2893" y="1306.0" width="989" height="31" font-family="noto_sans" font-size="22" fill="#595959">Tech lead</textArea>
+<textArea id="s5bv2-t38" x="78" y="1373.0" width="441" height="31" font-family="noto_sans" font-size="22" fill="#1a1a1a"><b>Jan 5</b></textArea>
+<textArea id="s5bv2-t39" x="547" y="1373.0" width="2318" height="31" font-family="noto_sans" font-size="22" fill="#595959">BAA stack and insurance live; first practice signs a BAA</textArea>
+<textArea id="s5bv2-t40" x="2893" y="1373.0" width="989" height="31" font-family="noto_sans" font-size="22" fill="#595959">Tech lead and business lead</textArea>
+<line id="s5bv2-d41" data-type="divider" x1="64" y1="1422" x2="3896" y2="1422" stroke="#b0b0b0" stroke-width="2" />
+<rect id="s5bv2-p42" x="64" y="1454" width="3832" height="110" fill="#fff6b6" stroke="none" rx="12" />
+<textArea id="s5bv2-t43" x="96" y="1486" width="3768" height="46" font-family="noto_sans" font-size="33" fill="#1a1a1a"><b>Operational verdict: Yes for 1–3 practices, if</b> we form a company, take on business-associate duties before any real data, and a cardiologist signs off on the rule table (critical path above).</textArea>
+</g>
+</svg>
