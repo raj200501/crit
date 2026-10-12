@@ -24,6 +24,7 @@ Stemma turns "heart problems run in the family" into **who, what, and at what ag
 | `/privacy` | Security and privacy: what stays in the browser, the CSP, portal records, what changes before real data |
 | `/how-it-works` | Research summary: MyChart access, privacy and compliance, clinical criteria, business model, riskiest assumptions |
 | `/research` | The full fact-checked research write-up (`docs/research.md`) with numbered sources |
+| `/research/interviews` | The research page's second tab: the team's 21 interviews (September 2026), anonymized (interview IDs and roles only) and paraphrased from the notes, with themes and what each one taught us (`src/content/interviews.ts`) |
 | `/design-system` | Internal QA gallery of the design-system primitives (noindex) |
 
 ### Try the demo
@@ -54,7 +55,7 @@ npm run dev      # http://localhost:3000
 npm run build    # production build (all routes are static)
 npm run lint
 npm run typecheck
-npm test         # logic, design tokens, hero story model, research transforms
+npm test         # logic, design tokens, hero story model, research transforms, interview data (anonymity)
 npm run build && npx next start -p 3100 &   # e2e always runs against the production server
 E2E_PORT=3100 npx playwright test           # e2e contract, axe, CSP, print (E2E_SANDBOX=1 adds the live SMART sandbox test)
 ```

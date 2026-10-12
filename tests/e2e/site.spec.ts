@@ -1,5 +1,5 @@
 // Contract for the content pages (owner: P4; DESIGN §10 and §13.4, AMENDMENTS A1/A2). Runs against `next start`.
-//   /how-it-works · /research · /for-practices · /privacy · /pilot
+//   /how-it-works · /research (+ /research/interviews, see research.spec.ts) · /for-practices · /privacy · /pilot
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { BRAND_LINE, FDA_LINE, HONESTY, PILOT, pilotCta, PROOF_POINTS, STATS } from "../../src/content/site";
@@ -12,6 +12,7 @@ const ROOT = process.cwd();
 const PAGES = [
   { path: "/how-it-works", title: "How it works · Stemma", h1: "How it works, and how it would really work." },
   { path: "/research", title: "Research · Stemma", h1: "The research behind Stemma" },
+  { path: "/research/interviews", title: "Interviews · Stemma", h1: "The research behind Stemma" },
   { path: "/for-practices", title: "For practices · Stemma", h1: "Family history that arrives before the patient does." },
   { path: "/privacy", title: "Security & privacy · Stemma", h1: "Security & privacy" },
   { path: "/pilot", title: "Pilot · Stemma", h1: "A paid 8–12 week pilot for independent NYC cardiology practices." },
