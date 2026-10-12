@@ -100,7 +100,7 @@ These frames were not rebuilt, but some lines in them still use wording the fina
 | Frame | Item id | Change | To |
 | --- | --- | --- | --- |
 | Wedge, "Why cardiology first" | 3458764686842724296 | "Today only cardiology's questions and clinician criteria are built." | "Any visit can use it today; only cardiology has clinician criteria." |
-| Wedge, "Market check" | 3458764686842724306 | "(only cardiology's are built, not yet signed off)" | "(cardiology's questions and criteria are built, not yet signed off; other visits use a general question set with no criteria)" |
+| Wedge, "Market check" | 3458764686842724306 | "(only cardiology's are built, not yet signed off)" | "(cardiology's are built, not yet signed off; other visits get a general question set, no criteria)" |
 | Header, Vision row | 3458764686842904040 | "Today only cardiology's questions and criteria are built." | "The patient side works for any visit (a general question set); only cardiology's clinician criteria are built." |
 
 Step 5a doesn't list the six tree changes shipped Oct 12 (VCA Step 5.1, last six rows). That is an omission, not a contradiction: the deck doesn't present them either.

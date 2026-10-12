@@ -553,7 +553,7 @@ Reasons in short: (a) criteria hinge on relative and age [76][72][78], 285–320
 | 4. Primary care | Practices running Medicare Annual Wellness Visits [104] | General question set built (Oct 2026); criteria only after a clinician signs; help flows for older users [90] |
 | Side door (any time) | Patients whose practice isn't a customer | None; free, prints a page |
 
-Each step reuses the tree, relative links and sources; a new specialty adds its own questions and clinician criteria, signed off by that specialty (cardiology's questions and criteria are built, not yet signed off; other visits use a general question set with no criteria). Markets beyond independent cardiology are not yet sized (A9).
+Each step reuses the tree, relative links and sources; a new specialty adds its own questions and clinician criteria, signed off by that specialty (cardiology's are built, not yet signed off; other visits get a general question set, no criteria). Markets beyond independent cardiology are not yet sized (A9).
 
 ---
 

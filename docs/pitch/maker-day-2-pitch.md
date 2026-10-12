@@ -651,7 +651,7 @@ These pages also serve the Milestone 4 PDF; full detail is in `value-creation-an
     - `$142–160k a year at $500: a pilot market, not a business`
   - Path (five arrow shapes, left to right): `3 pilot groups` → `~20 NYC cardiology groups` → `Larger and investor-owned groups` → `Genetics and lipid clinics` → `Primary care wellness visits [104]`
   - Note:
-    - `Each step reuses the tree, relative links and sources; a new specialty adds its own questions and clinician criteria, signed off by that specialty (cardiology's questions and criteria are built, not yet signed off; other visits use a general question set with no criteria). Markets beyond independent cardiology are not yet sized.`
+    - `Each step reuses the tree, relative links and sources; a new specialty adds its own questions and clinician criteria, signed off by that specialty (cardiology's are built, not yet signed off; other visits get a general question set, no criteria). Markets beyond independent cardiology are not yet sized.`
     - `“Independent” = organizations of ≤100 clinicians (includes some hospital practices). Of NYC's 285–320, 144 work in the 39 groups with 2+ independent cardiologists (median 2); about 19–20 of those groups are cardiology-focused once hospital-linked ones are removed (to confirm by phone).`
   - Footer: `[99] CMS Doctors and Clinicians national file; [S27] our analysis of it, Oct 2 and Oct 6, 2026. [104] 42 CFR 410.15: the Medicare Annual Wellness Visit requires family history.`
   - Page counter: `Backup A9  ·  Market`
