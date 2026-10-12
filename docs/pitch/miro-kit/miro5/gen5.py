@@ -114,7 +114,7 @@ assert starting(UNPROVEN, "1. ").startswith("1. " + DECK_RISK[:-1])
 # Words the board must never use (honesty rules) and old wording that the deck replaced.
 BANNED = ("compliant", "certified", "Family Health Tree", "family-health-tree-raj", "§ion", "built for any physician",
           "upload their medical records", "A practice manager will pay", "about ten two-cardiologist", "or fax",
-          "by link or fax", "conflicting", "public standards")
+          "by link or fax", "conflicting", "public standards", "criteria for any physician")
 BANNED_RE = (r"\[N\d",)  # [N#] sources are not in the board's Sources frames
 
 
@@ -184,7 +184,7 @@ def f_wedge5():
            "instead of 4, primary care would tie, so the five manager calls decide. <b>Decision rule:</b> if fewer than "
            "3 of 5 cardiology managers name a budget owner by Oct 23, run the same five calls with primary care practice "
            "managers. Our ER interviewee pointed to primary care as the bigger user of family history (ID010, note); it "
-           "is our expansion market. Today only cardiology's questions and clinician criteria are built.")
+           "is our expansion market. Any visit can use it today; only cardiology has clinician criteria.")
     yy += f.textarea(why, WX + 40, yy, WW - 80, 22, INK) + 40
     wbot = yy
     f.els[widx] = f'<rect id="{f.nid("wbox")}" x="{WX}" y="{top}" width="{WW}" height="{round(wbot - top)}" fill="{YELLOW["light"]}" stroke="none" rx="24" />'
@@ -321,8 +321,7 @@ def f_header5(links):
     leg_h = yy
     _, rows = md_table(GLANCE)
     for r in rows:  # the VCA's writing rule, not board text; the board says what is built instead
-        r[1] = r[1].replace(" Never \"built for any physician\": only cardiology's questions and criteria are built.",
-                            " Today only cardiology's questions and criteria are built.")
+        r[1] = r[1].replace(" Never \"criteria for any physician\".", "")
     assert len(rows) == 9 and rows[-1][0] == "<b>Riskiest claim and its test</b>", [r[0] for r in rows]
     f.y = p
     f.mtable(["At a glance", ""], rows, widths([0.7, 3.7], AW), fs=22, x=AX, zebra=True, cell_pad=10)

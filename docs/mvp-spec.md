@@ -4,7 +4,7 @@ Build spec for the working prototype, hosted free on Vercel. As of 2 October 202
 
 **One-sentence scope:** a patient builds a three-generation family heart-history tree with guided questions, relatives fill in their own branch through a link, every fact keeps its status and source, a relative can share one condition from a sandbox "MyChart", and the patient reviews and prints a one-page pre-visit summary for the cardiology practice. All data is synthetic, there is no backend, and the cost is $0.
 
-**Next:** specialty packs (cardiology first; general pack without criteria).
+**Built (Oct 12):** specialty packs: cardiology (with criteria) and general (no criteria), picked by the visit type. Any other specialty's criteria wait for that specialty's clinician sign-off.
 
 ---
 

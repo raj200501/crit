@@ -2,7 +2,7 @@
 
 **The family health tree.** Team 709 · Product Studio prototype. **Live demo: https://stemmahealth.vercel.app**
 
-Stemma turns "heart problems run in the family" into **who, what, and at what age**, before the cardiology visit. A patient builds a three-generation family health tree, relatives fill in their own branches, every answer keeps its source and its uncertainty, and the patient walks in with a one-page summary the clinician can act on.
+Stemma turns "it runs in the family" into **who, what, and at what age**, before any doctor's visit. Clinician criteria start with cardiology; other visits get a general question set with no criteria. A patient builds a three-generation family health tree, relatives fill in their own branches, every answer keeps its source and its uncertainty, and the patient walks in with a one-page summary the clinician can act on.
 
 > Student prototype with a made-up demo family. It is not a medical device, it does not diagnose, and it must not be used with real health information.
 
