@@ -115,6 +115,10 @@ export const FIXED_RELATIONS: readonly Relation[] = [
   "maternal-grandmother",
 ];
 
+/** Relationships that can be changed into one another (Edit details): a brother or sister, or an aunt or uncle on either
+ *  side. Everyone else sits in a fixed slot. */
+export const MOVABLE_RELATIONS: readonly Relation[] = ["sibling", "paternal-aunt-uncle", "maternal-aunt-uncle"];
+
 /** Everything "Remove from tree" took off a tree, so Undo can put it back. */
 export interface RemovedPerson {
   treeId: string;
@@ -166,9 +170,23 @@ export const actions = {
     write({ ...t, people: [...t.people, person], reviewedAt: undefined });
     return person.id;
   },
+  /**
+   * A relationship changes only among MOVABLE_RELATIONS (a forged or stray patch can't turn an uncle into a parent).
+   * Reports and invites stay with the person. A reply to an invite sent before the change is checked against the new
+   * relationship (importReply → askAbout), so answers about the old side's relatives are dropped.
+   */
   updatePerson(id: string, patch: Partial<Person>) {
     const t = read();
-    write({ ...t, people: t.people.map((p) => (p.id === id ? { ...p, ...patch, id } : p)), reviewedAt: undefined });
+    write({
+      ...t,
+      people: t.people.map((p) => {
+        if (p.id !== id) return p;
+        const relation =
+          patch.relation && MOVABLE_RELATIONS.includes(p.relation) && MOVABLE_RELATIONS.includes(patch.relation) ? patch.relation : p.relation;
+        return { ...p, ...patch, id, relation };
+      }),
+      reviewedAt: undefined,
+    });
   },
   /** Takes a person, every report about them and their invites off the tree. Returns what was removed, for Undo. */
   removePerson(id: string): RemovedPerson | undefined {

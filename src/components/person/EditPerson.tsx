@@ -1,15 +1,20 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { actions, FIXED_RELATIONS } from "@/lib/store";
+import { actions, FIXED_RELATIONS, MOVABLE_RELATIONS } from "@/lib/store";
 import type { PersonView } from "@/lib/status";
+import type { Relation } from "@/lib/types";
+import { RELATION_TEXT } from "@/components/tree/model";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
 import { Input, Select } from "@/components/ui/Input";
 import { Switch } from "@/components/ui/Switch";
 import { toast } from "@/components/ui/Toast";
 
-/** Name, sex and "has passed away" (labels and logic unchanged), with a danger zone for Remove from tree (DESIGN §12.3). */
+/**
+ * Name, relationship (only among a brother or sister and an aunt or uncle on either side), sex and "has passed away" with
+ * age, cause and "sudden or unexpected", plus a danger zone for Remove from tree, which can be undone (DESIGN §12.3).
+ */
 export function EditPerson({
   view,
   onDone,
@@ -26,6 +31,8 @@ export function EditPerson({
   const id = useId();
   const [label, setLabel] = useState(p.label);
   const [sex, setSex] = useState(p.sex);
+  const movable = MOVABLE_RELATIONS.includes(p.relation);
+  const [relation, setRelation] = useState<Relation>(p.relation);
   const [deceased, setDeceased] = useState(!!p.deceased || !!focusField);
   const [ageAtDeath, setAgeAtDeath] = useState(p.ageAtDeath != null ? String(p.ageAtDeath) : "");
   const [cause, setCause] = useState(p.causeOfDeath ?? "");
@@ -49,6 +56,7 @@ export function EditPerson({
         const age = Number.parseInt(ageAtDeath, 10);
         actions.updatePerson(p.id, {
           label: label.trim() || p.label,
+          relation: movable ? relation : p.relation,
           sex,
           deceased: deceased || undefined,
           ageAtDeath: deceased && Number.isFinite(age) && age >= 0 && age < 130 ? age : undefined,
@@ -62,6 +70,17 @@ export function EditPerson({
       <Field label="Name" htmlFor={`${id}-name`}>
         <Input id={`${id}-name`} value={label} onChange={(e) => setLabel(e.target.value.slice(0, 40))} />
       </Field>
+      {movable ? (
+        <Field label="Relationship" htmlFor={`${id}-relation`} hint="Their answers stay with them.">
+          <Select id={`${id}-relation`} value={relation} onChange={(e) => setRelation(e.target.value as Relation)}>
+            {MOVABLE_RELATIONS.map((r) => (
+              <option key={r} value={r}>
+                {RELATION_TEXT[r]}
+              </option>
+            ))}
+          </Select>
+        </Field>
+      ) : null}
       <Field label="Sex" htmlFor={`${id}-sex`} hint="Used only for age cutoffs on the summary (e.g. early heart disease).">
         <Select id={`${id}-sex`} value={sex} onChange={(e) => setSex(e.target.value as typeof sex)}>
           <option value="unknown">Not set</option>

@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { beforeEach, test } from "node:test";
 import { demoTree } from "../src/lib/demo";
-import { actions, FIXED_RELATIONS, getTree } from "../src/lib/store";
+import { actions, FIXED_RELATIONS, getTree, MOVABLE_RELATIONS } from "../src/lib/store";
 
 // store.ts reads window.localStorage at call time, so a minimal fake window is enough (each test file runs in its own process).
 const data = new Map<string, string>();
@@ -60,6 +60,32 @@ test("Remove from tree, then Undo, restores the person in place with their repor
   assert.equal(getTree().people.filter((p) => p.id === "dev").length, 1);
   assert.equal(getTree().reports.length, before.reports.length);
   assert.equal(getTree().invites.length, before.invites.length);
+});
+
+test("a relationship changes only among brother or sister and aunt or uncle, and answers stay with the person", () => {
+  const before = getTree();
+  actions.updatePerson("dev", { relation: "maternal-aunt-uncle" });
+  assert.equal(getTree().people.find((p) => p.id === "dev")!.relation, "maternal-aunt-uncle");
+  assert.deepEqual(
+    getTree().reports.filter((r) => r.personId === "dev"),
+    before.reports.filter((r) => r.personId === "dev"),
+  );
+  assert.deepEqual(
+    getTree().invites.filter((i) => i.personId === "dev"),
+    before.invites.filter((i) => i.personId === "dev"),
+  );
+  actions.updatePerson("dev", { relation: "sibling" });
+  assert.equal(getTree().people.find((p) => p.id === "dev")!.relation, "sibling");
+
+  // a stray or forged patch can't make anyone a parent or grandparent, or move a fixed slot
+  actions.updatePerson("dev", { relation: "father", label: "Dev" });
+  assert.equal(getTree().people.find((p) => p.id === "dev")!.relation, "sibling");
+  assert.equal(getTree().people.find((p) => p.id === "dev")!.label, "Dev", "the rest of the patch still applies");
+  actions.updatePerson("mom", { relation: "maternal-aunt-uncle" });
+  actions.updatePerson("pgf", { relation: "sibling" });
+  assert.equal(getTree().people.find((p) => p.id === "mom")!.relation, "mother");
+  assert.equal(getTree().people.find((p) => p.id === "pgf")!.relation, "paternal-grandfather");
+  assert.deepEqual([...MOVABLE_RELATIONS].sort(), ["maternal-aunt-uncle", "paternal-aunt-uncle", "sibling"]);
 });
 
 test("Undo does nothing once the tree itself was replaced", () => {

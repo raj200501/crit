@@ -215,15 +215,35 @@ test.describe("tree", () => {
     await expect(panel).toContainText(/Asked directly Sep 26 · answered Sep 28/i);
   });
 
-  test("you, your parents and your grandparents are fixed slots: no Remove from tree", async ({ page }) => {
+  test("you, your parents and your grandparents are fixed slots: no Remove from tree, no relationship change", async ({ page }) => {
     for (const name of ["Grandpa Ray", "Mom"]) {
       await page.locator(`button[aria-label^="${name}:"]`).click();
       const panel = page.locator(`section[aria-label="${name} details"]`);
       await panel.getByRole("button", { name: "Edit details" }).click();
       await expect(panel.getByRole("button", { name: "Save" })).toBeVisible();
       await expect(panel.getByRole("button", { name: "Remove from tree" })).toHaveCount(0);
+      await expect(panel.getByRole("combobox", { name: "Relationship" })).toHaveCount(0);
       await panel.getByRole("button", { name: "Cancel" }).click();
     }
+  });
+
+  test("change relationship: move Uncle Dev to Mom's side; his portal fact and answers stay", async ({ page }) => {
+    await page.getByRole("button", { name: /^Uncle Dev:/ }).click();
+    const panel = page.locator('section[aria-label="Uncle Dev details"]');
+    await expect(panel).toContainText("Your father’s brother or sister · Father’s side");
+    await panel.getByRole("button", { name: "Edit details" }).click();
+    const relationship = panel.getByRole("combobox", { name: "Relationship" });
+    await expect(relationship).toHaveValue("paternal-aunt-uncle");
+    await expect(panel).toContainText("Their answers stay with them.");
+    await relationship.selectOption({ label: "Your mother’s brother or sister" });
+    await panel.getByRole("button", { name: "Save" }).click();
+    await expect(panel).toContainText("Your mother’s brother or sister · Mother’s side");
+    await expect(panel.getByText("From a portal record", { exact: true })).toBeVisible();
+    await expect(page.locator('button[data-person-id="dev"]')).toHaveAttribute("aria-label", /^Uncle Dev: known\. Atrial fibrillation/);
+    // drawn on Mom's side now, and what he said about Dad is still there
+    const x = async (id: string) => (await page.locator(`[data-person-id="${id}"]`).boundingBox())?.x ?? NaN;
+    await expect.poll(async () => (await x("dev")) > (await x("mom"))).toBe(true);
+    await expect(page.locator('button[data-person-id="dad"]')).toHaveAttribute("aria-label", /^Dad: conflicting\./);
   });
 
   test("Still to confirm chips are named 'Open {label}' (R2) and open that relative", async ({ page }) => {
