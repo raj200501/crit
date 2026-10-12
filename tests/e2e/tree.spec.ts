@@ -431,6 +431,36 @@ test.describe("tree", () => {
     await expect(page.getByRole("button", { name: /^Aunt Priya: unknown\./ })).toBeVisible();
   });
 
+  test("panel: 'Add a relative to Mom' adds her brother or sister and opens them", async ({ page }) => {
+    await page.getByRole("button", { name: /^Mom:/ }).click();
+    const panel = page.locator('section[aria-label="Mom details"]');
+    await panel.getByRole("button", { name: "Add a relative to Mom" }).click();
+    const form = page.getByRole("group", { name: "Add your mother’s brother or sister" });
+    await expect(form.getByRole("textbox", { name: "Name" })).toBeFocused();
+    // the half-sibling stopgap is only on the brother-or-sister form
+    await expect(form).not.toContainText("Half-siblings");
+    await form.getByRole("textbox", { name: "Name" }).fill("Aunt Priya");
+    await form.getByRole("button", { name: "Add", exact: true }).click();
+    const priya = page.locator('section[aria-label="Aunt Priya details"]');
+    await expect(priya).toBeVisible();
+    await expect(priya).toContainText("Your mother’s brother or sister · Mother’s side");
+    await expect(page.getByRole("button", { name: /^Aunt Priya: unknown\./ })).toBeVisible();
+    // the canvas slots keep their own names, so nothing is ambiguous
+    await expect(page.getByRole("button", { name: "Add Mom’s brother or sister" })).toHaveCount(1);
+  });
+
+  test("the brother-or-sister form says half-siblings aren't supported yet", async ({ page }) => {
+    await page.getByRole("button", { name: /^Alex \(you\):/ }).click();
+    const panel = page.locator('section[aria-label="Alex (you) details"]');
+    await panel.getByRole("button", { name: "Add a relative to you" }).click();
+    const form = page.getByRole("group", { name: "Add your brother or sister" });
+    await expect(form.getByRole("textbox", { name: "Name" })).toHaveAccessibleDescription("Same mother and father. Half-siblings aren’t supported yet.");
+    await a11y(page);
+    await page.keyboard.press("Escape");
+    await expect(form).toBeHidden();
+    await expect(panel.getByRole("button", { name: "Add a relative to you" })).toBeFocused();
+  });
+
   test("list view shows the same relatives by generation, with the same buttons", async ({ page }) => {
     await page.getByRole("button", { name: "List view" }).click();
     const group = page.getByRole("group", { name: "Family health tree" });
@@ -657,6 +687,20 @@ test.describe("tree on phones", () => {
     await page.getByRole("status").filter({ hasText: "Removed Uncle Dev" }).getByRole("button", { name: "Undo" }).click();
     await expect(page.locator('button[data-person-id="dev"]')).toHaveCount(1);
     await noHorizontalOverflow(page);
+  });
+
+  test("'Add a relative to Mom' inside the sheet: the form opens over it, and the new relative's panel follows", async ({ page }) => {
+    await gotoApp(page, "/tree?person=mom");
+    const panel = page.locator('section[aria-label="Mom details"]');
+    await panel.getByRole("button", { name: "Add a relative to Mom" }).click();
+    const form = page.getByRole("group", { name: "Add your mother’s brother or sister" });
+    await expect(form).toBeVisible();
+    await a11y(page);
+    await noHorizontalOverflow(page);
+    await form.getByRole("textbox", { name: "Name" }).fill("Aunt Priya");
+    await form.getByRole("button", { name: "Add", exact: true }).click();
+    await expect(page.locator('section[aria-label="Aunt Priya details"]')).toBeVisible();
+    await expect(page.getByRole("dialog", { name: "Aunt Priya" })).toBeVisible();
   });
 
   test("axe: 0 serious with the sheet closed, open, the answer form and the invite box", async ({ page }) => {

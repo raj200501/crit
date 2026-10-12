@@ -1,17 +1,18 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Plus, UserPlus } from "lucide-react";
 import { useId, useRef, useState } from "react";
 import { actions } from "@/lib/store";
-import type { Person, Relation } from "@/lib/types";
+import type { FamilyTree, Person, Relation } from "@/lib/types";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/components/ui/cn";
 import { Field } from "@/components/ui/Field";
 import { Input, Select } from "@/components/ui/Input";
 import { Popover } from "@/components/ui/Popover";
+import { RELATION_TEXT, sideOf } from "./model";
 import { useOnPopoverOpen } from "./usePopoverOpen";
 
-type AddRelation = Extract<Relation, "paternal-aunt-uncle" | "maternal-aunt-uncle" | "sibling">;
+export type AddRelation = Extract<Relation, "paternal-aunt-uncle" | "maternal-aunt-uncle" | "sibling">;
 
 const TITLE: Record<AddRelation, string> = {
   sibling: "Add your brother or sister",
@@ -19,7 +20,19 @@ const TITLE: Record<AddRelation, string> = {
   "maternal-aunt-uncle": "Add your mother’s brother or sister",
 };
 
-/** The existing add-relative form (labels and logic unchanged), now inside a popover. */
+/**
+ * Who "Add a relative to {person}" adds, using only the relations the tree has: a brother or sister for you or a sibling;
+ * a brother or sister of Dad for Dad, his parents and his siblings; the same on Mom's side.
+ */
+export function addTarget(person: Person, tree: FamilyTree): { relation: AddRelation; label: string } {
+  const side = sideOf(person.relation);
+  if (!side) return { relation: "sibling", label: "Your brother or sister" };
+  const relation: AddRelation = side === "father" ? "paternal-aunt-uncle" : "maternal-aunt-uncle";
+  const parent = tree.people.find((p) => p.relation === side);
+  return { relation, label: parent ? `${parent.label}’s brother or sister` : RELATION_TEXT[relation] };
+}
+
+/** The add-relative form, inside a popover. */
 function AddRelativeForm({ relation, onDone }: { relation: AddRelation; onDone: (id?: string) => void }) {
   const id = useId();
   const formRef = useRef<HTMLFormElement>(null);
@@ -42,7 +55,12 @@ function AddRelativeForm({ relation, onDone }: { relation: AddRelation; onDone: 
       }}
     >
       <p className="text-ui font-strong text-fg">{TITLE[relation]}</p>
-      <Field label="Name" htmlFor={`${id}-name`}>
+      <Field
+        label="Name"
+        htmlFor={`${id}-name`}
+        // stopgap until half-siblings exist: keeps a half-sibling out of the parent-or-sibling rules
+        hint={relation === "sibling" ? "Same mother and father. Half-siblings aren’t supported yet." : undefined}
+      >
         <Input
           ref={nameRef}
           id={`${id}-name`}
@@ -74,13 +92,38 @@ export interface AddRelativeProps {
   relation: AddRelation;
   /** "Dad’s brother or sister" */
   label: string;
-  /** ghost: a dashed slot on the canvas. row: a list-view row. */
-  variant?: "ghost" | "row";
+  /** ghost: a dashed slot on the canvas. row: a list-view row. panel: a full-width action in the person panel. */
+  variant?: "ghost" | "row" | "panel";
+  /**
+   * The trigger's own words instead of "Add {label}" (the panel's "Add a relative to Mom"). It must differ from every
+   * canvas slot's name, which tests look up page-wide.
+   */
+  triggerLabel?: string;
   onAdded: (id: string) => void;
 }
 
-/** A dashed "+" slot (or list row) that opens the add-relative form in a popover (DESIGN §12.1 ghost nodes). */
-export function AddRelative({ relation, label, variant = "ghost", onAdded }: AddRelativeProps) {
+/** A dashed "+" slot (or a list row, or a person panel action) that opens the add-relative form in a popover (DESIGN §12.1 ghost nodes). */
+export function AddRelative({ relation, label, variant = "ghost", triggerLabel, onAdded }: AddRelativeProps) {
+  const form = ({ close }: { close: () => void }) => (
+    <AddRelativeForm
+      relation={relation}
+      onDone={(id) => {
+        close();
+        if (id) onAdded(id);
+      }}
+    />
+  );
+  if (variant === "panel") {
+    return (
+      <Popover
+        align="center"
+        label={TITLE[relation]}
+        trigger={{ variant: "ghost", size: "md", fullWidth: true, iconLeft: <UserPlus />, label: triggerLabel ?? `Add ${label}` }}
+      >
+        {form}
+      </Popover>
+    );
+  }
   return (
     <Popover
       align={variant === "row" ? "start" : "center"}
@@ -88,7 +131,7 @@ export function AddRelative({ relation, label, variant = "ghost", onAdded }: Add
       trigger={{
         variant: "ghost",
         size: "sm",
-        "aria-label": `Add ${label}`,
+        "aria-label": triggerLabel ?? `Add ${label}`,
         className: cn(
           variant === "ghost"
             ? "size-full flex-col gap-1.5 rounded-md border border-dashed border-ink-4/55 bg-surface/40 px-3 text-center text-caption leading-tight font-medium whitespace-normal text-fg-2 hover:border-brand hover:bg-surface hover:text-brand"
@@ -105,20 +148,12 @@ export function AddRelative({ relation, label, variant = "ghost", onAdded }: Add
             >
               <Plus className="size-3.5" strokeWidth={2.5} />
             </span>
-            <span className={cn(variant === "ghost" && "max-w-[12ch] text-balance")}>{label}</span>
+            <span className={cn(variant === "ghost" && "max-w-[12ch] text-balance")}>{triggerLabel ?? label}</span>
           </span>
         ),
       }}
     >
-      {({ close }) => (
-        <AddRelativeForm
-          relation={relation}
-          onDone={(id) => {
-            close();
-            if (id) onAdded(id);
-          }}
-        />
-      )}
+      {form}
     </Popover>
   );
 }

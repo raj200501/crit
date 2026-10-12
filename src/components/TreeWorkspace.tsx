@@ -150,6 +150,7 @@ export default function TreeWorkspace() {
       pending={pendingIds.has(v.person.id) && v.status === "unknown"}
       onClose={close}
       inline={wide}
+      onAdded={(id) => select(id)}
     />
   );
 

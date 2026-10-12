@@ -9,6 +9,7 @@ import { shareableTree } from "../src/lib/redact";
 import { cleanTree } from "../src/lib/sanitize";
 import { askAbout } from "../src/lib/share";
 import { familyRows } from "../src/components/summary/model";
+import { addTarget } from "../src/components/tree/GhostNodes";
 import { viewPerson, viewTree } from "../src/lib/status";
 import type { FamilyTree, Person, Report } from "../src/lib/types";
 
@@ -196,6 +197,14 @@ test("sudden death is sanitized, kept on the care-team copy, and shown in the fa
   const noCause = { ...shared, people: shared.people.map((p) => (p.id === "dad" ? { ...p, causeOfDeath: undefined } : p)) };
   const fmh2 = toFhirBundle(noCause).entry.find((e) => (e.resource as { id: string }).id === "fmh-dad")!.resource as { note?: { text: string }[] };
   assert.equal(fmh2.note?.[0].text, "Death reported as sudden or unexpected");
+});
+
+test("'Add a relative to {person}' adds a sibling of that person, using only relations the tree has", () => {
+  const t = withPeople(demoTree(), { id: "sam", relation: "sibling", label: "Sam", sex: "unknown" });
+  const target = (id: string) => addTarget(t.people.find((p) => p.id === id)!, t);
+  for (const id of ["self", "sam"]) assert.deepEqual(target(id), { relation: "sibling", label: "Your brother or sister" });
+  for (const id of ["dad", "pgf", "pgm", "dev"]) assert.deepEqual(target(id), { relation: "paternal-aunt-uncle", label: "Dad’s brother or sister" });
+  for (const id of ["mom", "mgf", "mgm"]) assert.deepEqual(target(id), { relation: "maternal-aunt-uncle", label: "Mom’s brother or sister" });
 });
 
 test("every guideline item cites its basis", () => {

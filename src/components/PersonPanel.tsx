@@ -19,6 +19,7 @@ import { EditPerson } from "./person/EditPerson";
 import { InviteBox } from "./person/InviteBox";
 import { ReceiptTimeline } from "./person/ReceiptTimeline";
 import { VoicePair, voicesOf } from "./person/VoicePair";
+import { AddRelative, addTarget } from "./tree/GhostNodes";
 import { canRemove, hasFinding, nodeStatus, notAsked, pronoun, relationLine, shortDate, shortName, statusWord } from "./tree/model";
 
 export { shortName } from "./tree/model";
@@ -42,6 +43,8 @@ export interface PersonPanelProps {
    * Sheet the dialog's own Esc closes it.
    */
   inline?: boolean;
+  /** "Add a relative to {name}" added someone: open them. Without it the panel offers no add action. */
+  onAdded?: (id: string) => void;
 }
 
 /**
@@ -49,7 +52,7 @@ export interface PersonPanelProps {
  * voices), what's still unknown, and the actions. The root stays `<section aria-label="{label} details">` on desktop
  * (inline inspector) and on phones (inside the bottom sheet); the h2 is the sheet's label and the focus target.
  */
-export default function PersonPanel({ view, tree, onClose, focusOnOpen, initialMode, initialEdit, pending, inline }: PersonPanelProps) {
+export default function PersonPanel({ view, tree, onClose, focusOnOpen, initialMode, initialEdit, pending, inline, onAdded }: PersonPanelProps) {
   const p = view.person;
   const isSelf = p.relation === "self";
   const short = shortName(p.label);
@@ -218,7 +221,7 @@ export default function PersonPanel({ view, tree, onClose, focusOnOpen, initialM
           ) : mode === "edit" ? (
             <EditPerson view={view} focusField={editField} onDone={() => go("view")} onRemoved={onClose} />
           ) : (
-            <Overview view={view} isSelf={isSelf} short={short} them={them} onGo={go} />
+            <Overview view={view} tree={tree} isSelf={isSelf} short={short} them={them} onGo={go} onAdded={onAdded} />
           )}
         </div>
       </AutoHeight>
@@ -228,18 +231,23 @@ export default function PersonPanel({ view, tree, onClose, focusOnOpen, initialM
 
 function Overview({
   view,
+  tree,
   isSelf,
   short,
   them,
   onGo,
+  onAdded,
 }: {
   view: PersonView;
+  tree: FamilyTree;
   isSelf: boolean;
   short: string;
   them: string;
   onGo: (mode: PanelMode, field?: "age" | "cause") => void;
+  onAdded?: (id: string) => void;
 }) {
   const p = view.person;
+  const add = addTarget(p, tree);
   const voices = view.status === "conflicting" ? voicesOf(view.reports) : null;
   const rest = voices ? view.reports.filter((r) => r.id !== voices[0].id && r.id !== voices[1].id) : view.reports;
   const remove = (id: string) => actions.removeReport(id);
@@ -316,6 +324,10 @@ function Overview({
           <Button variant="ghost" iconLeft={<PenLine />} fullWidth onClick={() => onGo("edit")}>
             Edit details
           </Button>
+        ) : null}
+        {onAdded ? (
+          // named apart from the canvas's "Add Dad’s brother or sister" slots
+          <AddRelative variant="panel" relation={add.relation} label={add.label} triggerLabel={`Add a relative to ${isSelf ? "you" : short}`} onAdded={onAdded} />
         ) : null}
       </div>
     </div>
