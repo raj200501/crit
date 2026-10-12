@@ -64,7 +64,7 @@ export const HEART_CHOICES: Choice[] = [
   {
     id: "aortic",
     label: "Aortic aneurysm or tear",
-    examples: "aortic aneurysm, aortic dissection, Marfan syndrome",
+    examples: "aortic aneurysm, aortic dissection (a tear in the aorta)",
     condition: "Aortic aneurysm or dissection",
   },
   {
@@ -153,9 +153,13 @@ export function reviewItems(tree: FamilyTree, views: PersonView[]): Flag[] {
         cardioPeople.add(p.id);
         if (first) add("guideline", "Cardiomyopathy in a parent or sibling", line, BASIS.cardiomyopathy);
         else add("noted", "Cardiomyopathy in a relative", line, BASIS.none);
-      } else if (has(name, "aort", "dissection", "marfan")) {
+      } else if (has(name, "dissection") || (has(name, "aort") && (has(name, "aneurysm") || !has(name, "valve")))) {
+        // An aortic valve problem is not aortic disease ("bicuspid aortic valve" names the valve, not the aorta).
         if (first) add("guideline", "Aortic aneurysm or dissection in a parent or sibling", line, BASIS.aortic);
         else add("noted", "Aortic aneurysm or dissection in a relative", line, BASIS.none);
+      } else if (has(name, "marfan", "bicuspid")) {
+        // Not in the verified guideline text (docs/research.md §3.1): ask about it, never alert on it.
+        add("noted", "Marfan syndrome or bicuspid aortic valve in a relative", line, BASIS.none);
       } else if (has(name, "heart attack", "coronary", "angina", "bypass", "stent")) {
         if (!first) continue;
         if (age == null) {

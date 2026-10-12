@@ -2,7 +2,7 @@
 // Run: npm test
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { reviewItems, type Tier } from "../src/lib/clinical";
+import { BASIS, HEART_CHOICES, reviewItems, type Tier } from "../src/lib/clinical";
 import { blankTree, demoTree } from "../src/lib/demo";
 import { toFhirBundle } from "../src/lib/fhir";
 import { shareableTree } from "../src/lib/redact";
@@ -104,6 +104,30 @@ test("guideline tier follows the verified rules: first-degree aorta, early sudde
   assert.ok(titles(t, "noted").includes("Aortic aneurysm or dissection in a relative")); // grandparent: noted only
   assert.ok(!got.some((x) => x.toLowerCase().includes("cholesterol")));
   assert.ok(!got.some((x) => x.toLowerCase().includes("fainting")));
+});
+
+test("Marfan syndrome and a bicuspid aortic valve are 'also noted', never a guideline item", () => {
+  for (const condition of ["Marfan syndrome", "Bicuspid aortic valve"]) {
+    const t = blankTree("Alex");
+    t.reports = [rep("mom", { condition, ageAtOnset: 30 })];
+    assert.deepEqual(titles(t), [], condition);
+    assert.deepEqual(titles(t, "noted"), ["Marfan syndrome or bicuspid aortic valve in a relative"], condition);
+    for (const f of reviewItems(t, viewTree(t)).filter((x) => x.tier === "noted")) assert.equal(f.basis, BASIS.none);
+  }
+  // an aortic valve problem is not aortic disease; an aneurysm or a tear still is, whatever else is named with it
+  const t = blankTree("Alex");
+  t.reports = [rep("mom", { condition: "Aortic valve stenosis" })];
+  assert.deepEqual(reviewItems(t, viewTree(t)).filter((f) => f.tier !== "clarify"), []);
+  t.reports = [rep("mom", { condition: "Bicuspid aortic valve with an aortic aneurysm" })];
+  assert.deepEqual(titles(t), ["Aortic aneurysm or dissection in a parent or sibling"]);
+  t.reports = [rep("mom", { condition: "Brain aneurysm" })];
+  assert.deepEqual(titles(t), []);
+});
+
+test("the aortic card's examples no longer name Marfan syndrome", () => {
+  const aortic = HEART_CHOICES.find((c) => c.id === "aortic")!;
+  assert.ok(!/marfan/i.test(aortic.examples));
+  assert.match(aortic.examples, /aneurysm/);
 });
 
 test("every guideline item cites its basis", () => {
