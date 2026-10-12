@@ -1,7 +1,7 @@
 // Presentation-only derivations for the pre-visit summary, the care-team view and the practice demo (DESIGN §12.8).
 // Reads src/lib, never writes it. Server-safe (no hooks), so SummaryDocument can render as a Server Component.
 import { FIRST_DEGREE, SECOND_DEGREE } from "@/lib/clinical";
-import { noneAbbr, noneLabel } from "@/lib/packs";
+import { noneAbbr, noneCovers, noneLabel, packIdForVisit } from "@/lib/packs";
 import { formatCondition, normalizeCondition, type PersonView } from "@/lib/status";
 import type { FamilyTree, Person, Report } from "@/lib/types";
 import type { SourceKind } from "@/components/ui/SourceChip";
@@ -205,6 +205,7 @@ const quote = (s: string) => `“${s.replace(/\s+/g, " ").trim()}”`;
 
 export function familyRows(tree: FamilyTree, views: PersonView[]): FamilyRow[] {
   const out: FamilyRow[] = [];
+  const packId = packIdForVisit(tree.visit);
   for (const v of documentOrder(views)) {
     const p = v.person;
     const base = { personId: p.id, view: v, relation: relationName(p), name: p.label };
@@ -238,7 +239,8 @@ export function familyRows(tree: FamilyTree, views: PersonView[]): FamilyRow[] {
           problem: noneLabel(r),
           age: "—",
           source: sourceText(r, tree.patientName),
-          comments: !v.conditions.length || v.status !== "conflicting" ? "" : "Contradicts a reported condition",
+          // Only a "none" that speaks to one of the conditions contradicts it (a heart "none" says nothing about a cancer).
+          comments: v.status === "conflicting" && v.conditions.some((c) => noneCovers(packId, r, c.condition)) ? "Contradicts a reported condition" : "",
           reports: [r],
         });
       }

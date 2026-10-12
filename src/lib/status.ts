@@ -1,5 +1,5 @@
 import { capitalize, formatCondition, isCardiac, normalizeCondition, sameCondition } from "./conditions";
-import { noneLabel, nonePhrase, packById, packFor } from "./packs";
+import { noneCovers, noneLabel, nonePhrase, packFor } from "./packs";
 import type { FamilyTree, Person, Report, Status } from "./types";
 
 export { formatCondition, isCardiac, normalizeCondition } from "./conditions";
@@ -75,13 +75,10 @@ export function viewPerson(tree: FamilyTree, person: Person): PersonView {
 
   // A "none" vs a reported condition. A firsthand "none" contradicts anyone's condition;
   // a secondhand "none" only contradicts other secondhand reports (a record or the person outranks it).
-  // A "none" answers only the questions it was asked: from the tree's own question set it covers every condition (the
-  // rule before visit types); from another set, only the conditions that set counts. So Mom's cardiology "No heart
-  // history" never contradicts a breast cancer added after a switch to primary care.
-  const covers = (none: Report, c: Report) => {
-    const asked = packById(none.pack); // missing or unknown: cardiology, like its words (packs/none.ts)
-    return asked.id === pack.id || asked.isFinding(c.condition);
-  };
+  // A "none" answers only the questions it was asked (packs/none.ts noneCovers): Mom's cardiology "No heart history"
+  // never contradicts a breast cancer added after a switch to primary care, and "None on the list" never contradicts a
+  // condition from "Something else not listed". In a cardiology tree a heart "none" still covers everything, as before.
+  const covers = (none: Report, c: Report) => noneCovers(pack.id, none, c.condition);
   if (latestFirst?.kind === "no-history" && conditions.some((c) => covers(latestFirst, c))) reasons.push(`${latestFirst.reportedBy} says ${nonePhrase(latestFirst)}`);
   if (!latestFirst) {
     const noneBy = new Set(noHistory.map((r) => r.reportedBy));
@@ -109,7 +106,8 @@ export function viewPerson(tree: FamilyTree, person: Person): PersonView {
   }
   if ([...byName.values()].some((a) => a.length > 1 && Math.max(...a) - Math.min(...a) > 2)) reasons.push("ages differ");
 
-  const reporters = new Set([...conditions, ...noHistory].map((r) => r.reportedBy));
+  // Who "agrees" or "disagrees": everyone who reported a condition, and a "none" only if it speaks to one of them.
+  const reporters = new Set([...conditions, ...noHistory.filter((n) => conditions.some((c) => covers(n, c)))].map((r) => r.reportedBy));
 
   if (reasons.length) {
     const lead = conditions.find((r) => FIRSTHAND.has(r.source)) ?? conditions[0];

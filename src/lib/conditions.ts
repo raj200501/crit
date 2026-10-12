@@ -52,6 +52,43 @@ export function isCardiac(condition: string | undefined): boolean {
   return CARDIAC_TERMS.some((t) => c.includes(t));
 }
 
+/** The non-heart topics the general cards ask about: high blood pressure, diabetes and any cancer ("Another cancer" is
+ *  open, so every cancer name counts). */
+export const GENERAL_NON_HEART_TERMS = [
+  "hypertension",
+  "high blood pressure",
+  "diabet",
+  "cancer",
+  "carcinoma",
+  "malignan",
+  "neoplasm",
+  "tumor",
+  "tumour",
+  "leukemia",
+  "leukaemia",
+  "lymphoma",
+  "melanoma",
+  "myeloma",
+  "sarcoma",
+];
+
+/** Heart words that name an event or a symptom, not a heart condition: no general card asks about them. */
+const HEART_EVENT_TERMS = new Set(["sudden", "unexplained death", "died suddenly", "faint", "syncope"]);
+
+/**
+ * What the general question cards ask about, read by topic: any heart or circulation condition (the heart terms, since
+ * "Other heart disease" is open; not sudden deaths or fainting, which no general card names), high blood pressure,
+ * diabetes and any cancer. The free-text card, "Something else not listed", is by its own name not on the list, so a
+ * migraine or osteoporosis is not covered.
+ */
+export const GENERAL_LIST_TERMS = [...CARDIAC_TERMS.filter((t) => !HEART_EVENT_TERMS.has(t)), ...GENERAL_NON_HEART_TERMS];
+
+/** The condition is one the general cards asked about (see GENERAL_LIST_TERMS). */
+export function onGeneralList(condition: string | undefined): boolean {
+  const c = (condition ?? "").toLowerCase();
+  return GENERAL_LIST_TERMS.some((t) => c.includes(t));
+}
+
 export function formatCondition(r: Report): string {
   const name = r.condition ?? "Condition";
   if (r.ageAtOnset == null) return name;

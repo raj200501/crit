@@ -2,7 +2,7 @@
 // It only lists what each relative reported, as reported, plus the same "to clarify" items as cardiology (disagreements,
 // unknowns, declines, missing death details). No age cutoffs, no thresholds, no "early", no risk score. Criteria for
 // another specialty need a clinician's sign-off first (spec non-goals), so none exist here.
-import { capitalize, CARDIAC_TERMS } from "../conditions";
+import { capitalize, CARDIAC_TERMS, GENERAL_NON_HEART_TERMS } from "../conditions";
 import type { PersonView } from "../status";
 import type { FamilyTree } from "../types";
 import { askedAbout, GENERAL_CHOICES } from "./choices";
@@ -15,30 +15,10 @@ export const GENERAL_GROUPS = [
   { title: "Cancer", ids: ["breast", "ovarian", "colorectal", "cancer-other"] },
 ];
 
-/** Problem-list words the record picker suggests for a general visit: the heart terms plus what the general cards ask
- *  about. Narrower than "any condition" on purpose, so a relative's whole problem list never shows as suggested. */
-export const GENERAL_TERMS = [
-  ...CARDIAC_TERMS,
-  "hypertension",
-  "high blood pressure",
-  "diabet",
-  "cancer",
-  "carcinoma",
-  "malignan",
-  "neoplasm",
-  "tumor",
-  "tumour",
-  "leukemia",
-  "leukaemia",
-  "lymphoma",
-  "melanoma",
-  "myeloma",
-  "sarcoma",
-  "brca",
-  "lynch",
-  "polyp",
-  "adenoma",
-];
+/** Problem-list words the record picker suggests for a general visit: the heart terms, what the general cards ask
+ *  about, and names linked to a listed cancer (BRCA, Lynch syndrome, colon polyps). Narrower than "any condition" on
+ *  purpose, so a relative's whole problem list never shows as suggested. */
+export const GENERAL_TERMS = [...CARDIAC_TERMS, ...GENERAL_NON_HEART_TERMS, "brca", "lynch", "polyp", "adenoma"];
 
 /** One plain "noted" line per relative with anything reported, plus the shared "to clarify" items. Never a guideline
  *  item, never a basis. */

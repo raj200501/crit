@@ -253,16 +253,53 @@ test("a 'none' covers only the questions it was asked: no false disagreement aft
   assert.equal(viewOf(t, "mom").status, "known");
   t.reports = [second, rep("mom", { condition: "Stroke or TIA" })];
   assert.equal(viewOf(t, "mom").status, "conflicting");
-  // a general none covers everything, in a general tree and in a cardiology tree
+  // a general none covers what the general cards asked about, in a general tree and in a cardiology tree, and never
+  // what "Something else not listed" holds: "None on the list" plus a migraine is not a disagreement
   const gnone = { ...none, id: "gn", pack: "general" as const };
-  t.reports = [gnone, rep("mom", { condition: "Migraine" })];
-  assert.equal(viewOf(t, "mom").status, "conflicting");
   const c = blankTree("Sam");
-  c.reports = [gnone, rep("mom", { condition: "Migraine" })];
-  assert.equal(viewOf(c, "mom").status, "conflicting");
+  for (const tree of [t, c]) {
+    // free text from "Something else not listed", and the heart cards no general card names (a death, a faint)
+    for (const condition of ["Migraine", "Osteoporosis", "Hemochromatosis (too much iron)", "Colon polyps", "Sudden unexplained death", "Unexplained fainting"]) {
+      tree.reports = [gnone, rep("mom", { condition })];
+      assert.equal(viewOf(tree, "mom").status, "known", condition);
+      assert.equal(viewOf(tree, "mom").reason, "Reported by Sam", condition);
+    }
+    const listed = [
+      ...GENERAL_CHOICES.flatMap((ch) => [ch.condition, ...(ch.detail ? [`${ch.condition}: prostate`] : [])]),
+      ...HEART_CHOICES.map((ch) => ch.condition).filter((c) => !/sudden|fainting/i.test(c)),
+      "Type 2 diabetes mellitus",
+      "Essential hypertension",
+      "Malignant neoplasm of breast",
+      "Atrial fibrillation",
+    ];
+    for (const condition of listed) {
+      tree.reports = [gnone, rep("mom", { condition })];
+      assert.equal(viewOf(tree, "mom").status, "conflicting", condition);
+    }
+  }
   // in a cardiology tree a cardiology none still contradicts any condition, exactly as at 8f6541b
   c.reports = [none, rep("mom", { condition: "Breast cancer" })];
   assert.equal(viewOf(c, "mom").status, "conflicting");
+  c.reports = [none, rep("mom", { condition: "Migraine" })];
+  assert.equal(viewOf(c, "mom").status, "conflicting");
+});
+
+test("a 'none' that doesn't speak to a condition is never called a contradiction, nor counted as agreeing", () => {
+  // Primary care: Mom's own heart "none", then two breast cancer reports whose ages differ. The disagreement is the ages.
+  const t = primaryCare();
+  const none = rep("mom", { kind: "no-history", condition: undefined, source: "self", reportedBy: "Mother", reportedById: "mom" });
+  t.reports = [none, rep("mom", { condition: "Breast cancer", ageAtOnset: 45 }), rep("mom", { condition: "Breast cancer", ageAtOnset: 52, reportedBy: "Aunt Kay", source: "relative" })];
+  const v = viewOf(t, "mom");
+  assert.equal(v.status, "conflicting");
+  assert.equal(v.reason, "2 reports disagree");
+  const row = familyRows(t, viewTree(t)).find((r) => r.personId === "mom" && r.problem === "No heart history")!;
+  assert.equal(row.comments, "");
+  // the same heart "none" against a heart condition still contradicts it
+  t.reports = [none, rep("mom", { condition: "Heart attack or coronary artery disease", ageAtOnset: 60 })];
+  assert.equal(familyRows(t, viewTree(t)).find((r) => r.personId === "mom" && r.problem === "No heart history")!.comments, "Contradicts a reported condition");
+  // Mom's heart "none" and Sam's breast cancer: known, reported by Sam (Mom didn't "agree" about a cancer)
+  t.reports = [none, rep("mom", { condition: "Breast cancer", ageAtOnset: 45 })];
+  assert.equal(viewOf(t, "mom").reason, "Reported by Sam");
 });
 
 test("status words are unchanged, and a general tree yields only the derived statuses", () => {

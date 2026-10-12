@@ -1,7 +1,9 @@
 // How a "None of these" answer reads. A "none" covers only the questions it was asked, so its words come from the
 // report's own question set, never from the tree's: Mom's "No heart history" stays that after a switch to primary care.
+import { isCardiac, onGeneralList } from "../conditions";
 import type { Report } from "../types";
 import { askedAbout, GENERAL_CHOICES } from "./choices";
+import type { PackId } from "./types";
 
 interface NoneWords {
   /** The stored fact, as a label ("No heart history"). 16 characters, so the tree node's third line shows it whole. */
@@ -31,3 +33,15 @@ export const noneLabel = (r: Pick<Report, "pack">) => noneOf(r).label;
 export const nonePhrase = (r: Pick<Report, "pack">) => noneOf(r).phrase;
 export const noneAbbr = (r: Pick<Report, "pack">) => noneOf(r).abbr;
 export const noneFhir = (r: Pick<Report, "pack">) => noneOf(r).fhir;
+
+/**
+ * Whether a "None of these" answer speaks to a reported condition, in a tree using the `treePack` questions. A heart
+ * "none" covers heart conditions; inside a cardiology tree it covers every condition, the rule from before visit types,
+ * kept so cardiology output doesn't change. A general "none" covers what the general cards asked about (any heart
+ * condition, stroke, blood pressure, cholesterol, diabetes, any cancer) and never what "Something else not listed" holds,
+ * so "None on the list" plus a migraine is not a disagreement.
+ */
+export function noneCovers(treePack: PackId, none: Pick<Report, "pack">, condition: string | undefined): boolean {
+  if (none.pack !== "general") return treePack === "cardiology" || isCardiac(condition);
+  return onGeneralList(condition);
+}
