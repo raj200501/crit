@@ -88,6 +88,25 @@ test("a relationship changes only among brother or sister and aunt or uncle, and
   assert.deepEqual([...MOVABLE_RELATIONS].sort(), ["maternal-aunt-uncle", "paternal-aunt-uncle", "sibling"]);
 });
 
+test("Undo right after Remove gives back the patient's review; any change in between asks for a fresh one", () => {
+  actions.markReviewed(true);
+  const reviewedAt = getTree().reviewedAt;
+  assert.ok(reviewedAt);
+  const removed = actions.removePerson("dev")!;
+  assert.equal(getTree().reviewedAt, undefined);
+  actions.restorePerson(removed);
+  assert.equal(getTree().reviewedAt, reviewedAt, "the tree is back to the one that was reviewed");
+  // a second Undo changes nothing, so it can't take the review away again
+  actions.restorePerson(removed);
+  assert.equal(getTree().reviewedAt, reviewedAt);
+
+  const again = actions.removePerson("dev")!;
+  actions.updatePerson("mom", { label: "Mama" });
+  actions.restorePerson(again);
+  assert.ok(getTree().people.some((p) => p.id === "dev"));
+  assert.equal(getTree().reviewedAt, undefined);
+});
+
 test("Undo does nothing once the tree itself was replaced", () => {
   const removed = actions.removePerson("dev")!;
   actions.startBlank("Sam");

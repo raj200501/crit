@@ -140,6 +140,8 @@ export function EditPerson({
               if (!removed) return;
               toast({
                 title: `Removed ${p.label}`,
+                // the Remove button is gone with the person: focus goes to Undo instead of the page body
+                focusAction: true,
                 action: {
                   label: "Undo",
                   onClick: () => {

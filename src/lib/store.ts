@@ -13,6 +13,8 @@ const KEY = "fht:tree:v1";
 const listeners = new Set<() => void>();
 let cache: FamilyTree | null = null;
 let cacheRaw: string | null = null;
+/** Counts this tab's writes (updatedAt alone can repeat within a millisecond). */
+let writes = 0;
 
 function read(): FamilyTree {
   if (typeof window === "undefined") return SERVER_SNAPSHOT;
@@ -39,8 +41,9 @@ function read(): FamilyTree {
   return cache;
 }
 
-function write(tree: FamilyTree) {
+function write(tree: FamilyTree): FamilyTree {
   const next = { ...tree, updatedAt: new Date().toISOString() };
+  writes += 1;
   cache = next;
   try {
     cacheRaw = JSON.stringify(next);
@@ -49,6 +52,7 @@ function write(tree: FamilyTree) {
     cacheRaw = null;
   }
   listeners.forEach((l) => l());
+  return next;
 }
 
 function subscribe(l: () => void) {
@@ -127,6 +131,10 @@ export interface RemovedPerson {
   person: Person;
   reports: Report[];
   invites: Invite[];
+  /** The patient's review before the removal, and the write that removed them (this tab's count and the tree's
+   *  updatedAt, which also catches another tab's write): an Undo with nothing written in between gives the review back. */
+  reviewedAt?: string;
+  removedAt: { write: number; updatedAt: string };
 }
 
 const uid = (p: string) => `${p}-${Math.random().toString(36).slice(2, 9)}${Date.now().toString(36).slice(-3)}`;
@@ -194,39 +202,45 @@ export const actions = {
     const index = t.people.findIndex((x) => x.id === id);
     const p = t.people[index];
     if (!p || FIXED_RELATIONS.includes(p.relation)) return undefined;
-    const removed: RemovedPerson = {
-      treeId: t.id,
-      index,
-      person: p,
-      reports: t.reports.filter((r) => r.personId === id),
-      invites: t.invites.filter((i) => i.personId === id),
-    };
-    write({
+    const after = write({
       ...t,
       people: t.people.filter((x) => x.id !== id),
       reports: t.reports.filter((r) => r.personId !== id),
       invites: t.invites.filter((i) => i.personId !== id),
       reviewedAt: undefined,
     });
-    return removed;
+    return {
+      treeId: t.id,
+      index,
+      person: p,
+      reports: t.reports.filter((r) => r.personId === id),
+      invites: t.invites.filter((i) => i.personId === id),
+      reviewedAt: t.reviewedAt,
+      removedAt: { write: writes, updatedAt: after.updatedAt },
+    };
   },
   /**
    * Undo for removePerson: puts the person back where they were, with their reports and invites. Only on the same tree,
-   * and only what isn't already there.
+   * and only what isn't already there. If nothing else changed since the removal, the patient's review comes back too.
    */
   restorePerson(removed: RemovedPerson) {
     const t = read();
     if (t.id !== removed.treeId) return;
+    const untouched = writes === removed.removedAt.write && t.updatedAt === removed.removedAt.updatedAt;
     const people = [...t.people];
-    if (!people.some((x) => x.id === removed.person.id)) people.splice(Math.min(removed.index, people.length), 0, removed.person);
+    const personBack = !people.some((x) => x.id === removed.person.id);
+    if (personBack) people.splice(Math.min(removed.index, people.length), 0, removed.person);
     const reportIds = new Set(t.reports.map((r) => r.id));
     const inviteIds = new Set(t.invites.map((i) => i.id));
+    const reports = removed.reports.filter((r) => !reportIds.has(r.id));
+    const invites = removed.invites.filter((i) => !inviteIds.has(i.id));
+    if (!personBack && !reports.length && !invites.length) return; // already undone
     write({
       ...t,
       people,
-      reports: [...t.reports, ...removed.reports.filter((r) => !reportIds.has(r.id))],
-      invites: [...t.invites, ...removed.invites.filter((i) => !inviteIds.has(i.id))],
-      reviewedAt: undefined,
+      reports: [...t.reports, ...reports],
+      invites: [...t.invites, ...invites],
+      reviewedAt: untouched ? removed.reviewedAt : undefined,
     });
   },
   /** Reports the patient enters themself (about a relative, or about their own history). */

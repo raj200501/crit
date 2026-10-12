@@ -223,10 +223,13 @@ test.describe("tree", () => {
     const panel = page.locator('section[aria-label="Uncle Dev details"]');
     await panel.getByRole("button", { name: "Edit details" }).click();
     await expect(panel).toContainText("You can undo right after.");
-    await panel.getByRole("button", { name: "Remove from tree" }).click();
+    await panel.getByRole("button", { name: "Remove from tree" }).focus();
+    await page.keyboard.press("Enter");
     await expect(dev).toHaveCount(0);
+    // the Remove button left with him: focus lands on Undo, not on the page body, and Enter undoes
     const toast = page.getByRole("status").filter({ hasText: "Removed Uncle Dev" });
-    await toast.getByRole("button", { name: "Undo" }).click();
+    await expect(toast.getByRole("button", { name: "Undo" })).toBeFocused();
+    await page.keyboard.press("Enter");
     await expect(dev).toHaveCount(1);
     await expect(dev).toHaveAttribute("aria-label", /^Uncle Dev: known\./);
     await expect(dev).toBeFocused();
@@ -684,7 +687,10 @@ test.describe("tree on phones", () => {
     await panel.getByRole("button", { name: "Remove from tree" }).click();
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expect(page.locator('button[data-person-id="dev"]')).toHaveCount(0);
-    await page.getByRole("status").filter({ hasText: "Removed Uncle Dev" }).getByRole("button", { name: "Undo" }).click();
+    const undo = page.getByRole("status").filter({ hasText: "Removed Uncle Dev" }).getByRole("button", { name: "Undo" });
+    // still focused once the sheet has closed and the toast has moved out of it
+    await expect(undo).toBeFocused();
+    await undo.click();
     await expect(page.locator('button[data-person-id="dev"]')).toHaveCount(1);
     await noHorizontalOverflow(page);
   });

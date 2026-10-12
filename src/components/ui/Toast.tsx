@@ -12,6 +12,9 @@ export interface ToastOptions {
   title: string;
   body?: string;
   action?: { label: string; onClick(): void };
+  /** Move focus to the action when the toast appears. For an Undo whose trigger went away with what it removed, so
+   *  keyboard and screen reader users aren't left on the page body. A focused toast stays until focus leaves it. */
+  focusAction?: boolean;
   tone?: "neutral" | "brand";
 }
 interface ToastItem extends ToastOptions {
@@ -83,6 +86,14 @@ export function Toaster() {
 function ToastCard({ toast: t }: { toast: ToastItem }) {
   const [paused, setPaused] = useState(false);
   const remaining = useRef(LIFETIME);
+  const actionRef = useRef<HTMLButtonElement>(null);
+  // Also on a remount (the region moves out of a Sheet's <dialog> when it closes, which mounts the card again), but
+  // never away from something the person has since focused.
+  useEffect(() => {
+    const a = document.activeElement;
+    const lost = !a || a === document.body || a instanceof HTMLDialogElement || !!a.closest("[data-toaster]");
+    if (t.focusAction && lost) actionRef.current?.focus({ preventScroll: true });
+  }, [t.focusAction]);
   useEffect(() => {
     if (paused) return;
     const started = performance.now();
@@ -115,6 +126,7 @@ function ToastCard({ toast: t }: { toast: ToastItem }) {
         {t.body ? <p className="mt-0.5 text-small text-fg-2">{t.body}</p> : null}
         {t.action ? (
           <button
+            ref={actionRef}
             type="button"
             onClick={() => {
               t.action?.onClick();
