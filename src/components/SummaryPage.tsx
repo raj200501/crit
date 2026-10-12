@@ -42,7 +42,8 @@ export default function SummaryPage() {
 
   // A link is only shown while the content it was made from is unchanged (everything shareableTree puts in it about a person).
   const people = tree.people.map((p) => `${p.id}${p.relation}${p.label}${p.sex}${p.deceased}${p.ageAtDeath}${p.causeOfDeath}${p.suddenDeath}`).join();
-  const contentKey = `${tree.id}|${tree.reports.map((r) => r.id).join()}|${people}|${tree.reviewedAt}|${tree.visit?.date}`;
+  // The visit type and name are on the shared copy (eyebrow, care-team band), so a change makes the old link stale.
+  const contentKey = `${tree.id}|${tree.reports.map((r) => r.id).join()}|${people}|${tree.reviewedAt}|${tree.visit?.date}|${tree.visit?.type ?? ""}|${tree.visit?.specialty ?? ""}`;
   const link = shared?.key === contentKey ? shared.link : null;
   const qr = shared?.key === contentKey ? shared.qr : null;
 

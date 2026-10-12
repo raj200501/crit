@@ -2,6 +2,7 @@
 
 import { CalendarDays, ChevronDown } from "lucide-react";
 import { useId, useRef, useState } from "react";
+import { packIdForVisit, VISIT_TYPES } from "@/lib/packs";
 import { actions } from "@/lib/store";
 import type { FamilyTree } from "@/lib/types";
 import { Button } from "@/components/ui/Button";
@@ -10,33 +11,53 @@ import { Input } from "@/components/ui/Input";
 import { Popover } from "@/components/ui/Popover";
 import { formatVisitDate } from "./model";
 import { useOnPopoverOpen } from "./usePopoverOpen";
+import { choiceFromVisit, focusVisitType, VisitTypeField, visitFromChoice, type VisitChoice } from "./VisitTypeField";
 
-/** The existing visit editor (fields and logic unchanged), as a popover. */
+/** The visit editor, as a popover: the visit type (which picks the questions) and the date. */
 function VisitForm({ tree, onDone }: { tree: FamilyTree; onDone: () => void }) {
   const id = useId();
   const formRef = useRef<HTMLFormElement>(null);
-  const firstRef = useRef<HTMLInputElement>(null);
-  const [specialty, setSpecialty] = useState(tree.visit?.specialty ?? "Cardiology");
+  const otherRef = useRef<HTMLInputElement>(null);
+  const [choice, setChoice] = useState<VisitChoice>(() => choiceFromVisit(tree.visit));
   const [date, setDate] = useState(tree.visit?.date ?? "");
+  const [error, setError] = useState<"type" | "other" | null>(null);
   useOnPopoverOpen(formRef, () => {
-    setSpecialty(tree.visit?.specialty ?? "Cardiology");
+    setChoice(choiceFromVisit(tree.visit));
     setDate(tree.visit?.date ?? "");
-    requestAnimationFrame(() => firstRef.current?.focus());
+    setError(null);
+    requestAnimationFrame(() => focusVisitType(formRef.current));
   });
+  const picked = VISIT_TYPES.find((t) => t.id === choice.type);
+  const changes = picked && picked.pack !== packIdForVisit(tree.visit);
   return (
     <form
       ref={formRef}
-      className="flex w-[min(18rem,calc(100vw-40px))] flex-col gap-3 p-2.5"
+      noValidate
+      className="flex w-[min(20rem,calc(100vw-40px))] flex-col gap-3 p-2.5"
       onSubmit={(e) => {
         e.preventDefault();
-        actions.setVisit({ specialty: specialty.trim() || "Cardiology", date, practice: tree.visit?.practice });
+        const r = visitFromChoice(choice);
+        if ("error" in r) {
+          setError(r.error);
+          requestAnimationFrame(() => (r.error === "other" ? otherRef.current?.focus() : focusVisitType(formRef.current)));
+          return;
+        }
+        actions.setVisit({ ...r.visit, date, practice: tree.visit?.practice });
         onDone();
       }}
     >
       <p className="text-ui font-strong text-fg">Your upcoming visit</p>
-      <Field label="Visit" htmlFor={`${id}-visit`}>
-        <Input ref={firstRef} id={`${id}-visit`} value={specialty} onChange={(e) => setSpecialty(e.target.value.slice(0, 40))} />
-      </Field>
+      <VisitTypeField
+        id={id}
+        value={choice}
+        onChange={(next) => {
+          setChoice(next);
+          setError(null);
+        }}
+        error={error}
+        otherRef={otherRef}
+        hint={changes ? "The questions change with the visit type. Answers already in the tree stay as they are." : null}
+      />
       <Field label="Date" htmlFor={`${id}-date`}>
         <Input id={`${id}-date`} type="date" value={date} onChange={(e) => setDate(e.target.value)} />
       </Field>

@@ -5,7 +5,7 @@ import { addTransitionType, startTransition, useLayoutEffect, useMemo, useRef, u
 import { decodePayload, replyUrl, type InvitePayload, type ReplyPayload } from "@/lib/share";
 import { useHash } from "@/lib/useHash";
 import { clearPortalResult, peekPortalResult, SANDBOX_LABEL, startMyChartConnect, type PortalResult } from "@/lib/smart";
-import { CARDIOLOGY } from "@/lib/packs";
+import { packById } from "@/lib/packs";
 import { actions, deviceId, getTree, hasSavedTree } from "@/lib/store";
 import AnswerForm, { type Answer } from "./AnswerForm";
 import { CheckAnswers } from "./relative/CheckAnswers";
@@ -35,7 +35,8 @@ interface Saved {
   sameBrowser?: boolean;
 }
 
-const keyFor = (p: InvitePayload) => `fht:invite:${p.t}:${p.p}`;
+/** Drafts are kept per tree, person and question set, so a general invite never resumes a cardiology one's answers. */
+const keyFor = (p: InvitePayload) => `fht:invite:${p.t}:${p.p}${p.k ? `:${p.k}` : ""}`;
 
 /** Progress labels for the four numbered steps (welcome and sent have no progress header). */
 const PROGRESS: Partial<Record<Step, [number, string]>> = {
@@ -76,7 +77,7 @@ export default function InviteFlow() {
       </Frame>
     );
   }
-  return <InviteSession key={`${payload.t}:${payload.p}`} payload={payload} />;
+  return <InviteSession key={`${payload.t}:${payload.p}:${payload.k ?? ""}`} payload={payload} />;
 }
 
 /** Progress survives the round trip to the MyChart sandbox via sessionStorage. */
@@ -131,7 +132,8 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
     if (target?.hasAttribute("data-step-focus")) target.scrollIntoView({ block: "center" });
   }, [step]);
 
-  const pack = CARDIOLOGY;
+  // The question set the invite asks (missing or unknown `k`: cardiology).
+  const pack = useMemo(() => packById(payload.k), [payload.k]);
   const me = payload.l;
   const asker = payload.n;
   const now = () => new Date().toISOString();

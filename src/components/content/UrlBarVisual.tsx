@@ -33,6 +33,7 @@ const KEY_MEANING: Record<string, string> = {
   s: "visit",
   a: "they can tell us about",
   d: "browser id",
+  k: "question set",
 };
 
 /** Compact, one-line-per-key excerpt of the decoded payload (arrays shown by length). */

@@ -6,6 +6,7 @@
 // percentages anywhere.
 import { CalendarDays, Check, ChevronLeft, ChevronRight, CircleDashed, Info, Send } from "lucide-react";
 import { useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { packFor } from "@/lib/packs";
 import { shareableTree } from "@/lib/redact";
 import { counts, viewTree } from "@/lib/status";
 import { useTree } from "@/lib/store";
@@ -112,7 +113,7 @@ export function PracticeView() {
             <Eyebrow>Practice view · Demo</Eyebrow>
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
               <h1 id="practice-title" className="font-display text-display-m font-book text-ink">
-                Cardiology Associates (demo)
+                {tree.visit?.practice ?? (packFor(tree).id === "cardiology" ? "Cardiology Associates (demo)" : "Demo practice")}
               </h1>
               <Badge>{HONESTY.docChip}</Badge>
             </div>

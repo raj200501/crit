@@ -1,6 +1,8 @@
 // Invite and reply links carry their data in the URL fragment (#...), which browsers
 // never send to a server. The relative's answers travel back the same way.
 
+import { packFor } from "./packs";
+import type { PackId } from "./packs/types";
 import type { FamilyTree, Person, Relation, Report } from "./types";
 
 export interface InvitePayload {
@@ -19,6 +21,8 @@ export interface InvitePayload {
   a: { id: string; l: string }[];
   /** Random id of the patient's browser, so the demo can tell "same browser" apart from another device. */
   d?: string;
+  /** Question set the relative sees. Missing = cardiology (every link made before visit types, every cardiology link). */
+  k?: PackId;
 }
 
 export interface ReplyPayload {
@@ -116,7 +120,11 @@ export function askAbout(tree: FamilyTree, invitee: Person): { id: string; l: st
     .map((p) => ({ id: p.id, l: labelFor(invitee.relation, p, tree.patientName) }));
 }
 
+/** "cardiology visit", "primary care visit", "GI visit": capitalized words lowercased, acronyms kept. */
+export const visitPhrase = (specialty: string) => `${specialty.replace(/\b([A-Z])([a-z]+)/g, (w) => w.toLowerCase())} visit`;
+
 export function buildInvite(tree: FamilyTree, person: Person, device?: string | null): InvitePayload {
+  const pack = packFor(tree);
   return {
     v: 1,
     t: tree.id,
@@ -124,7 +132,9 @@ export function buildInvite(tree: FamilyTree, person: Person, device?: string | 
     p: person.id,
     l: person.label,
     r: person.relation,
-    s: tree.visit ? `${tree.visit.specialty.toLowerCase()} visit` : undefined,
+    s: tree.visit ? visitPhrase(tree.visit.specialty) : undefined,
+    // only a non-cardiology question set is written, so cardiology links keep their exact bytes
+    ...(pack.id !== "cardiology" ? { k: pack.id } : {}),
     a: askAbout(tree, person),
     d: device ?? undefined,
   };

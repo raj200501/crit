@@ -1,10 +1,11 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { actions } from "@/lib/store";
 import type { FamilyTree } from "@/lib/types";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { focusVisitType, VisitTypeField, visitFromChoice, type VisitChoice } from "./VisitTypeField";
 
 /** The tree lives only in this browser, so replacing it is permanent: ask first unless it is the demo. (Unchanged.) */
 export function confirmReplace(tree: FamilyTree) {
@@ -15,12 +16,22 @@ export function confirmReplace(tree: FamilyTree) {
   );
 }
 
-/** "Start my own tree" (inline form) and the always-visible demo-data controls (DESIGN §12.1). Names and confirm() unchanged. */
+/** "Start my own tree" (inline form: first name and the visit type, which picks the questions) and the always-visible
+ *  demo-data controls (DESIGN §12.1). Names and confirm() unchanged. */
 export function DemoData({ tree }: { tree: FamilyTree }) {
   const id = useId();
   const [starting, setStarting] = useState(false);
   const [name, setName] = useState("");
+  const [choice, setChoice] = useState<VisitChoice>({ type: null, other: "" });
+  const [error, setError] = useState<"type" | "other" | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const otherRef = useRef<HTMLInputElement>(null);
   const demo = tree.synthetic && tree.id === "demo";
+  const cancel = () => {
+    setStarting(false);
+    setChoice({ type: null, other: "" });
+    setError(null);
+  };
   return (
     <section aria-labelledby={`${id}-title`} className="rounded-lg border border-line bg-mist/70 p-4">
       <h2 id={`${id}-title`} className="font-mono text-eyebrow font-medium text-fg-3 uppercase">
@@ -31,12 +42,20 @@ export function DemoData({ tree }: { tree: FamilyTree }) {
       </p>
       {starting ? (
         <form
-          className="mt-3 flex flex-wrap items-center gap-2"
+          ref={formRef}
+          noValidate
+          className="mt-3 flex flex-col gap-3"
           onSubmit={(e) => {
             e.preventDefault();
+            const r = visitFromChoice(choice);
+            if ("error" in r) {
+              setError(r.error);
+              requestAnimationFrame(() => (r.error === "other" ? otherRef.current?.focus() : focusVisitType(formRef.current)));
+              return;
+            }
             if (!confirmReplace(tree)) return;
-            actions.startBlank(name);
-            setStarting(false);
+            actions.startBlank(name, { ...r.visit, date: "" });
+            cancel();
             setName("");
           }}
         >
@@ -46,14 +65,26 @@ export function DemoData({ tree }: { tree: FamilyTree }) {
             value={name}
             autoFocus
             onChange={(e) => setName(e.target.value.slice(0, 40))}
-            className="min-w-0 flex-1 basis-40"
+            className="min-w-0"
           />
-          <Button type="submit" size="sm" className="max-lg:h-11">
-            Start
-          </Button>
-          <Button variant="ghost" size="sm" onClick={() => setStarting(false)} className="max-lg:h-11">
-            Cancel
-          </Button>
+          <VisitTypeField
+            id={`${id}-visit`}
+            value={choice}
+            onChange={(next) => {
+              setChoice(next);
+              setError(null);
+            }}
+            error={error}
+            otherRef={otherRef}
+          />
+          <div className="flex flex-wrap gap-2">
+            <Button type="submit" size="sm" className="max-lg:h-11">
+              Start
+            </Button>
+            <Button variant="ghost" size="sm" onClick={cancel} className="max-lg:h-11">
+              Cancel
+            </Button>
+          </div>
         </form>
       ) : (
         <Button variant="secondary" size="sm" onClick={() => setStarting(true)} className="mt-3 max-lg:h-11">
