@@ -88,7 +88,7 @@ export const GENERAL_CHOICES: Choice[] = [
     label: "Other heart disease",
     examples: "heart failure, irregular heartbeat (AFib), a heart valve or heart muscle problem",
     condition: "Other heart disease",
-    detail: { label: "What kind? (optional)", placeholder: "e.g. heart failure, AFib, a valve problem" },
+    detail: { label: "What kind? (optional)", placeholder: "e.g. heart failure or AFib" },
     source:
       "[N9] “at least one chronic disease, such as cancer, heart disease, and diabetes”; [N10] “Do you have any chronic diseases, such as heart disease or diabetes?”",
   },
@@ -146,7 +146,7 @@ export const GENERAL_CHOICES: Choice[] = [
     label: "Another cancer",
     examples: "any other kind; you can name it",
     condition: "Other cancer",
-    detail: { label: "What kind? (optional)", placeholder: "e.g. prostate, pancreas, melanoma (skin)" },
+    detail: { label: "What kind? (optional)", placeholder: "e.g. prostate or pancreas" },
     source:
       "[N10] “Have you had any other serious diseases, such as cancer or stroke? What type of cancer?”; placeholder from the BRCA-linked cancers [N2] names",
   },

@@ -10,6 +10,14 @@
 
 /* ---------- Phones: the chart table becomes one card per relative ---------- */
 @media screen and (max-width: 639.98px) {
+  /* A meta item wider than the page (a typed specialty of up to 40 characters at 320 px) wraps instead of pushing the
+     page sideways. Unlayered, so it beats the item's whitespace-nowrap utility. flex-wrap still moves whole items to the
+     next line first, so an item that fits (every item of the demo) never wraps. */
+  .meta > span {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
   .chart,
   .chart tbody,
   .chart tr,

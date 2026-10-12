@@ -62,7 +62,8 @@ export const GENERAL: SpecialtyPack = {
   other: {
     title: "Something else not listed",
     description: "In your own words, like osteoporosis or colon polyps",
-    placeholder: "e.g. hemochromatosis (too much iron)",
+    // Short enough to show whole in the card at 320 px (placeholders don't wrap); plain words for hemochromatosis [N10].
+    placeholder: "e.g. too much iron",
   },
   notePlaceholder: "e.g. “She had breast cancer in her 40s, I think.”",
   words: {

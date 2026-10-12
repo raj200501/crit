@@ -189,7 +189,7 @@ export default function TreeWorkspace() {
             <button
               type="button"
               onClick={showChecklist}
-              className="group inline-flex h-11 shrink-0 cursor-pointer items-center gap-2 rounded-full border border-line bg-surface pr-3.5 pl-2 text-small font-medium whitespace-nowrap text-fg shadow-xs transition-[border-color,background-color] duration-(--dur-hover) hover:border-line-strong hover:bg-sunken lg:h-9"
+              className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center gap-2 rounded-full border border-line bg-surface pr-3.5 pl-2 text-small font-medium whitespace-nowrap text-fg shadow-xs transition-[border-color,background-color] duration-(--dur-hover) hover:border-line-strong hover:bg-sunken lg:h-9"
             >
               <ReadyRing done={readyDone} total={ready.length} />
               <span>

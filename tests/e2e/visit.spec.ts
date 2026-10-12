@@ -409,6 +409,13 @@ test.describe("visit type: keyboard, accessibility and narrow screens", () => {
         await expectNoSeriousA11y(page);
       }
 
+      // the longest specialty the pill takes (40 characters), with no date yet
+      await seed(page, samTree((t) => (t.visit = { type: "other", specialty: "Pediatric gastroenterology and nutrition", date: "" })));
+      for (const path of ["/tree", "/summary", "/practice?patient=self"]) {
+        await gotoApp(page, path);
+        await noHorizontalOverflow(page);
+      }
+
       await gotoApp(page, luisInvite({ s: "primary care visit", k: "general" }));
       await noHorizontalOverflow(page);
       await expectNoSeriousA11y(page);

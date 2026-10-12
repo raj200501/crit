@@ -4,6 +4,7 @@ import { useId, useRef, useState } from "react";
 import { actions } from "@/lib/store";
 import type { FamilyTree } from "@/lib/types";
 import { Button } from "@/components/ui/Button";
+import { Field } from "@/components/ui/Field";
 import { Input } from "@/components/ui/Input";
 import { focusVisitType, VisitTypeField, visitFromChoice, type VisitChoice } from "./VisitTypeField";
 
@@ -59,14 +60,10 @@ export function DemoData({ tree }: { tree: FamilyTree }) {
             setName("");
           }}
         >
-          <Input
-            aria-label="Your first name"
-            placeholder="Your first name"
-            value={name}
-            autoFocus
-            onChange={(e) => setName(e.target.value.slice(0, 40))}
-            className="min-w-0"
-          />
+          {/* A visible label now that the form has a second field with its own legend. */}
+          <Field label="Your first name" htmlFor={`${id}-name`}>
+            <Input id={`${id}-name`} value={name} autoFocus autoComplete="given-name" onChange={(e) => setName(e.target.value.slice(0, 40))} className="min-w-0" />
+          </Field>
           <VisitTypeField
             id={`${id}-visit`}
             value={choice}
