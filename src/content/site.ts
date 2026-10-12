@@ -72,7 +72,7 @@ export const PILOT = {
   terms: ["12 weeks", "$1,000 flat, credited to year one"],
   never: "Never priced per referral, new patient or booking.",
   free: "Free for patients and relatives. No ads. No data sales.",
-  after: "After the pilot: $500 per cardiologist per year. A second price, $99 per cardiologist per month, is a hypothesis we test on the same price card.",
+  after: "After the pilot: $500 per cardiologist per year. We also test a second price with practices, $99 per cardiologist per month.",
   metrics: [
     "Share of invited new patients who complete before the visit (target ≥ 40%)",
     "Share with at least one relative's contribution (target ≥ 25%)",
@@ -175,6 +175,6 @@ export const FAQ = [
   { q: "Does the patient-portal connection really work?", a: "Yes, as a demo. It's a real SMART on FHIR sign-in against a public sandbox with made-up patients. The relative picks one fact to share, and everything else is discarded on the page. Shared facts are labeled “from a portal record”, never “verified”." },
   { q: "What if a relative says no?", a: "Then that's the answer. “Chose not to share” shows on the tree and the summary, and only that person can decline for themselves." },
   { q: "Who pays?", a: "Practices, starting with cardiology, at a flat fee that's never tied to referrals or new patients. Patients and relatives never pay. No ads, no data sales." },
-  { q: "Why cardiology?", a: "It's where we start. Cardiology guidelines need the most detail: which relative, which side of the family, and what age. The tree, relative links and sources don't depend on the specialty; the questions and the clinician's criteria do, and cardiology's are the only ones built so far. Primary care wellness visits, where Medicare requires family history, come later." },
+  { q: "Why cardiology?", a: "It's where we start. Cardiology guidelines turn on which relative had a condition and at what age. The tree, relative links and sources don't depend on the specialty; the questions and the clinician's criteria do, and cardiology's are the only ones built so far. Primary care wellness visits, where Medicare requires family history, come later." },
   { q: "Why not just a form?", a: "Forms flatten “I think it was 58?” into a checkbox. We keep who said it, how they know and what nobody knows yet, and relatives answer for themselves." },
 ] as const;

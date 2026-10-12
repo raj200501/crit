@@ -95,8 +95,8 @@ const market = [
 const risks = [
   [
     "A practice manager will pay for a tool that bills nothing",
-    "5 manager interviews with a price card; ask for a paid pilot letter ($1,000)",
-    "≥ 1 signed paid pilot",
+    "5 practice-manager conversations with a one-page price card ($500 per cardiologist per year)",
+    "3 of 5 name the budget owner and accept $500/yr in principle; 1 signs a non-binding letter of intent",
   ],
   [
     "Patients finish the tree before the visit",
