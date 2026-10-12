@@ -89,7 +89,7 @@ const criteria = [
 const market = [
   ["US independent cardiology", "7,699 cardiologists × $500/yr", "$3.8M"],
   ["Same, at $99/month (a hypothesis we test)", "7,699 × $1,188/yr", "$9.1M"],
-  ["NYC independent", "280–320 × $500/yr", "$0.14M – $0.16M"],
+  ["NYC independent", "285–320 × $500/yr", "$0.14M – $0.16M"],
 ];
 
 const risks = [

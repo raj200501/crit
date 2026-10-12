@@ -345,17 +345,17 @@ Since 2021, history-taking no longer sets the office-visit level; complexity of 
 - **Update, Oct 12, 2026 (the pitch):** a $1,000, 12-week pilot credited to year one, then $500 per cardiologist per year. $99 per cardiologist per month is tested on the same price card. $500 a year is the only public per-clinician anchor [111], and staff-time savings are unproven, so they don't set the price. The bullets below are the first draft of Oct 2.
 - Patients and relatives: free forever, no ads, no data sales.
 - Practices: a flat fee per cardiologist on an annual contract. The starting hypothesis is $99–149 per cardiologist per month, or $300–500 a month for a solo or small group. This is **high next to the anchors**: FamGenix lists $500 per clinician per year [111], IntakeQ forms cost $54.90 a month [114], Phreesia's full intake platform is free through December 31, 2026 [112], and labs give pedigree tools away [107]. Price is something the pilot must test.
-- ROI math, with the staff cost as an **assumption**: 10 minutes saved × about $30/hour loaded staff cost ≈ $5 per new patient. At $150 per cardiologist per month, that needs about 30 completed summaries per cardiologist per month to break even. Saved staff minutes only become cash if they free up capacity. (Benchmarks: a three-generation pedigree takes 15–30 minutes [83]; primary-care physicians spend under 2.5 minutes on family history and discuss it in only 51% of new visits [117].)
+- ROI math, with the staff cost as an **assumption**: 10 minutes saved × about $30/hour loaded staff cost ≈ $5 per new patient. At our price of $500 per cardiologist per year (about $42 a month; Oct 12, 2026), that needs about 8 completed summaries per cardiologist per month to break even, or about 20 at the higher $99 a month we also test (the Oct 2 draft used $150 a month, about 30). Saved staff minutes only become cash if they free up capacity. (Benchmarks: a three-generation pedigree takes 15–30 minutes [83]; primary-care physicians spend under 2.5 minutes on family history and discuss it in only 51% of new visits [117].)
 - Hosting cost to cover in the price: about $400–550 a month for the lean BAA stack (section 2.6), before any revenue.
 
 ### 4.4 Market size, with the math
 
 | Market | Cardiologists | × price per year | = annual value |
 | --- | --- | --- | --- |
-| US independent cardiology (CMS clinician file, Aug 2026: 7,699 of 29,847 cardiology clinicians are in organizations of 100 or fewer) [99] | 7,699 | $1,188 ($99/mo) to $1,788 ($149/mo) | **$9.1M – $13.8M** |
+| US independent cardiology at our price (CMS clinician file, Aug 2026: 7,699 of 29,847 cardiology clinicians are in organizations of 100 or fewer; $500 is also the FamGenix price anchor [111]) [99] | 7,699 | $500 | **$3.8M** |
+| US independent cardiology at the higher prices we test [99] | 7,699 | $1,188 ($99/mo) to $1,788 ($149/mo) | $9.1M – $13.8M |
 | Upper bound (AJMC: about 10,000 independent cardiologists) [100] | 10,000 | $1,788 | $17.9M |
-| At the FamGenix price anchor [111] | 7,699 | $500 | $3.8M |
-| NYC independent (about 280–320 of about 1,359 NYC cardiology clinicians; 76–79% sit inside NYU, Columbia, Mount Sinai, Northwell, Montefiore and Weill Cornell) [99] | 280–320 | $1,800 | **$0.50M – $0.58M** |
+| NYC independent (about 285–320 of about 1,359 NYC cardiology clinicians, re-run Oct 6; the Oct 2 count was 280–320; 76–79% sit inside NYU, Columbia, Mount Sinai, Northwell, Montefiore and Weill Cornell) [99] | 285–320 | $500 | **$0.14M – $0.16M** |
 
 Organization size of 100 or fewer is only a proxy for independence; it leaves out some large independent groups [99]. Private equity owned only 2.9% of US cardiology clinics through September 2023, and just 1.5% in the Northeast [101]. Conclusion: NYC is a **pilot market, not a revenue market**, and independent cardiology alone is a wedge, not a venture-scale market. Growth has to come from larger groups, health systems, primary care (AWV) and genetics programs.
 
