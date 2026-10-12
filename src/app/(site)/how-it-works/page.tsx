@@ -87,16 +87,16 @@ const criteria = [
 ];
 
 const market = [
-  ["US independent cardiology", "7,699 cardiologists × $1,188–1,788/yr", "$9.1M – $13.8M"],
-  ["At FamGenix's $500/yr anchor", "7,699 × $500", "$3.8M"],
-  ["NYC independent", "280–320 × $1,800", "$0.50M – $0.58M"],
+  ["US independent cardiology", "7,699 cardiologists × $500/yr", "$3.8M"],
+  ["Same, at $99/month (a hypothesis we test)", "7,699 × $1,188/yr", "$9.1M"],
+  ["NYC independent", "280–320 × $500/yr", "$0.14M – $0.16M"],
 ];
 
 const risks = [
   [
     "A practice manager will pay for a tool that bills nothing",
-    "5 manager interviews with a price card; ask for a paid pilot letter ($500–1,000)",
-    "≥ 1 signed paid pilot",
+    "5 practice-manager conversations with a one-page price card ($500 per cardiologist per year)",
+    "3 of 5 name the budget owner and accept $500/yr in principle; 1 signs a non-binding letter of intent",
   ],
   [
     "Patients finish the tree before the visit",
@@ -498,8 +498,9 @@ export default function HowItWorks() {
                   <strong className="font-strong text-fg">Free for patients and relatives</strong>, with no ads and no data sales written into the terms.
                 </li>
                 <li className="py-4 text-body text-fg-2">
-                  <strong className="font-strong text-fg">Independent cardiology practices pay</strong> a flat fee per cardiologist ($99–149/month to
-                  start). Never priced per referral or new patient (anti-kickback risk).
+                  <strong className="font-strong text-fg">Practices pay, starting with independent cardiology:</strong> a $1,000, 12-week pilot credited
+                  to year one, then a flat $500 per cardiologist per year ($99 per cardiologist per month is a hypothesis we also test). Never priced per
+                  referral or new patient (anti-kickback risk).
                 </li>
                 <li className="py-4 text-body text-fg-2">
                   <strong className="font-strong text-fg">No billing code pays for family history</strong> (96160 risk assessment: $3.01; genetic
@@ -524,7 +525,7 @@ export default function HowItWorks() {
               <Note>
                 NYC is a pilot market, not a revenue market; 76–79% of NYC cardiology clinicians sit inside six large health systems (NYU, Columbia, Mount Sinai,
                 Northwell, Montefiore, Weill Cornell). Growth would come from larger groups, health systems, primary care (the Medicare wellness visit requires family history) and genetics programs.
-                <Cite n={[99, 104]} />
+                <Cite n={[99, 104]} /> Each new specialty reuses the tree and adds its own questions and clinician criteria; cardiology’s are the only ones built.
               </Note>
               <Button href="/pilot" variant="link" iconRight={<ArrowRight />} className="self-start">
                 The proposed pilot
@@ -548,8 +549,8 @@ export default function HowItWorks() {
             rows={risks.map((r) => ({ head: r[0], cells: r.slice(1) }))}
           />
           <p className="mt-6 max-w-[68ch] rounded-lg border border-line bg-paper p-5 text-small text-fg-2">
-            <strong className="font-strong text-fg">Pilot:</strong> 8–12 weeks with 1–3 independent NYC groups, $500–1,000 flat, credited to an annual
-            contract. Continue if at least 1 of 3 practices converts to paid and at least 40% of invited patients complete the tree before the visit.
+            <strong className="font-strong text-fg">Pilot:</strong> 12 weeks with 1–3 independent NYC groups, $1,000 flat, credited to year one.
+            Continue if at least 1 of 3 practices converts to paid and at least 40% of invited patients complete the tree before the visit.
           </p>
         </Band>
       </div>

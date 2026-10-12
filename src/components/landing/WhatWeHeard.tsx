@@ -1,9 +1,15 @@
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
+import { INTERVIEW_RESEARCH } from "@/content/interviews";
 import { INTERVIEWS } from "@/content/site";
 
-/** §8.11 One verbatim quote, then what we learned (paraphrased, so no quotation marks). No photos, names or carousel. */
+/**
+ * §8.11 One verbatim quote, then what we learned (paraphrased, so no quotation marks). No photos, names or carousel.
+ * A small link leads to every interview on /research/interviews (anonymous: IDs and roles only).
+ */
 export function WhatWeHeard() {
   return (
     <Section theme="paper" aria-labelledby="heard-title">
@@ -28,7 +34,12 @@ export function WhatWeHeard() {
           </figure>
         </Reveal>
         <div className="mt-16 border-t border-line pt-10 lg:mt-20">
-          <h3 className="text-title font-strong text-fg">{INTERVIEWS.learnedTitle}</h3>
+          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1">
+            <h3 className="text-title font-strong text-fg">{INTERVIEWS.learnedTitle}</h3>
+            <Button href="/research/interviews" variant="link" size="sm" iconRight={<ArrowRight />}>
+              All {INTERVIEW_RESEARCH.interviews.length} interviews
+            </Button>
+          </div>
           <ul className="mt-6 grid gap-4 md:grid-cols-3">
             {INTERVIEWS.learned.map((l, i) => (
               <Reveal as="li" key={l.who} delay={i * 0.07} className="flex flex-col gap-4 rounded-lg border border-line bg-surface p-6 shadow-xs">

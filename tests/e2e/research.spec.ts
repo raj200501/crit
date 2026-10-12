@@ -20,7 +20,7 @@ test.describe("/research tabs", () => {
     await expect(tabs.getByRole("link", { name: "Interviews (21)" })).not.toHaveAttribute("aria-current");
     // the write-up tab is the write-up, unchanged
     await expect(page.getByRole("heading", { level: 1, name: "The research behind Stemma", exact: true })).toBeVisible();
-    await expect(page.locator("main")).toContainText(/121 sources\s*·\s*\d+ min read\s*·\s*Updated Oct 2026/i);
+    await expect(page.locator("main")).toContainText(/124 sources\s*·\s*\d+ min read\s*·\s*Updated Oct 2026/i);
     await expect(page.locator("main article")).toHaveCount(1);
 
     await tabs.getByRole("link", { name: "Interviews (21)" }).click();

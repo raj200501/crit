@@ -36,11 +36,11 @@ const PLANS: Plan[] = [
   {
     id: "pilot",
     name: "Pilot practice",
-    figure: "$500–1,000",
-    figureNote: "flat",
+    figure: "$1,000",
+    figureNote: "flat · 12 weeks",
     price: (
       <>
-        <strong className="font-strong text-fg">$500–1,000 flat</strong> for 8–12 weeks, credited toward an annual contract
+        <strong className="font-strong text-fg">$1,000 flat</strong> for 12 weeks, credited to year one
       </>
     ),
     get: "An intake link with your new-patient paperwork, care-team summaries, and metrics agreed up front",
@@ -50,12 +50,12 @@ const PLANS: Plan[] = [
   {
     id: "after",
     name: "After the pilot",
-    figure: "$99–149",
-    figureNote: "per cardiologist per month · hypothesis",
+    figure: "$500",
+    figureNote: "per cardiologist per year",
     price: (
       <>
-        Flat annual subscription per cardiologist. Hypothesis: <strong className="font-strong text-fg">$99–149 per cardiologist per month</strong>, which
-        the pilot tests
+        <strong className="font-strong text-fg">$500 per cardiologist per year</strong>, flat. We also test $99 per cardiologist per month (a
+        hypothesis)
       </>
     ),
     get: "The same, plus expiring share links and a “reviewed by clinician” lock",

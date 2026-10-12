@@ -83,6 +83,12 @@ test.describe("structure", () => {
     await expect(page.locator("blockquote")).toHaveText(INTERVIEWS.quote.text);
   });
 
+  test("“What we heard” links to every interview on /research/interviews", async ({ page }) => {
+    await gotoApp(page, "/");
+    const heard = page.locator('section[aria-labelledby="heard-title"]');
+    await expect(heard.getByRole("link", { name: "All 21 interviews" })).toHaveAttribute("href", "/research/interviews");
+  });
+
   test("care-team links go to /practice (AMENDMENTS A1); the hero's second CTA lands on #two-readers", async ({ page }) => {
     await gotoApp(page, "/");
     await expect(page.locator('a[href*="view=care-team"]')).toHaveCount(0);

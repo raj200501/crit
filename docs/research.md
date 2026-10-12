@@ -16,7 +16,7 @@ The interview base is 21 logged interviews: 15 patients, 2 PAs, an ER doctor, a 
 - **"Verified from MyChart" works for problem-list conditions, but not for family history.** A read-only app that asks only for USCDI data can self-register at fhir.epic.com for free and is distributed automatically to Epic customers that have auto-download turned on [5]. Epic's FamilyMemberHistory API is not part of USCDI, so requesting it means each health system must approve the app by hand [7][10]. The relative has to log in and authorize; the patient cannot. Label the result "from <health system>'s record, retrieved <date>", not "verified".
 - **Get the summary to the practice as a PDF first.** Next comes a SMART Health Link QR code, then fax for the pilot. EHR write-back is product-stage, and Epic has no API for creating family-history entries [10][27].
 - **Alerts belong to clinicians, never to patients.** Under the FDA's January 2026 guidance, decision support aimed at patients is a medical device [95]. Clinician alerts can stay outside device rules if they are rule-based, cite the guideline, show where each fact came from and what is missing, and offer options rather than orders [95]. The patient sees facts, education and "questions to ask". In a trial, tailored risk messages to patients *reduced* cholesterol screening (OR 0.34) [94].
-- **The business is a small wedge, and price is the riskiest assumption.** No billing code pays for collecting family history [103]. Independent US cardiology at $99–149 per cardiologist per month is worth about $9–14M a year; NYC is worth at most about $0.5–0.6M [99]. FamGenix publishes a $500 per year clinician license with a cardiology add-on [111]. Run a paid 8–12 week pilot with 1–3 independent NYC groups, and treat price as one of the things being tested.
+- **The business is a small wedge, and price is the riskiest assumption.** No billing code pays for collecting family history [103]. FamGenix publishes a $500 per year clinician license with a cardiology add-on [111]. At $500 per cardiologist per year, independent US cardiology is worth about $3.8M a year and NYC about $0.14–0.16M [99]. Run a paid 12-week pilot ($1,000, credited to year one) with 1–3 independent NYC groups, and treat price as one of the things being tested: $99 per cardiologist per month is the alternative on the same price card. (Updated Oct 12, 2026; the first draft tested $99–149 a month, worth about $9–14M a year. See section 4.3.)
 
 ---
 
@@ -321,6 +321,9 @@ Caveats: in FHIR, `status = health-unknown` and `dataAbsentReason` describe the 
 | Primary care | Later market | The Medicare Annual Wellness Visit **requires** family history (parents, siblings, children) [104] | G0438 pays $174.35, G0439 $137.61 nationally [103] |
 | Health systems | Later, enterprise | Lipid, cardiogenetics and HCM clinics | Epic shops; already have MyChart questionnaires |
 | CMS ACCESS Model participants | Later channel | Began July 5, 2026 with 160+ organizations; heart failure track from April 1, 2027 [106] | Outcome-aligned payments, not a code |
+| OB/GYN and cancer genetics | Later market, crowded | USPSTF (grade B): primary care clinicians should assess women with a personal or family history of breast, ovarian, tubal or peritoneal cancer, or ancestry linked to BRCA1/2, "with an appropriate brief familial risk assessment tool", including ages and more distant relatives [122] | Family-history tools here are sold to health systems or given free by labs [107][109][110] |
+| Endocrinology (type 2 diabetes) | Later market, light need | USPSTF (grade B) screens adults 35–70 with overweight or obesity and says to "consider screening at an earlier age" for people with a family history of diabetes [123] | Asks only whether there is a family history: no relative, side or age |
+| Pediatrics | Excluded | — | Adults only (18+) for accounts and invites (section 2.4) |
 | **Avoid** | Life insurers, employers, wellness vendors, data buyers | — | GINA, Illinois GIPA, 23andMe lessons [51][52][115] |
 
 ### 4.2 Why there's no billing code to lean on
@@ -339,6 +342,7 @@ Since 2021, history-taking no longer sets the office-visit level; complexity of 
 
 ### 4.3 Pricing hypothesis
 
+- **Update, Oct 12, 2026 (the pitch):** a $1,000, 12-week pilot credited to year one, then $500 per cardiologist per year. $99 per cardiologist per month is tested on the same price card. $500 a year is the only public per-clinician anchor [111], and staff-time savings are unproven, so they don't set the price. The bullets below are the first draft of Oct 2.
 - Patients and relatives: free forever, no ads, no data sales.
 - Practices: a flat fee per cardiologist on an annual contract. The starting hypothesis is $99–149 per cardiologist per month, or $300–500 a month for a solo or small group. This is **high next to the anchors**: FamGenix lists $500 per clinician per year [111], IntakeQ forms cost $54.90 a month [114], Phreesia's full intake platform is free through December 31, 2026 [112], and labs give pedigree tools away [107]. Price is something the pilot must test.
 - ROI math, with the staff cost as an **assumption**: 10 minutes saved × about $30/hour loaded staff cost ≈ $5 per new patient. At $150 per cardiologist per month, that needs about 30 completed summaries per cardiologist per month to break even. Saved staff minutes only become cash if they free up capacity. (Benchmarks: a three-generation pedigree takes 15–30 minutes [83]; primary-care physicians spend under 2.5 minutes on family history and discuss it in only 51% of new visits [117].)
@@ -361,10 +365,10 @@ Organization size of 100 or fewer is only a proxy for independence; it leaves ou
 | --- | --- | --- | --- | --- | --- | --- |
 | My Family Health Portrait (built by NIH/NHGRI for the Surgeon General; now an NCI copy) | Patients | General | Free. Original host offline April 13, 2026; data stays on the user's device; no feature development since March 2025 [97] | No (download or print a file) | No | No |
 | **FamGenix** | Clinicians, plus a patient app | Cancer **and cardio** (QRisk add-on) | Free (20 pedigrees); Individual $500/yr; Premium tiered [111]. Last iOS update February 2025 | Patient app shares with family | Not documented | Not documented |
-| Progeny (used by the interviewed genetics counselor) | Genetic counselors | Hereditary disease, mostly cancer | 30-day trial (no longer free); pre-visit patient questionnaires that auto-fill pedigrees; EHR pedigree integration; direct Ambry test ordering [108] | No | No | No |
+| Progeny (used by the interviewed genetics counselor) | Genetic counselors | Hereditary disease, mostly cancer | "800+ genetics institutions" (home page, opened Oct 12, 2026) [124]; 30-day trial (no longer free); pre-visit patient questionnaires that auto-fill pedigrees; EHR pedigree integration; direct Ambry test ordering [108] | No | No | No |
 | Invitae Family History Tool (Labcorp) | Providers | Cancer and hereditary | Free; patient e-questionnaire; exports PDF/PNG/XML/CSV; "does not integrate with EMRs"; tied to test ordering [107] | No | No | No |
 | Ambry CARE (Tempus) | Health systems | Breast and hereditary cancer | EHR-integrated; price not disclosed [109] | No | No | No |
-| CancerIQ | Health systems | Cancer | 275+ clinics; claims 8.9x average ROI (self-reported); price not public [110] | No | No | No |
+| CancerIQ | Health systems | Cancer | 275+ clinics (home page, opened Oct 12, 2026); claims 8.9x average ROI (self-reported); price not public [110] | No | No | No |
 | MeTree (Duke) | Research | General | Research platform [84] | No | No | No |
 | Phreesia | Practices | General intake | Free through December 31, 2026; standard pricing from 2027 [112][113] | No | No | No |
 | IntakeQ | Small practices | Forms | $54.90/month [114] | No | No | No |
@@ -377,7 +381,7 @@ Organization size of 100 or fewer is only a proxy for independence; it leaves ou
 
 | # | Assumption | Why it's risky | Cheapest test | Pass mark |
 | --- | --- | --- | --- | --- |
-| 1 | **A practice manager will pay** for a tool that bills nothing | Labs give tools away; FamGenix $500/yr; Phreesia free in 2026 | 5 practice-manager interviews with a one-page price card and a request for a **paid** pilot letter ($500–1,000, credited to an annual contract) | ≥ 1 signed paid pilot |
+| 1 | **A practice manager will pay** for a tool that bills nothing | Labs give tools away; FamGenix $500/yr; Phreesia free in 2026 | 5 practice-manager conversations with a one-page price card ($500 per cardiologist per year) | 3 of 5 name the budget owner and accept $500/yr in principle; 1 signs a non-binding letter of intent. The **paid** pilot letter ($1,000) follows once we have a company, a BAA template and insurance (updated Oct 12, 2026) |
 | 2 | Patients complete the tree **before** the visit | IGNITE reached 7.8% of eligible patients [91]; paper questionnaires about 20% | Moderated usability sessions (fictional family, or the participant's own on a lab device wiped afterwards; check Cornell IRB first). Measure time, wrong-side errors and drop-off points | Median ≤ 15 min; no wrong-side errors; in the pilot, ≥ 40% of invited new patients complete |
 | 3 | **Relatives respond** | 29% dropped out at "invite" in a similar app [93] | Fake door: participants send a no-health-data invite to a relative, linking to a page that only explains the study and collects nothing. Count opens within 72 hours | ≥ 25% of patients get at least one relative contribution in the pilot |
 | 4 | **Clinicians trust and use** a patient-built summary | Genetics counselor is skeptical; PAs want something scannable | Show the synthetic one-pager to 5 clinicians (cardiologists, PAs, the counselor). Time the scan; ask what they would do | ≥ 4/5 usefulness rating; they act on ≥ 1 alert; scan < 1 minute |
@@ -386,7 +390,7 @@ Organization size of 100 or fewer is only a proxy for independence; it leaves ou
 | 7 | **Regulatory lines hold** | Patient-facing alerts = device; practice channel = business associate; NYHIPA pending | FTC Mobile Health Apps Interactive Tool [70]; a Cornell law clinic consult; recheck NYHIPA status before each pitch | No patient-facing recommendations; BAA template ready before the pilot |
 | 8 | **Alert fatigue** | In a 2020 MeTree study, 76.4% of completers got at least one recommendation and 46% met hereditary or familial-level risk criteria [118] | Count alerts per summary across 20 synthetic and pilot families | ≤ 2 alerts on a typical summary; every alert specific |
 
-**Pilot design (8–12 weeks, 1–3 independent NYC groups, $500–1,000 flat).** Set these metrics in advance:
+**Pilot design (12 weeks, 1–3 independent NYC groups, $1,000 flat, credited to year one; updated Oct 12, 2026).** Set these metrics in advance:
 
 1. Share of invited new patients who complete before the visit (target ≥ 40%).
 2. Share with at least one relative contribution (≥ 25%).
@@ -559,3 +563,6 @@ The detailed build spec for the prototype is in [`mvp-spec.md`](./mvp-spec.md).
 119. S.3607 bill status (Access to Genetic Counselor Services Act): https://www.govinfo.gov/bulkdata/BILLSTATUS/119/s/BILLSTATUS-119s3607.xml
 120. FTC, COPPA final rule amendments: https://www.ftc.gov/legal-library/browse/federal-register-notices/16-cfr-part-312-coppa-final-rule-amendments
 121. Razavi and Blumenthal, AJPC 2026 (summary of 2026 dyslipidemia risk enhancers): https://europepmc.org/article/PMC/PMC13326120
+122. USPSTF, BRCA-related cancer: risk assessment, genetic counseling and genetic testing (Aug 2019, grade B; the page says the topic is being updated; opened Oct 12, 2026): https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/brca-related-cancer-risk-assessment-genetic-counseling-and-genetic-testing
+123. USPSTF, screening for prediabetes and type 2 diabetes (Aug 2021, grade B; opened Oct 12, 2026): https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/screening-for-prediabetes-and-type-2-diabetes
+124. Progeny home page (opened Oct 12, 2026): https://progenygenetics.com/

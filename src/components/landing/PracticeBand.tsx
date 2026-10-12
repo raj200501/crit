@@ -37,7 +37,7 @@ export function PracticeBand() {
                   </Button>
                 ) : null}
               </div>
-              <p className="font-mono text-eyebrow text-fg-3 uppercase">8–12 weeks · flat fee · you see results before any annual contract</p>
+              <p className="font-mono text-eyebrow text-fg-3 uppercase">12 weeks · $1,000 flat · you see results before any annual contract</p>
             </div>
           </Reveal>
           <Reveal delay={0.08} className="relative lg:sticky lg:top-28">

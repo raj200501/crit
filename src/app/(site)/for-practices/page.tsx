@@ -209,7 +209,7 @@ export default function ForPracticesPage() {
               Start with a paid pilot.
             </h2>
             <p className="mt-6 max-w-[48ch] text-lead text-fg-2">{PILOT.after}</p>
-            <p className="mt-6 font-mono text-eyebrow text-fg-3 uppercase">8–12 weeks · flat fee · you see results before any annual contract</p>
+            <p className="mt-6 font-mono text-eyebrow text-fg-3 uppercase">12 weeks · $1,000 flat · you see results before any annual contract</p>
             <Button href="/pilot" variant="link" iconRight={<ArrowRight />} className="mt-4">
               Pricing, metrics and the go/no-go
             </Button>
