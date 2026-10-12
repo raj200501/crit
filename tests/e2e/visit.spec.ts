@@ -320,6 +320,17 @@ test("old links and legacy trees stay cardiology", async ({ page }) => {
   await expect(page.locator('[data-person-id="mgm"]').first()).toHaveAttribute("aria-label", /No heart history/);
 });
 
+test("a new tree with no visit date opens the practice view, among new patients of the same kind", async ({ page }) => {
+  // "Start my own tree" saves the visit with date "" (the date is set later from the pill)
+  await seed(page, samTree((t) => (t.visit = { ...t.visit!, date: "" })), "/practice");
+  await expect(h1(page)).toHaveText("Demo practice");
+  await expect(page.getByText("Not scheduled").first()).toBeVisible();
+  await expect(page.locator("main")).toContainText("Primary care · new patient");
+  await expect(page.locator("main")).not.toContainText(/cardiolog/i);
+  await page.getByRole("button", { name: "Open summary" }).first().click();
+  await expect(doc(page)).toContainText("No guideline criteria are applied for this visit type yet.");
+});
+
 test("the demo stays cardiology", async ({ page }) => {
   await gotoApp(page, "/tree");
   await expect(page.getByRole("button", { name: /^Cardiology/ }).first()).toContainText(/Oct 14/i);
@@ -347,6 +358,9 @@ test("switching visit type keeps old words and invents no disagreement", async (
   await gotoApp(page, "/practice?patient=self");
   await expect(doc(page)).toContainText("No guideline criteria are applied for this visit type yet.");
   await expect(doc(page)).not.toContainText("Basis:");
+  // the demo's "Cardiology Associates (demo)" belonged to the cardiology visit: a primary-care visit doesn't name it
+  await expect(h1(page)).toHaveText("Demo practice");
+  await expect(page.locator("main")).not.toContainText(/cardiolog/i);
 
   await gotoApp(page, "/tree");
   form = await openPill(page, /^Primary care/);

@@ -27,10 +27,15 @@ type Visit = { id: string; name: string; date: string | null; reason: string; in
 
 const PILOT_NOTE = "In a pilot, this arrives through the practice link or the check-in QR, not from the patient’s browser.";
 
-/** Three made-up weekdays in the same week as the demo visit (Mon–Fri, never the demo patient's day). */
+/** Three made-up weekdays in the same week as the demo visit (Mon–Fri, never the demo patient's day). A visit with no
+ *  date yet (a new tree starts with `date: ""`) uses the demo's week instead of an invalid date. */
 function sameWeek(date: string | undefined): string[] {
-  const [y, m, d] = (date ?? "2026-10-14").split("-").map(Number);
-  const day = new Date(Date.UTC(y, m - 1, d));
+  const parse = (s: string) => {
+    const [y, m, d] = s.split("-").map(Number);
+    return new Date(Date.UTC(y, m - 1, d));
+  };
+  let day = parse(date || "2026-10-14");
+  if (Number.isNaN(day.getTime())) day = parse("2026-10-14");
   const dow = (day.getUTCDay() + 6) % 7; // Mon = 0
   const monday = new Date(day.getTime() - dow * 86_400_000);
   const days = [0, 1, 2, 3, 4].filter((i) => i !== dow).map((i) => new Date(monday.getTime() + i * 86_400_000).toISOString().slice(0, 10));
@@ -58,20 +63,23 @@ export function PracticeView() {
 
   const answered = c.relatives - c.unknown;
   const [d1, d2, d3] = sameWeek(tree.visit?.date);
+  // The made-up rows are new patients of the same kind of practice: cardiology for the demo, the patient's own visit
+  // otherwise, so a primary-care visit never sits in a list of cardiology patients.
+  const rowReason = `${packFor(tree).id === "cardiology" ? "Cardiology" : (tree.visit?.specialty ?? "Cardiology")} · new patient`;
   const visits: Visit[] = [
     {
       id: "self",
       name: tree.patientName === "You" ? "You (this browser)" : tree.patientName,
-      date: tree.visit?.date ?? null,
+      date: tree.visit?.date || null,
       reason: `${tree.visit?.specialty ?? "Cardiology"} · new patient`,
       intake: tree.reviewedAt
         ? { kind: "reviewed", text: "Summary reviewed" }
         : { kind: "progress", text: `In progress · ${answered} of ${c.relatives} relatives answered` },
       live: true,
     },
-    { id: "demo-1", name: "Priya S.", date: d1, reason: "Cardiology · new patient", intake: { kind: "sent", text: "Link sent · not started" }, live: false },
-    { id: "demo-2", name: "Marcus T.", date: d2, reason: "Cardiology · new patient", intake: { kind: "progress", text: "In progress · 2 of 6 relatives" }, live: false },
-    { id: "demo-3", name: "Dana K.", date: d3, reason: "Cardiology · new patient", intake: { kind: "reviewed", text: "Summary reviewed" }, live: false },
+    { id: "demo-1", name: "Priya S.", date: d1, reason: rowReason, intake: { kind: "sent", text: "Link sent · not started" }, live: false },
+    { id: "demo-2", name: "Marcus T.", date: d2, reason: rowReason, intake: { kind: "progress", text: "In progress · 2 of 6 relatives" }, live: false },
+    { id: "demo-3", name: "Dana K.", date: d3, reason: rowReason, intake: { kind: "reviewed", text: "Summary reviewed" }, live: false },
   ];
   const self = visits[0];
 

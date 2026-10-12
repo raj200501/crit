@@ -42,7 +42,10 @@ function VisitForm({ tree, onDone }: { tree: FamilyTree; onDone: () => void }) {
           requestAnimationFrame(() => (r.error === "other" ? otherRef.current?.focus() : focusVisitType(formRef.current)));
           return;
         }
-        actions.setVisit({ ...r.visit, date, practice: tree.visit?.practice });
+        // The practice belongs to the visit it was set for (the demo's "Cardiology Associates (demo)"): a different
+        // specialty drops it, so a primary-care visit never names a cardiology practice.
+        const practice = r.visit.specialty === tree.visit?.specialty ? tree.visit?.practice : undefined;
+        actions.setVisit({ ...r.visit, date, practice });
         onDone();
       }}
     >
