@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+<g id="logic5" transform="translate(16480,20000)" data-frame="Central business logic">
+<rect data-type="frame" x="0" y="0" width="6020" height="1735" fill="#ffffff" data-title="Central business logic" />
+<rect id="logic5-r1" x="64" y="64" width="367" height="48" fill="#c6dcff" stroke="none" rx="24" data-content="&lt;b&gt;CENTRAL BUSINESS LOGIC&lt;/b&gt;" data-font-family="noto_sans" data-font-size="22" data-text-color="#305bab" />
+<textArea id="logic5-t2" x="64" y="132" width="5892" height="94" font-family="noto_sans" font-size="67" fill="#1a1a1a" font-weight="bold"><b>Central business logic</b></textArea>
+<rect id="logic5-p3" x="64" y="258" width="5892" height="284" fill="#fff6b6" stroke="none" rx="12" />
+<textArea id="logic5-t4" x="112" y="306" width="5796" height="188" font-family="noto_sans" font-size="67" fill="#1a1a1a"><b>People will buy it because</b> cardiology guidelines need which relative and what age, intake forms take it from memory, and for $500 per cardiologist a year a practice-sent link puts those details, sourced, in the chart before visit one.</textArea>
+<rect id="logic5-p5" x="64" y="566" width="5892" height="284" fill="#fff6b6" stroke="none" rx="12" />
+<textArea id="logic5-t6" x="112" y="614" width="5796" height="188" font-family="noto_sans" font-size="67" fill="#1a1a1a"><b>We can make it because</b> the patient side already runs on open health standards, a PDF reaches any chart, and a pilot on vendors that sign HIPAA contracts costs under $850 a month, which 17–21 paying cardiologists cover, founders unpaid.</textArea>
+<textArea id="logic5-t7" x="64" y="882" width="5892" height="31" font-family="noto_sans" font-size="22" fill="#595959">Word for word as on the slide 9 cards of the Maker Day 2 deck (final, Oct 12, 2026). "Take it from memory" means: the form asks yes or no per relative, then leaves a few lines for details, with no side of family and no room for "not sure" [S5].</textArea>
+<textArea id="logic5-t8" x="64" y="933" width="5892" height="46" font-family="noto_sans" font-size="33" fill="#1a1a1a" font-weight="bold"><b>Each clause and its evidence</b></textArea>
+<rect id="logic5-r9" x="64" y="995" width="5892" height="60" fill="#c6dcff" stroke="none" />
+<textArea id="logic5-t10" x="76" y="1011.0" width="1378" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a" font-weight="bold"><b>Clause</b></textArea>
+<textArea id="logic5-t11" x="1478" y="1011.0" width="2781" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a" font-weight="bold"><b>Evidence</b></textArea>
+<textArea id="logic5-t12" x="4283" y="1011.0" width="1661" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a" font-weight="bold"><b>Status</b></textArea>
+<textArea id="logic5-t13" x="76" y="1071.0" width="1378" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>"cardiology guidelines need which relative and what age"</b></textArea>
+<textArea id="logic5-t14" x="1478" y="1071.0" width="2781" height="28" font-family="noto_sans" font-size="20" fill="#595959">Premature heart disease counts in a parent or sibling, men &amp;lt; 55, women &amp;lt; 65 [76][74]; sudden-death, cardiomyopathy and aortic rules depend on degree and age [78][80][81]; three-generation history is the HCM standard [72]</textArea>
+<textArea id="logic5-t15" x="4283" y="1071.0" width="1661" height="28" font-family="noto_sans" font-size="20" fill="#595959">Shown (guideline text)</textArea>
+<rect id="logic5-r16" x="64" y="1115" width="5892" height="60" fill="#f0f5fd" stroke="none" />
+<textArea id="logic5-t17" x="76" y="1131.0" width="1378" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>"intake forms take it from memory"</b></textArea>
+<textArea id="logic5-t18" x="1478" y="1131.0" width="2781" height="28" font-family="noto_sans" font-size="20" fill="#595959">[S5] asks "Heart Disease?" per relative, then free-text type and age of onset; no side of family, no "not sure"; charts still name relative and age in about 11% of positive entries [89]. EHR check-ins can show family-history questions too [S52]</textArea>
+<textArea id="logic5-t19" x="4283" y="1131.0" width="1661" height="28" font-family="noto_sans" font-size="20" fill="#595959">Shown for one health-system form (2016 version); independent practices' forms and EHR check-ins not yet collected (test 7)</textArea>
+<textArea id="logic5-t20" x="76" y="1191.0" width="1378" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>"for $500 per cardiologist a year"</b></textArea>
+<textArea id="logic5-t21" x="1478" y="1191.0" width="2781" height="28" font-family="noto_sans" font-size="20" fill="#595959">The one public per-clinician price for a family-tree tool: FamGenix, $500 a year [111]. Saved staff time only breaks even at that price (Step 4.3)</textArea>
+<textArea id="logic5-t22" x="4283" y="1191.0" width="1661" height="28" font-family="noto_sans" font-size="20" fill="#595959">Price anchor shown; payment <b>untested</b> (0 of 21 interviews were practice managers; test 1)</textArea>
+<rect id="logic5-r23" x="64" y="1235" width="5892" height="60" fill="#f0f5fd" stroke="none" />
+<textArea id="logic5-t24" x="76" y="1251.0" width="1378" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>"a practice-sent link puts those details"</b></textArea>
+<textArea id="logic5-t25" x="1478" y="1251.0" width="2781" height="28" font-family="noto_sans" font-size="20" fill="#595959">64.2% engaged and 57% of invited finished when clinics sent a link with reminders [92]; 7.8% when the invite came as a research study needing consent [91]. Relatives' own answers are untested: 29% invite drop-off in a similar app [93]</textArea>
+<textArea id="logic5-t26" x="4283" y="1251.0" width="1661" height="28" font-family="noto_sans" font-size="20" fill="#595959">Shown elsewhere for patients; not yet in a US cardiology practice. Relatives: <b>untested</b> (pilot target ≥ 25% of patients get one relative's answer)</textArea>
+<textArea id="logic5-t27" x="76" y="1311.0" width="1378" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>"sourced"</b></textArea>
+<textArea id="logic5-t28" x="1478" y="1311.0" width="2781" height="28" font-family="noto_sans" font-size="20" fill="#595959">Every fact stores who said it and when; built and tested [S28]</textArea>
+<textArea id="logic5-t29" x="4283" y="1311.0" width="1661" height="28" font-family="noto_sans" font-size="20" fill="#595959">Built (synthetic data)</textArea>
+<rect id="logic5-r30" x="64" y="1355" width="5892" height="60" fill="#f0f5fd" stroke="none" />
+<textArea id="logic5-t31" x="76" y="1371.0" width="1378" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>"in the chart before visit one"</b></textArea>
+<textArea id="logic5-t32" x="1478" y="1371.0" width="2781" height="28" font-family="noto_sans" font-size="20" fill="#595959">33-day average cardiology wait [S2]; eCheck-In opens up to 7 days before [S4]; more family history reached charts with a questionnaire plus EHR upload [S10]; ID007 (note)</textArea>
+<textArea id="logic5-t33" x="4283" y="1371.0" width="1661" height="28" font-family="noto_sans" font-size="20" fill="#595959">Timing shown; filing at one practice still to test</textArea>
+<textArea id="logic5-t34" x="76" y="1431.0" width="1378" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>"the patient side already runs on open health standards"</b></textArea>
+<textArea id="logic5-t35" x="1478" y="1431.0" width="2781" height="28" font-family="noto_sans" font-size="20" fill="#595959">SMART on FHIR launch, FHIR export, live routes, tests [S28]</textArea>
+<textArea id="logic5-t36" x="4283" y="1431.0" width="1661" height="28" font-family="noto_sans" font-size="20" fill="#595959">Shown (synthetic data); the pilot backend is not built yet (Step 5.1)</textArea>
+<rect id="logic5-r37" x="64" y="1475" width="5892" height="60" fill="#f0f5fd" stroke="none" />
+<textArea id="logic5-t38" x="76" y="1491.0" width="1378" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>"a PDF reaches any chart"</b></textArea>
+<textArea id="logic5-t39" x="1478" y="1491.0" width="2781" height="28" font-family="noto_sans" font-size="20" fill="#595959">PDF works with every practice, by link, fax or upload; staff may still re-key [research §1.7]</textArea>
+<textArea id="logic5-t40" x="4283" y="1491.0" width="1661" height="28" font-family="noto_sans" font-size="20" fill="#595959">Shown in principle; test at one practice</textArea>
+<textArea id="logic5-t41" x="76" y="1551.0" width="1378" height="56" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>"a pilot on vendors that sign HIPAA contracts costs under $850 a month, which 17–21 paying cardiologists cover, founders unpaid"</b></textArea>
+<textArea id="logic5-t42" x="1478" y="1565.0" width="2781" height="28" font-family="noto_sans" font-size="20" fill="#595959">$689–834 a month under BAAs (Step 5.3); 17–21 paying cardiologists at $500 per cardiologist per year (9–11 groups of two)</textArea>
+<textArea id="logic5-t43" x="4283" y="1565.0" width="1661" height="28" font-family="noto_sans" font-size="20" fill="#595959">Shown from price pages; insurance is an estimate; founder support time not counted</textArea>
+<line id="logic5-d44" data-type="divider" x1="64" y1="1623" x2="5956" y2="1623" stroke="#b0b0b0" stroke-width="2" />
+</g>
+</svg>

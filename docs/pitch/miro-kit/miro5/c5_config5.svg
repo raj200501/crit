@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+<g id="config5" transform="translate(16480,21895)" data-frame="Configuration most likely to succeed">
+<rect data-type="frame" x="0" y="0" width="6020" height="1156" fill="#ffffff" data-title="Configuration most likely to succeed" />
+<rect id="config5-r1" x="64" y="64" width="236" height="48" fill="#c6dcff" stroke="none" rx="24" data-content="&lt;b&gt;CONFIGURATION&lt;/b&gt;" data-font-family="noto_sans" data-font-size="22" data-text-color="#305bab" />
+<textArea id="config5-t2" x="64" y="132" width="5892" height="94" font-family="noto_sans" font-size="67" fill="#1a1a1a" font-weight="bold"><b>The configuration most likely to succeed</b></textArea>
+<rect id="config5-r3" x="64" y="258" width="5892" height="60" fill="#c6dcff" stroke="none" />
+<textArea id="config5-t4" x="76" y="274.0" width="842" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a" font-weight="bold"><b>Canvas box</b></textArea>
+<textArea id="config5-t5" x="942" y="274.0" width="2921" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a" font-weight="bold"><b>Chosen configuration</b></textArea>
+<textArea id="config5-t6" x="3887" y="274.0" width="2057" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a" font-weight="bold"><b>Other options, in order</b></textArea>
+<textArea id="config5-t7" x="76" y="348.0" width="842" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>Customer segments</b></textArea>
+<textArea id="config5-t8" x="942" y="334.0" width="2921" height="56" font-family="noto_sans" font-size="20" fill="#595959"><b>Payer:</b> independent NYC cardiology groups with 2–10 cardiologists (manager budgets, owner signs; untested). <b>Users:</b> their adult new patients, sharpest for palpitations, fainting, chest pain, high cholesterol or a relative's heart event. <b>Contributors:</b> adult relatives</textArea>
+<textArea id="config5-t9" x="3887" y="348.0" width="2057" height="28" font-family="noto_sans" font-size="20" fill="#595959">Large independent and PE groups; solo cardiologists; health-system cardiogenetics and lipid clinics; primary care (AWV); consumers directly (free side door)</textArea>
+<rect id="config5-r10" x="64" y="406" width="5892" height="60" fill="#f0f5fd" stroke="none" />
+<textArea id="config5-t11" x="76" y="422.0" width="842" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>Value propositions</b></textArea>
+<textArea id="config5-t12" x="942" y="422.0" width="2921" height="28" font-family="noto_sans" font-size="20" fill="#595959"><b>Clinician:</b> one page with who, what, what age, source and status for every fact, plus guideline criteria for review. <b>Practice:</b> more family history in the chart before visit one. <b>Patient:</b> walk in prepared. <b>Relative:</b> answer once, for yourself; decline any time</textArea>
+<textArea id="config5-t13" x="3887" y="422.0" width="2057" height="28" font-family="noto_sans" font-size="20" fill="#595959">Relatives who may need screening, flagged for the clinician (never priced on); staff time saved (measure, don't claim)</textArea>
+<textArea id="config5-t14" x="76" y="482.0" width="842" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>Channels</b></textArea>
+<textArea id="config5-t15" x="942" y="482.0" width="2921" height="28" font-family="noto_sans" font-size="20" fill="#595959"><b>Practice sends the link with new-patient paperwork; patient texts relatives from own phone; the practice opens the care-team page by read-only link or check-in QR and files it as a PDF; founder-led sales</b></textArea>
+<textArea id="config5-t16" x="3887" y="482.0" width="2057" height="28" font-family="noto_sans" font-size="20" fill="#595959">Patient upload (after counsel); SMART Health Link QR (pilot); EHR app (product stage)</textArea>
+<rect id="config5-r17" x="64" y="526" width="5892" height="60" fill="#f0f5fd" stroke="none" />
+<textArea id="config5-t18" x="76" y="542.0" width="842" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>Customer relationships</b></textArea>
+<textArea id="config5-t19" x="942" y="542.0" width="2921" height="28" font-family="noto_sans" font-size="20" fill="#595959"><b>Founder-led setup, week-6 and week-12 reports, help line; each relative consents to their own branch</b></textArea>
+<textArea id="config5-t20" x="3887" y="542.0" width="2057" height="28" font-family="noto_sans" font-size="20" fill="#595959">Self-serve onboarding once the playbook is written</textArea>
+<textArea id="config5-t21" x="76" y="602.0" width="842" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>Revenue streams</b></textArea>
+<textArea id="config5-t22" x="942" y="602.0" width="2921" height="28" font-family="noto_sans" font-size="20" fill="#595959"><b>$1,000 12-week founding pilot, credited to year one; then $500 per cardiologist per year; free for patients and relatives</b></textArea>
+<textArea id="config5-t23" x="3887" y="602.0" width="2057" height="28" font-family="noto_sans" font-size="20" fill="#595959">$99 per cardiologist per month (a higher price we test); per completed summary; never per referral or new patient</textArea>
+<rect id="config5-r24" x="64" y="646" width="5892" height="60" fill="#f0f5fd" stroke="none" />
+<textArea id="config5-t25" x="76" y="662.0" width="842" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>Key resources</b></textArea>
+<textArea id="config5-t26" x="942" y="662.0" width="2921" height="28" font-family="noto_sans" font-size="20" fill="#595959"><b>Prototype; per-fact data model; versioned rule table signed by a cardiologist; a company that can sign BAAs; BAA and privacy documents</b></textArea>
+<textArea id="config5-t27" x="3887" y="662.0" width="2057" height="28" font-family="noto_sans" font-size="20" fill="#595959">Production Epic app (USCDI-only); pilot outcome data</textArea>
+<textArea id="config5-t28" x="76" y="722.0" width="842" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>Key activities</b></textArea>
+<textArea id="config5-t29" x="942" y="722.0" width="2921" height="28" font-family="noto_sans" font-size="20" fill="#595959"><b>Sell pilots; measure; keep rules current; operate as a business associate</b></textArea>
+<textArea id="config5-t30" x="3887" y="722.0" width="2057" height="28" font-family="noto_sans" font-size="20" fill="#595959">EHR integrations, only when a paying practice needs one</textArea>
+<rect id="config5-r31" x="64" y="766" width="5892" height="60" fill="#f0f5fd" stroke="none" />
+<textArea id="config5-t32" x="76" y="782.0" width="842" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>Key partners</b></textArea>
+<textArea id="config5-t33" x="942" y="782.0" width="2921" height="28" font-family="noto_sans" font-size="20" fill="#595959"><b>1–3 pilot groups; a cardiologist reviewer; BAA vendors (Vercel Pro, Neon, SES); a law clinic</b></textArea>
+<textArea id="config5-t34" x="3887" y="782.0" width="2057" height="28" font-family="noto_sans" font-size="20" fill="#595959">AWS-only stack to drop the $350 add-on; fax vendor with a BAA</textArea>
+<textArea id="config5-t35" x="76" y="842.0" width="842" height="28" font-family="noto_sans" font-size="20" fill="#1a1a1a"><b>Cost structure</b></textArea>
+<textArea id="config5-t36" x="942" y="842.0" width="2921" height="28" font-family="noto_sans" font-size="20" fill="#595959"><b>$689–834 a month once real data flows; founders unpaid; per-practice cash ≈ 0, but 1–2 founder hours of support per practice a month</b></textArea>
+<textArea id="config5-t37" x="3887" y="842.0" width="2057" height="28" font-family="noto_sans" font-size="20" fill="#595959">Cost-down after the pilot: AWS move, Neon scale-to-zero, bundled insurance</textArea>
+<line id="config5-d38" data-type="divider" x1="64" y1="886" x2="5956" y2="886" stroke="#b0b0b0" stroke-width="2" />
+<rect id="config5-p39" x="64" y="918" width="5892" height="126" fill="#fff6b6" stroke="none" rx="12" />
+<textArea id="config5-t40" x="96" y="950" width="5828" height="62" font-family="noto_sans" font-size="22" fill="#1a1a1a"><b>Why these choices fit together.</b> Practice-sent links fix completion, the weakest step for tools patients find alone (64% engaged when clinics sent a link with reminders [92]; 15.2% of adults collect family history on their own [S1]). A practice payer fixes the "nobody pays" problem of going direct to consumers. A PDF means no integration project, so the sale stays small-practice length (45-day average for SMB digital health, a16z survey [S45]). Flat per-cardiologist pricing stays clear of referral-linked pricing [research §4.2]. Keeping guideline criteria on the care-team copy only is designed to keep the patient side outside FDA device rules [95]; whether a patient-carried care-team page changes that is an open question for counsel (research §3.5), which is why the care-team page goes to the practice by link or QR. <b>The weak joint is the same in every box: no practice has said it will pay.</b></textArea>
+</g>
+</svg>
