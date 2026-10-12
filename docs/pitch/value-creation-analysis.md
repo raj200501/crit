@@ -3,7 +3,7 @@
 Team 709 · Section 7 · TECH 5900 Product Studio · Milestone 4 (oral review Oct 12–23, PDF due Oct 23, 2026)
 Raj Kashikar · Viha Srinivas · Unser Jaffry · Draft of Oct 6, 2026 (revised after review; renamed Stemma on Oct 7)
 
-**How to read this.** `[n]` is a numbered source in `docs/research.md`. `[S#]` is a source opened for the pitch work (Oct 6, 2026). Both lists, with URLs, are at the end. Interview IDs (ID002, ID006, ID007, ID010, D021) match the Team Hub "Interview Logs". "(note)" means the note-taker's wording; words in quotation marks are only those the Team Hub notes put in quotation marks. **Assumption** marks our own estimate, with its math. Tags follow the course: **N** = new, **O** = old, **N/O** = some of each.
+**How to read this.** `[n]` is a numbered source in `docs/research.md`. `[S#]` is a source opened for the pitch work (Oct 6, 2026), and `[N#]` one opened on Oct 12, 2026 for the "any doctor" question. All three lists, with URLs, are at the end. Interview IDs (ID002, ID006, ID007, ID010, D021) match the Team Hub "Interview Logs". "(note)" means the note-taker's wording; words in quotation marks are only those the Team Hub notes put in quotation marks. **Assumption** marks our own estimate, with its math. Tags follow the course: **N** = new, **O** = old, **N/O** = some of each.
 
 **The product in one line.** With Stemma, a patient builds a three-generation family health tree before a first cardiology visit. Relatives fill in their own branches from a text link (and can share one fact from their own patient portal). Every answer keeps its source and status (known, conflicting, unknown, declined). The patient reviews a one-page summary, and the practice gets a care-team copy the clinician can act on. Free for patients; cardiology practices pay. Live prototype, synthetic data only: https://stemmahealth.vercel.app
 
@@ -19,6 +19,7 @@ Raj Kashikar · Viha Srinivas · Unser Jaffry · Draft of Oct 6, 2026 (revised a
 | **We can make it because…** | the patient side already runs on public standards, a PDF reaches any chart, and a pilot on vendors that sign BAAs costs under $850 a month, which about ten two-cardiologist practices cover with founders unpaid. |
 | **Configuration most likely to succeed** | Independent NYC cardiology groups (2–10 cardiologists) pay; their adult new patients use it free; relatives answer by link; the care-team page reaches the practice by read-only link or fax, as a PDF; a $1,000 12-week founding pilot credited to year one, then $500 per cardiologist per year. |
 | **Wedge** | 3 independent NYC cardiology groups (2–10 cardiologists); all adult new patients (one link in the new-patient paperwork), sharpest for palpitations, fainting, chest pain or high cholesterol. Success: at least 40% of invited new patients whose first visit falls in pilot weeks 2–12 have a patient-reviewed summary in the chart before that visit (read at weeks 6 and 12). |
+| **Vision** | Any doctor who needs a family history, one specialty pack at a time: NYC cardiology → larger groups → genetics and lipid clinics → primary care wellness visits [104]. |
 | **Riskiest claim and its test** | A practice manager will pay. Test by Oct 23: 5 practice-manager conversations with a one-page price card. Pass = 3 of 5 name the budget owner and accept $500/yr in principle, and 1 signs a non-binding letter of intent naming a target start month. The paid letter follows once we have a company, a BAA template and insurance. |
 
 ---
@@ -128,7 +129,7 @@ Every Post-it has a rank (order of preference inside its sub-group; ranks restar
 | # | Post-it (≤ 10 words) | Tag | Why / evidence |
 | ---: | --- | :---: | --- |
 | 1 | Data model: every fact stores status and source | N | What no competitor documents [research §4.5]; enables conflicts, declines, portal facts |
-| 2 | Cardiology rule set, cited and versioned by guideline year | N/O | Rule upkeep is old in cancer genetics [110]; cardiology set from [72]–[81] is new |
+| 2 | Cited rule packs per specialty; cardiology first | N/O | Rule upkeep is old in cancer genetics [110]; cardiology set from [72]–[81] is new |
 | 3 | Working prototype with real SMART on FHIR sandbox launch | O | Routes live, 10/10 logic tests pass, Oct 6 [S28] |
 | 4 | Clinical reviewers to recruit: a cardiologist, a genetics counselor | O | Gap: no cardiologist yet; D021 (cancer genetics) has not agreed to review |
 | 5 | 21 logged interviews; 1 target patient; no buyers yet | O | Team Hub: 15 patients from September diagnosis research (ID007 the only cardiology patient), 6 clinicians |
@@ -520,7 +521,7 @@ Say aloud after the two sentences: "Payment is our next test."
 
 Reasons in short: (a) criteria hinge on relative and age [76][72][78], 285–320 independent NYC cardiologists [S27], small practices decide fast [S45], business-associate load is manageable, ID007 is a cardiology case, and the same product sells to large groups later [102]. (b) and (c) have the most pain but sit inside NYU Langone, Mount Sinai and Columbia [S47][S48][S49], and two in three hospital executives said selecting a digital tool takes 6+ months (2022 survey of 100 executives [S46]). (e) is the biggest later market, but family history is a small part of a wellness visit (team judgment). (f) has no payer, and few adults collect family history on their own (15.2% [S1]). (d) pre-participation screening often covers people aged 12–25, many of them minors [S51]; our product is adults only.
 
-**Does the ranking hold?** (a) stays first when pain, evidence, expansion, or access and cycle count double, and (e) is always second. But these are team judgments made before any manager call: if Access is 2 instead of 4, (a) scores 19 and ties primary care. Our deciding reason is that cardiology criteria need exactly the fields we capture, which relative and what age [76][72], and one practice manager can say yes. Our ER interviewee pointed to primary care as the bigger user of family history (ID010, note); we agree, and it is our expansion market.
+**Does the ranking hold?** (a) stays first when pain, evidence, expansion, or access and cycle count double, and (e) is always second. But these are team judgments made before any manager call: if Access is 2 instead of 4, (a) scores 19 and ties primary care. Our deciding reason is that cardiology criteria need exactly the fields we capture, which relative and what age [76][72], and one practice manager can say yes. Our ER interviewee pointed to primary care as the bigger user of family history (ID010, note); we agree, and it is our expansion market. Cardiology criteria reach second-degree relatives with ages [77]; the wellness visit requires, at a minimum, only parents, siblings and children [N1]. Decision rule: if fewer than 3 of 5 cardiology managers name a budget owner by Oct 23, run the same five calls with primary care practice managers.
 
 ### The wedge, made specific
 
@@ -541,7 +542,7 @@ Reasons in short: (a) criteria hinge on relative and age [76][72][78], 285–320
 | 1. Pilot (from about Jan 2027) | 3 NYC independent groups | ≥ 40% completion and ≥ 1 annual contract |
 | 2. Fill the city, then larger groups | The rest of the ~19–20 NYC groups; large independent and PE groups (CVAUSA [102]) | 10+ paying practices; a repeatable onboarding playbook |
 | 3. Health-system specialty clinics | Cardiogenetics and lipid programs [S47][S48][S49] | Pilot outcome data; a clinician champion; a production Epic app [5] |
-| 4. Primary care | Practices running Medicare Annual Wellness Visits [104] | A non-cardiac summary template; help flows for older users [90] |
+| 4. Primary care | Practices running Medicare Annual Wellness Visits [104] | A general specialty pack (questions and summary; criteria only after a clinician signs); help flows for older users [90] |
 | Side door (any time) | Patients whose practice isn't a customer | None; free, prints a page |
 
 ---
@@ -568,6 +569,7 @@ All six were captured from the production prototype on Oct 7, 2026, after the op
 | Topic | Options in the memos | Our choice and why |
 | --- | --- | --- |
 | Price | $99–149 per cardiologist per month (research §4.3, R3 lead case) vs $500 per year (R2 ROI, R5) | **$500 per cardiologist per year after a $1,000 pilot; $99/mo tested on the same card.** $500/yr is the only public per-clinician anchor [111]. Staff-time savings are unproven [S9], so they don't set the price; the pilot measures them |
+| Scope: any physician vs cardiology | Any physician (Raj, Oct 12) vs one specialty | **Vision = any doctor who needs a family history; wedge = cardiology; product = specialty packs.** A wedge needs one buyer who can say yes. Cardiology needs the most detail (which relative, which side, what age [76][77][72]), while the wellness visit requires, at a minimum, only parents, siblings and children [N1], so a tree built for cardiology holds what simpler checklists need. None of our 21 interviews was a practice manager or a cardiologist, and each new specialty needs its own questions, criteria and clinician sign-off. Until the packs ship we never say "built for any physician" |
 | "We can make it because…" | R3: "…three paying practices cover that cost" | Dropped; true only at $149/mo. R5's sentence holds at any price |
 | Delivery order | R4: SMART Health Link before fax; earlier draft: patient upload first | **Read-only link or QR the practice opens, then fax, then patient upload (after counsel), then SMART Health Link.** Keeps the care-team page, with its guideline criteria, addressed to the practice (research §3.5); SHL acceptance from a non-IAL2 app is untested |
 | Intake-form wording | R1: "one blank box", "no grandparents, aunts or uncles"; an earlier draft: "intake forms ask yes or no" | We opened the form [S5]: after the yes/no "Heart Disease?" grid it asks for type and age of onset on free-text lines, and asks about sudden death. Accurate claim: the form takes family history from memory, with no side of family and no room for "not sure". It is a 2016 health-system form; independent practices' forms are test 7 |
@@ -717,5 +719,21 @@ All six were captured from the production prototype on Oct 7, 2026, after the op
 - [S52] athenahealth Help, "Family History" (practice setting that shows family-history questions to patients in Enhanced Self Check-in), opened Oct 6, 2026. https://help.athenahealth.com/Ohelp/Content/C_Family_History_PH.htm
 - [S53] New York Department of State, "Certificate of Publication for Domestic Limited Liability Company" ($50 filing fee; publish in two newspapers within 120 days of formation, LLC Law §206), opened Oct 6, 2026. https://dos.ny.gov/certificate-publication-domestic-limited-liability-company-0
 - [S54] Nazareth S et al. "Hereditary Cancer Risk Using a Genetic Chatbot Before Routine Care Visits." Obstet Gynecol 2021 (full text: link sent "typically 5 days before an upcoming appointment"; reminders at 72 and 24 hours; funded by Ambry, Invitae and Progenity). Same study as research [92]; full text re-read Oct 6, 2026. https://europepmc.org/article/PMC/PMC8594498
+
+**Opened Oct 12, 2026** (for "Shouldn't this be for any doctor?"):
+
+- [N1] 42 CFR 410.15, Annual Wellness Visit (eCFR, as of Oct 8, 2026): definitions of "medical and family history" and "health risk assessment" (no more than 20 minutes). https://www.ecfr.gov/api/versioner/v1/full/2026-10-08/title-42.xml?part=410&section=410.15
+- [N2] USPSTF, BRCA-Related Cancer: Risk Assessment, Genetic Counseling, and Genetic Testing (Aug 20, 2019; grade B; page says "This topic is being updated"). https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/brca-related-cancer-risk-assessment-genetic-counseling-and-genetic-testing
+- [N3] USPSTF, Screening for Prediabetes and Type 2 Diabetes (Aug 24, 2021; grade B). https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/screening-for-prediabetes-and-type-2-diabetes
+- [N4] Rex DK et al., Colorectal Cancer Screening: Recommendations from the U.S. Multi-Society Task Force, Am J Gastroenterol 2017;112(7):1016–1030 (summary page). https://divisionofresearch.kaiserpermanente.org/?p=16964
+- [N5] ACOG Practice Bulletin No. 182, Hereditary Breast and Ovarian Cancer Syndrome (Obstet Gynecol 2017;130(3):e110–e126; page marked "Reaffirmed 2024"; PMID 28832484). https://www.acog.org/clinical/clinical-guidance/practice-bulletin/articles/2017/09/hereditary-breast-and-ovarian-cancer-syndrome
+- [N6] ACOG Committee Opinion No. 478, Family History as a Risk Assessment Tool: the URL now redirects to ACOG's "Withdrawn Clinical Document" page. https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2011/03/family-history-as-a-risk-assessment-tool
+- [N7] Erickson CC et al., Sudden Death in the Young: Information for the Primary Care Provider, Pediatrics 2021;148(1):e2021052044 (AAP policy; 4 screening questions for all children). https://pubmed.ncbi.nlm.nih.gov/34155130/
+- [N8] Goldman JS et al., Genetic counseling and testing for Alzheimer disease: joint practice guidelines of ACMG and NSGC, Genet Med 2011;13(6):597–605. https://pubmed.ncbi.nlm.nih.gov/21577118/
+- [N9] CDC, About Family Health History. https://www.cdc.gov/family-health-history/about/index.html
+- [N10] CDC, Family Health History and Adults (updated Aug 24, 2026). https://www.cdc.gov/family-health-history/family-health-history-and-you/family-health-history-and-adults.html
+- [N11] CancerIQ home page ("Trusted by 275+ clinics nationwide"), opened Oct 12, 2026. https://www.canceriq.com/
+- [N12] Progeny home page ("800+ genetics institutions"), opened Oct 12, 2026. https://progenygenetics.com/
+- [N13] Ambry Genetics, CARE program 2026 MedTech Breakthrough Award (same page as [109]). https://www.ambrygen.com/company/press-release/161/ambry-genetics-care-program-wins-2026-medtech-breakthrough-award
 
 **Other evidence:** Team Hub export (interview logs ID001–ID020 and D021; Milestone 1 track decision; advisor notes of Sept 9, 2026); `docs/mvp-spec.md`; prototype code (`src/lib/demo.ts`, `src/lib/clinical.ts`).

@@ -114,7 +114,7 @@ test.describe("/research", () => {
       expect((await page.locator(`li#source-${n}`).textContent())?.length ?? 0).toBeGreaterThan(20);
     }
     await expect(page.locator('[id="2-privacy-and-compliance"]')).toHaveText("2. Privacy and compliance");
-    await expect(page.locator("main")).toContainText(/121 sources\s*·\s*\d+ min read\s*·\s*Updated Oct 2026/i);
+    await expect(page.locator("main")).toContainText(/124 sources\s*·\s*\d+ min read\s*·\s*Updated Oct 2026/i);
     // [87] links to its source and is never nested in another link or code
     await expect(page.locator('main a.cite[href="#source-87"]').first()).toHaveText("[87]");
     expect(await page.locator("main a a.cite, main code a.cite, main pre a.cite").count()).toBe(0);

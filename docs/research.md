@@ -321,6 +321,9 @@ Caveats: in FHIR, `status = health-unknown` and `dataAbsentReason` describe the 
 | Primary care | Later market | The Medicare Annual Wellness Visit **requires** family history (parents, siblings, children) [104] | G0438 pays $174.35, G0439 $137.61 nationally [103] |
 | Health systems | Later, enterprise | Lipid, cardiogenetics and HCM clinics | Epic shops; already have MyChart questionnaires |
 | CMS ACCESS Model participants | Later channel | Began July 5, 2026 with 160+ organizations; heart failure track from April 1, 2027 [106] | Outcome-aligned payments, not a code |
+| OB/GYN and cancer genetics | Later market, crowded | USPSTF (grade B): primary care clinicians should assess women with a personal or family history of breast, ovarian, tubal or peritoneal cancer, or ancestry linked to BRCA1/2, "with an appropriate brief familial risk assessment tool", including ages and more distant relatives [122] | Family-history tools here are sold to health systems or given free by labs [107][109][110] |
+| Endocrinology (type 2 diabetes) | Later market, light need | USPSTF (grade B) screens adults 35–70 with overweight or obesity and says to "consider screening at an earlier age" for people with a family history of diabetes [123] | Asks only whether there is a family history: no relative, side or age |
+| Pediatrics | Excluded | — | Adults only (18+) for accounts and invites (section 2.4) |
 | **Avoid** | Life insurers, employers, wellness vendors, data buyers | — | GINA, Illinois GIPA, 23andMe lessons [51][52][115] |
 
 ### 4.2 Why there's no billing code to lean on
@@ -361,10 +364,10 @@ Organization size of 100 or fewer is only a proxy for independence; it leaves ou
 | --- | --- | --- | --- | --- | --- | --- |
 | My Family Health Portrait (built by NIH/NHGRI for the Surgeon General; now an NCI copy) | Patients | General | Free. Original host offline April 13, 2026; data stays on the user's device; no feature development since March 2025 [97] | No (download or print a file) | No | No |
 | **FamGenix** | Clinicians, plus a patient app | Cancer **and cardio** (QRisk add-on) | Free (20 pedigrees); Individual $500/yr; Premium tiered [111]. Last iOS update February 2025 | Patient app shares with family | Not documented | Not documented |
-| Progeny (used by the interviewed genetics counselor) | Genetic counselors | Hereditary disease, mostly cancer | 30-day trial (no longer free); pre-visit patient questionnaires that auto-fill pedigrees; EHR pedigree integration; direct Ambry test ordering [108] | No | No | No |
+| Progeny (used by the interviewed genetics counselor) | Genetic counselors | Hereditary disease, mostly cancer | "800+ genetics institutions" (home page, opened Oct 12, 2026) [124]; 30-day trial (no longer free); pre-visit patient questionnaires that auto-fill pedigrees; EHR pedigree integration; direct Ambry test ordering [108] | No | No | No |
 | Invitae Family History Tool (Labcorp) | Providers | Cancer and hereditary | Free; patient e-questionnaire; exports PDF/PNG/XML/CSV; "does not integrate with EMRs"; tied to test ordering [107] | No | No | No |
 | Ambry CARE (Tempus) | Health systems | Breast and hereditary cancer | EHR-integrated; price not disclosed [109] | No | No | No |
-| CancerIQ | Health systems | Cancer | 275+ clinics; claims 8.9x average ROI (self-reported); price not public [110] | No | No | No |
+| CancerIQ | Health systems | Cancer | 275+ clinics (home page, opened Oct 12, 2026); claims 8.9x average ROI (self-reported); price not public [110] | No | No | No |
 | MeTree (Duke) | Research | General | Research platform [84] | No | No | No |
 | Phreesia | Practices | General intake | Free through December 31, 2026; standard pricing from 2027 [112][113] | No | No | No |
 | IntakeQ | Small practices | Forms | $54.90/month [114] | No | No | No |
@@ -559,3 +562,6 @@ The detailed build spec for the prototype is in [`mvp-spec.md`](./mvp-spec.md).
 119. S.3607 bill status (Access to Genetic Counselor Services Act): https://www.govinfo.gov/bulkdata/BILLSTATUS/119/s/BILLSTATUS-119s3607.xml
 120. FTC, COPPA final rule amendments: https://www.ftc.gov/legal-library/browse/federal-register-notices/16-cfr-part-312-coppa-final-rule-amendments
 121. Razavi and Blumenthal, AJPC 2026 (summary of 2026 dyslipidemia risk enhancers): https://europepmc.org/article/PMC/PMC13326120
+122. USPSTF, BRCA-related cancer: risk assessment, genetic counseling and genetic testing (Aug 2019, grade B; the page says the topic is being updated; opened Oct 12, 2026): https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/brca-related-cancer-risk-assessment-genetic-counseling-and-genetic-testing
+123. USPSTF, screening for prediabetes and type 2 diabetes (Aug 2021, grade B; opened Oct 12, 2026): https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/screening-for-prediabetes-and-type-2-diabetes
+124. Progeny home page (opened Oct 12, 2026): https://progenygenetics.com/

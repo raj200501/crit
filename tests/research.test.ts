@@ -138,14 +138,14 @@ describe("docs/research.md, rendered", () => {
 
   test("every source has an anchor, in order, and each site.ts citation resolves", () => {
     const ids = sourceIds(doc.html);
-    assert.equal(ids.length, 121);
-    assert.deepEqual(ids, Array.from({ length: 121 }, (_, i) => i + 1));
+    assert.equal(ids.length, 124);
+    assert.deepEqual(ids, Array.from({ length: 124 }, (_, i) => i + 1));
     const cited = [...STATS.map((s) => s.cite), ...PROOF_POINTS.map((p) => p.cite), FDA_LINE.cite];
     for (const n of [32, 72, 83, 84, 87, 89, 95, 117, ...cited]) assert.ok(doc.html.includes(`<li id="source-${n}">`), `source-${n}`);
   });
 
   test("each anchor sits on the right source line", () => {
-    for (const n of [1, 32, 33, 72, 87, 117, 121]) {
+    for (const n of [1, 32, 33, 72, 87, 117, 121, 124]) {
       const line = new RegExp(`^${n}\\. ([^:\\n]+)`, "m").exec(MD.slice(MD.indexOf("## Sources")))?.[1];
       assert.ok(line, `md line ${n}`);
       const li = new RegExp(`<li id="source-${n}">([^<]*)`).exec(doc.html)?.[1] ?? "";
@@ -178,7 +178,7 @@ describe("docs/research.md, rendered", () => {
   });
 
   test("reading meta: sources and minutes at 230 words a minute", () => {
-    assert.equal(doc.sources, 121);
+    assert.equal(doc.sources, 124);
     assert.ok(doc.words > 5000, `${doc.words} words`);
     assert.equal(doc.minutes, Math.ceil(doc.words / 230));
   });
