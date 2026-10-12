@@ -197,6 +197,35 @@ test.describe("tree", () => {
     await expect(panel.getByRole("button", { name: "Edit details" })).toBeVisible();
   });
 
+  test("Remove from tree can be undone: the relative comes back with their portal fact and invite", async ({ page }) => {
+    const dev = page.locator('button[data-person-id="dev"]');
+    await dev.click();
+    const panel = page.locator('section[aria-label="Uncle Dev details"]');
+    await panel.getByRole("button", { name: "Edit details" }).click();
+    await expect(panel).toContainText("You can undo right after.");
+    await panel.getByRole("button", { name: "Remove from tree" }).click();
+    await expect(dev).toHaveCount(0);
+    const toast = page.getByRole("status").filter({ hasText: "Removed Uncle Dev" });
+    await toast.getByRole("button", { name: "Undo" }).click();
+    await expect(dev).toHaveCount(1);
+    await expect(dev).toHaveAttribute("aria-label", /^Uncle Dev: known\./);
+    await expect(dev).toBeFocused();
+    await dev.click();
+    await expect(panel.getByText("From a portal record", { exact: true })).toBeVisible();
+    await expect(panel).toContainText(/Asked directly Sep 26 · answered Sep 28/i);
+  });
+
+  test("you, your parents and your grandparents are fixed slots: no Remove from tree", async ({ page }) => {
+    for (const name of ["Grandpa Ray", "Mom"]) {
+      await page.locator(`button[aria-label^="${name}:"]`).click();
+      const panel = page.locator(`section[aria-label="${name} details"]`);
+      await panel.getByRole("button", { name: "Edit details" }).click();
+      await expect(panel.getByRole("button", { name: "Save" })).toBeVisible();
+      await expect(panel.getByRole("button", { name: "Remove from tree" })).toHaveCount(0);
+      await panel.getByRole("button", { name: "Cancel" }).click();
+    }
+  });
+
   test("Still to confirm chips are named 'Open {label}' (R2) and open that relative", async ({ page }) => {
     await page.getByRole("button", { name: "Open Grandpa Luis" }).click();
     await expect(page.locator('section[aria-label="Grandpa Luis details"]')).toBeVisible();
@@ -554,6 +583,18 @@ test.describe("tree on phones", () => {
     expect(onTop).toBe(true);
     await toast.getByRole("button", { name: "Dismiss notification" }).click();
     await expect(toast.locator("li")).toHaveCount(0);
+  });
+
+  test("Remove from tree in the sheet: the sheet closes and the Undo toast still works", async ({ page }) => {
+    await gotoApp(page, "/tree?person=dev");
+    const panel = page.locator('section[aria-label="Uncle Dev details"]');
+    await panel.getByRole("button", { name: "Edit details" }).click();
+    await panel.getByRole("button", { name: "Remove from tree" }).click();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(page.locator('button[data-person-id="dev"]')).toHaveCount(0);
+    await page.getByRole("status").filter({ hasText: "Removed Uncle Dev" }).getByRole("button", { name: "Undo" }).click();
+    await expect(page.locator('button[data-person-id="dev"]')).toHaveCount(1);
+    await noHorizontalOverflow(page);
   });
 
   test("axe: 0 serious with the sheet closed, open, the answer form and the invite box", async ({ page }) => {

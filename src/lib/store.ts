@@ -103,6 +103,28 @@ export function deviceId(): string | null {
 
 export type ImportResult = { added: number; error?: "different-tree" | "not-invited" };
 
+/** The fixed slots: you, your parents and your four grandparents. They can't be removed, so a missing ancestor stays a
+ *  visible gap ("Unknown" or "Not asked yet") instead of quietly disappearing. */
+export const FIXED_RELATIONS: readonly Relation[] = [
+  "self",
+  "mother",
+  "father",
+  "paternal-grandfather",
+  "paternal-grandmother",
+  "maternal-grandfather",
+  "maternal-grandmother",
+];
+
+/** Everything "Remove from tree" took off a tree, so Undo can put it back. */
+export interface RemovedPerson {
+  treeId: string;
+  /** Where the person sat in the people list (keeps the tree's left-to-right order on undo). */
+  index: number;
+  person: Person;
+  reports: Report[];
+  invites: Invite[];
+}
+
 const uid = (p: string) => `${p}-${Math.random().toString(36).slice(2, 9)}${Date.now().toString(36).slice(-3)}`;
 
 export const actions = {
@@ -148,15 +170,44 @@ export const actions = {
     const t = read();
     write({ ...t, people: t.people.map((p) => (p.id === id ? { ...p, ...patch, id } : p)), reviewedAt: undefined });
   },
-  removePerson(id: string) {
+  /** Takes a person, every report about them and their invites off the tree. Returns what was removed, for Undo. */
+  removePerson(id: string): RemovedPerson | undefined {
     const t = read();
-    const p = t.people.find((x) => x.id === id);
-    if (!p || ["self", "mother", "father"].includes(p.relation)) return;
+    const index = t.people.findIndex((x) => x.id === id);
+    const p = t.people[index];
+    if (!p || FIXED_RELATIONS.includes(p.relation)) return undefined;
+    const removed: RemovedPerson = {
+      treeId: t.id,
+      index,
+      person: p,
+      reports: t.reports.filter((r) => r.personId === id),
+      invites: t.invites.filter((i) => i.personId === id),
+    };
     write({
       ...t,
       people: t.people.filter((x) => x.id !== id),
       reports: t.reports.filter((r) => r.personId !== id),
       invites: t.invites.filter((i) => i.personId !== id),
+      reviewedAt: undefined,
+    });
+    return removed;
+  },
+  /**
+   * Undo for removePerson: puts the person back where they were, with their reports and invites. Only on the same tree,
+   * and only what isn't already there.
+   */
+  restorePerson(removed: RemovedPerson) {
+    const t = read();
+    if (t.id !== removed.treeId) return;
+    const people = [...t.people];
+    if (!people.some((x) => x.id === removed.person.id)) people.splice(Math.min(removed.index, people.length), 0, removed.person);
+    const reportIds = new Set(t.reports.map((r) => r.id));
+    const inviteIds = new Set(t.invites.map((i) => i.id));
+    write({
+      ...t,
+      people,
+      reports: [...t.reports, ...removed.reports.filter((r) => !reportIds.has(r.id))],
+      invites: [...t.invites, ...removed.invites.filter((i) => !inviteIds.has(i.id))],
       reviewedAt: undefined,
     });
   },

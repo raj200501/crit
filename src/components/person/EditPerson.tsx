@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { actions } from "@/lib/store";
+import { actions, FIXED_RELATIONS } from "@/lib/store";
 import type { PersonView } from "@/lib/status";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
 import { Input, Select } from "@/components/ui/Input";
 import { Switch } from "@/components/ui/Switch";
+import { toast } from "@/components/ui/Toast";
 
 /** Name, sex and "has passed away" (labels and logic unchanged), with a danger zone for Remove from tree (DESIGN §12.3). */
 export function EditPerson({
@@ -28,7 +29,8 @@ export function EditPerson({
   const [deceased, setDeceased] = useState(!!p.deceased || !!focusField);
   const [ageAtDeath, setAgeAtDeath] = useState(p.ageAtDeath != null ? String(p.ageAtDeath) : "");
   const [cause, setCause] = useState(p.causeOfDeath ?? "");
-  const removable = !["self", "mother", "father"].includes(p.relation);
+  // you, your parents and your grandparents are fixed slots: a missing ancestor stays a visible gap
+  const removable = !FIXED_RELATIONS.includes(p.relation);
   const ageRef = useRef<HTMLInputElement>(null);
   const causeRef = useRef<HTMLInputElement>(null);
 
@@ -104,15 +106,27 @@ export function EditPerson({
         <div className="flex flex-col items-start gap-3 rounded-md border border-danger/25 p-4">
           <div>
             <p className="text-small font-strong text-fg">Remove {p.label}</p>
-            <p className="text-small text-fg-2">Takes them and everything said about them off this tree.</p>
+            <p className="text-small text-fg-2">Takes them and everything said about them off this tree. You can undo right after.</p>
           </div>
           <Button
             variant="danger"
             size="sm"
             className="max-lg:h-11"
             onClick={() => {
-              actions.removePerson(p.id);
+              const removed = actions.removePerson(p.id);
               onRemoved();
+              if (!removed) return;
+              toast({
+                title: `Removed ${p.label}`,
+                action: {
+                  label: "Undo",
+                  onClick: () => {
+                    actions.restorePerson(removed);
+                    // the Undo button goes away with its toast: focus moves to the person who came back
+                    requestAnimationFrame(() => document.querySelector<HTMLElement>(`[data-person-id="${CSS.escape(p.id)}"]`)?.focus({ preventScroll: true }));
+                  },
+                },
+              });
             }}
           >
             Remove from tree
