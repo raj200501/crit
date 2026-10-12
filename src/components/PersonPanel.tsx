@@ -57,6 +57,7 @@ export default function PersonPanel({ view, tree, onClose, focusOnOpen, initialM
   const isSelf = p.relation === "self";
   const short = shortName(p.label);
   const them = p.sex === "male" ? "him" : p.sex === "female" ? "her" : "them";
+  const themself = p.sex === "male" ? "himself" : p.sex === "female" ? "herself" : "themselves";
   // ?mode=invite can't open a composer the overview would never offer (someone who passed away, or you)
   const startMode = initialMode === "invite" && (p.deceased || isSelf) ? "view" : (initialMode ?? "view");
   const [mode, setMode] = useState<PanelMode>(initialEdit ? "edit" : startMode);
@@ -196,7 +197,7 @@ export default function PersonPanel({ view, tree, onClose, focusOnOpen, initialM
                   above still lands on the form's question. */}
               {!isSelf && !p.deceased ? (
                 <p className="mb-5 rounded-md bg-sunken/70 px-4 py-3 text-small text-fg-2">
-                  {short} can answer for themselves, and only they can choose not to share.{" "}
+                  {short} can answer for {themself}, and only {pronoun(p)} can choose not to share.{" "}
                   <button
                     type="button"
                     onClick={() => go("invite")}

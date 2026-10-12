@@ -141,7 +141,7 @@ test.describe("tree", () => {
     await panel.getByRole("button", { name: "Add what you know" }).click();
     // focus still lands on the form's question, not on the note above it
     await expect(panel.locator("legend").first()).toBeFocused();
-    await expect(panel).toContainText("Mom can answer for themselves, and only they can choose not to share.");
+    await expect(panel).toContainText("Mom can answer for herself, and only she can choose not to share.");
     await a11y(page);
     await panel.getByRole("button", { name: "Send Mom a link instead" }).click();
     await expect(panel.getByRole("textbox", { name: "Invite message" })).toBeVisible();
