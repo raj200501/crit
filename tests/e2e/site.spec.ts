@@ -290,16 +290,16 @@ test.describe("/pilot", () => {
 
     const out = page.locator("#roi output");
     await expect(out).toHaveAttribute("aria-live", "polite");
-    await expect(out).toContainText("≈ $200");
+    await expect(out).toContainText("≈ $85");
     await expect(out).toContainText("of staff time per month");
     await expect(page.locator("#roi").getByText("Assumption", { exact: true })).toHaveCount(2);
     await expect(page.locator("#roi").getByText("Assumption", { exact: true }).first()).toBeVisible();
-    await page.getByLabel("New patients per month").fill("120");
+    await page.getByLabel("Completed summaries per month").fill("120");
     await expect(out).toContainText("≈ $600");
     await page.getByLabel("Loaded staff cost per hour").fill("");
     await expect(out).toContainText("≈ $0");
     await page.getByRole("button", { name: "Reset to the defaults" }).click();
-    await expect(out).toContainText("≈ $200");
+    await expect(out).toContainText("≈ $85");
     await expect(page.locator("#roi")).toContainText(PILOT.roiCaveat);
 
     await expect(page.locator("#contact")).toBeVisible();

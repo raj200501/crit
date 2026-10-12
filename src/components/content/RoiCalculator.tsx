@@ -11,13 +11,13 @@ import { clampInput, formatUsd, ROI_LIMITS, staffTimeValuePerMonth } from "./roi
 type Key = keyof typeof ROI_LIMITS;
 
 const DEFAULTS: Record<Key, string> = {
-  patients: "40",
+  patients: "17", // a two-cardiologist practice: about 42 new patients a month, 4 in 10 finishing (VCA 5.2; deck A3)
   minutes: String(PILOT.roiAssumptions.minutesSaved),
   costPerHour: String(PILOT.roiAssumptions.staffCostPerHour),
 };
 
 const FIELDS: { key: Key; label: string; assumption: boolean; prefix?: string; suffix?: string; slider: [number, number] }[] = [
-  { key: "patients", label: "New patients per month", assumption: false, slider: [0, 200] },
+  { key: "patients", label: "Completed summaries per month", assumption: false, slider: [0, 200] },
   { key: "minutes", label: "Minutes saved per new patient", assumption: true, suffix: "min", slider: [0, 30] },
   { key: "costPerHour", label: "Loaded staff cost per hour", assumption: true, prefix: "$", suffix: "/ h", slider: [15, 80] },
 ];
@@ -97,7 +97,7 @@ export function RoiCalculator({ className }: { className?: string }) {
             <span className="mt-2 block text-lead text-fg-2 print:mt-0 print:text-[11px]">of staff time per month</span>
           </output>
           <p className="mt-4 font-mono text-caption text-fg-3 tabular-nums print:mt-1 print:text-[9px]">
-            {v.minutes} min × {v.patients} patients × ${v.costPerHour}/h ÷ 60
+            {v.minutes} min × {v.patients} summaries × ${v.costPerHour}/h ÷ 60
           </p>
         </div>
         <div className="flex flex-col items-start gap-3">

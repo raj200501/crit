@@ -146,7 +146,7 @@ export default function PilotPage() {
         id="roi"
         eyebrow="ROI calculator"
         title="What the staff time could be worth"
-        lead="A rough sense of scale, using your own numbers. Both defaults are assumptions, not results."
+        lead="A rough sense of scale, using your own numbers. The default is a two-cardiologist practice with 4 in 10 new patients finishing; the time and cost are assumptions, not results."
         className="bg-white print:bg-transparent"
       >
         <RoiCalculator />

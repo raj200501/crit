@@ -2,7 +2,7 @@
 // One output only: the value of staff time per month. No "you'll save" claims; the caveat is PILOT.roiCaveat.
 
 export interface RoiInputs {
-  /** New patients per month. */
+  /** Completed summaries per month (new patients who finish it). */
   patients: number;
   /** Minutes of staff time saved per new patient (an assumption). */
   minutes: number;

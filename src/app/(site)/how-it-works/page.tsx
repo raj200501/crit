@@ -64,7 +64,7 @@ const bottomLine = [
 const finding = (k: string) => bottomLine.find((b) => b.k === k)!;
 
 const dataStages = [
-  ["Tree", "In the browser only", "Postgres (Neon Scale, HIPAA on) behind Vercel Pro + BAA add-on", "Plus field-level encryption for notes"],
+  ["Tree", "In the browser only", "Postgres (Neon Scale, under a BAA) behind Vercel Pro + BAA add-on", "Plus field-level encryption for notes"],
   ["Invites and replies", "Data after the # in the link", "Server records behind hashed, expiring, revocable tokens", "Same"],
   [
     "Portal fact",
