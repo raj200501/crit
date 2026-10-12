@@ -27,6 +27,8 @@ export function shareableTree(tree: FamilyTree): FamilyTree {
       source: r.source,
       reportedAt: r.reportedAt,
       record: r.record ? { system: r.record.system, reference: "", recordedDate: r.record.recordedDate } : undefined,
+      // a "none" keeps its question set (only ever "general"; missing = cardiology, so cardiology links keep their bytes)
+      ...(r.kind === "no-history" && r.pack ? { pack: r.pack } : {}),
     }));
   return {
     id: tree.id,

@@ -117,7 +117,7 @@ export function demoTree(): FamilyTree {
 }
 
 /** A fresh tree: you, parents, and four grandparents. Aunts, uncles and siblings get added as needed. */
-export function blankTree(patientName = "You"): FamilyTree {
+export function blankTree(patientName = "You", visit?: FamilyTree["visit"]): FamilyTree {
   const base: Person[] = [
     { id: "self", relation: "self", label: `${patientName} (you)`, sex: "unknown" },
     { id: "mom", relation: "mother", label: "Mother", sex: "female" },
@@ -130,6 +130,7 @@ export function blankTree(patientName = "You"): FamilyTree {
   return {
     id: `t-${Date.now().toString(36)}`,
     patientName,
+    ...(visit ? { visit } : {}),
     people: base,
     reports: [],
     invites: [],

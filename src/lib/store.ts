@@ -158,8 +158,9 @@ export const actions = {
     cacheRaw = null;
     listeners.forEach((l) => l());
   },
-  startBlank(name: string) {
-    write(blankTree(name.trim() || "You"));
+  /** A fresh tree; the start form passes the visit type the patient picked. */
+  startBlank(name: string, visit?: FamilyTree["visit"]) {
+    write(blankTree(name.trim() || "You", visit));
   },
   setVisit(visit: FamilyTree["visit"]) {
     write({ ...read(), visit, reviewedAt: undefined });

@@ -58,6 +58,19 @@ export function formatCondition(r: Report): string {
   return `${name}, ${r.approximate ? "about " : ""}age ${r.ageAtOnset}`;
 }
 
+/** Normalized stored conditions of the cards that ask "What kind?" (saved as `${condition}: ${kind}`). */
+export const DETAIL_BASES = ["other cancer", "other heart disease"];
+
+/**
+ * Two normalized condition names that name the same thing: equal, or one is a "What kind?" answer and the other its
+ * plain form ("other cancer: prostate" and "other cancer"). Two different kinds still differ. No heart card or demo
+ * condition starts with a detail base, so for them this is `===`.
+ */
+export function sameCondition(a: string, b: string) {
+  if (a === b) return true;
+  return DETAIL_BASES.some((base) => (a === base && b.startsWith(`${base}:`)) || (b === base && a.startsWith(`${base}:`)));
+}
+
 export function capitalize(s: string) {
   return s ? s[0].toUpperCase() + s.slice(1) : s;
 }

@@ -1,18 +1,30 @@
 // Which specialty pack a tree uses. Absent means cardiology: every tree, invite and reply made before visit types.
 import type { FamilyTree } from "../types";
 import { CARDIOLOGY } from "./cardiology";
-import type { Choice, SpecialtyPack } from "./types";
+import { GENERAL } from "./general";
+import type { Choice, PackId, SpecialtyPack } from "./types";
+import { VISIT_TYPES } from "./visits";
 
 export * from "./types";
 export * from "./none";
+export * from "./visits";
 export { askedAbout, GENERAL_CHOICES, HEART_CHOICES } from "./choices";
 export { CARDIOLOGY } from "./cardiology";
+export { GENERAL } from "./general";
 
-/** The pack for a tree. Only cardiology exists so far; the visit type picks between packs once a second one does. */
-export function packFor(tree: Pick<FamilyTree, "visit">): SpecialtyPack {
-  void tree.visit;
-  return CARDIOLOGY;
+export const PACKS: Record<PackId, SpecialtyPack> = { cardiology: CARDIOLOGY, general: GENERAL };
+
+/** A pack id from a link or storage: anything but "general" (missing, forged, "__proto__") is cardiology. */
+export function packById(id: unknown): SpecialtyPack {
+  return id === "general" ? GENERAL : CARDIOLOGY;
 }
+
+/** No visit, or a visit saved before visit types (no `type`), is cardiology. */
+export function packIdForVisit(visit?: FamilyTree["visit"]): PackId {
+  return VISIT_TYPES.find((t) => t.id === visit?.type)?.pack ?? "cardiology";
+}
+
+export const packFor = (tree: Pick<FamilyTree, "visit">): SpecialtyPack => PACKS[packIdForVisit(tree.visit)];
 
 const grouped = new WeakMap<SpecialtyPack, { title: string; choices: Choice[] }[]>();
 

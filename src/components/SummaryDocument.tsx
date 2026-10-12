@@ -7,7 +7,7 @@
 import { Flag as FlagIcon } from "lucide-react";
 import { createElement, useId, type HTMLAttributes, type ReactNode } from "react";
 import { stillToConfirm, type Flag } from "@/lib/clinical";
-import { noneLabel, nonePhrase, packFor, type SpecialtyPack } from "@/lib/packs";
+import { askedAbout, GENERAL_CHOICES, noneLabel, nonePhrase, packFor, type SpecialtyPack } from "@/lib/packs";
 import { formatCondition, viewTree, type PersonView } from "@/lib/status";
 import type { FamilyTree, Report } from "@/lib/types";
 import { HONESTY, PATIENT_QUESTIONS } from "@/content/site";
@@ -135,7 +135,7 @@ export default function SummaryDocument({
             : "Patient-reported family history to support the conversation with your care team. It shows what your family said, with sources, and doesn’t diagnose anyone. "}
           “Portal record” items came from the relative’s own patient portal, shared with their consent; a record date can be when a problem was
           listed, not when it was diagnosed.
-          {clinician ? pack.careTeam.footer : ""}
+          {clinician ? `${pack.careTeam.footer}${generalNoneNote(tree, pack)}` : ""}
         </p>
         <p className="font-mono text-eyebrow text-ink-3 uppercase">
           Stemma · student prototype by Team 709 · prepared{" "}
@@ -147,6 +147,13 @@ export default function SummaryDocument({
       </footer>
     </article>
   );
+}
+
+/** A "None on the list" answer in a cardiology tree (left from a general visit) names a list this page doesn't show:
+ *  say which questions it covered. Empty for every tree without one, the demo included. */
+function generalNoneNote(tree: FamilyTree, pack: SpecialtyPack) {
+  if (!pack.criteria || !tree.reports.some((r) => r.kind === "no-history" && r.pack === "general")) return "";
+  return ` “None on the list” answers covered: ${askedAbout(GENERAL_CHOICES)}.`;
 }
 
 /** hl = the title heading level; section headings are hl + 1, their sub-headings hl + 2. */
@@ -398,61 +405,14 @@ function toConfirm(v: PersonView): ReactNode {
 // Care-team copy (D4 §5.2 order): For clinician review → gaps and conflicts → pedigree → the relative table.
 
 function ClinicianBody({ ctx, views, uid }: { ctx: Ctx; views: PersonView[]; uid: string }) {
-  const care = ctx.pack.careTeam;
   const items = ctx.pack.reviewItems(ctx.tree, views);
-  const guideline = items.filter((i) => i.tier === "guideline");
   const noted = items.filter((i) => i.tier === "noted");
   const clarify = items.filter((i) => i.tier === "clarify");
-  const shown = guideline.slice(0, 3);
-  const more = guideline.slice(3);
   const byId = new Map(views.map((v) => [v.person.id, v]));
   const rows = familyRows(ctx.tree, views);
   return (
     <div className={cn(styles.body, styles.clinicianBody, "mt-8 flex flex-col gap-9")}>
-      <section aria-labelledby={`${uid}-review`} className={cn(styles.review, "rounded-r-md border-l-[3px] border-ink bg-mist px-5 py-4 sm:px-6 sm:py-5")}>
-        <Heading level={ctx.hl + 1} id={`${uid}-review`} className={cn(styles.reviewTitle, "flex items-center gap-2 font-sans text-ui font-strong text-ink")}>
-          <FlagIcon aria-hidden className="size-4" strokeWidth={2.25} />
-          For clinician review <span className="font-mono text-eyebrow font-medium text-ink-2">({guideline.length})</span>
-        </Heading>
-        <p className={cn(styles.reviewNote, "mt-1 text-caption text-ink-2")}>{care.reviewNote}</p>
-        {shown.length ? (
-          <ol className="mt-3 flex flex-col">
-            {shown.map((f, i) => (
-              <li key={f.personId + f.title} className={cn(styles.criterion, "grid grid-cols-[1.75rem_1fr] gap-x-2 border-t border-ink/12 py-3")}>
-                <span aria-hidden className="pt-0.5 font-mono text-eyebrow text-ink-3">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div className="min-w-0">
-                  <p className="text-ui font-strong text-ink">{f.title}</p>
-                  <p className="mt-0.5 text-small text-ink-2">{f.detail}</p>
-                  {f.basis ? <p className={cn(styles.basis, "mt-1.5 font-mono text-eyebrow text-ink-3")}>Basis: {f.basis}</p> : null}
-                </div>
-              </li>
-            ))}
-          </ol>
-        ) : (
-          <p className="mt-3 border-t border-ink/12 pt-3 text-small text-ink-2">{care.noneMatched}</p>
-        )}
-        {more.length ? (
-          <p className="mt-1 text-small text-ink-2">
-            Also matched: {more.map((f) => `${f.title} (${byId.get(f.personId)?.person.label ?? "relative"})`).join("; ")}.
-          </p>
-        ) : null}
-        {noted.length ? (
-          <div className={cn(styles.noted, "mt-2 border-t border-ink/12 pt-3")}>
-            <Heading level={ctx.hl + 2} className="font-mono text-eyebrow font-medium text-ink-3 uppercase">
-              {care.notedHeading}
-            </Heading>
-            <ul className="mt-1.5 flex flex-col gap-1 text-small text-ink-2">
-              {noted.map((f) => (
-                <li key={f.personId + f.title}>
-                  <span className="font-medium text-ink">{f.title}.</span> {f.detail}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
-      </section>
+      {ctx.pack.criteria ? <CriteriaBand ctx={ctx} items={items} byId={byId} uid={uid} /> : <ReportedBand ctx={ctx} views={views} noted={noted} uid={uid} />}
 
       {clarify.length ? (
         <section aria-labelledby={`${uid}-gaps`} className={styles.gaps}>
@@ -472,6 +432,106 @@ function ClinicianBody({ ctx, views, uid }: { ctx: Ctx; views: PersonView[]; uid
         <FamilyTable rows={rows} ctx={ctx} />
       </section>
     </div>
+  );
+}
+
+/** The review band for a visit type with guideline criteria (cardiology): the first three matches with their basis,
+ *  the rest as "Also matched", then what was noted without a criterion. */
+function CriteriaBand({ ctx, items, byId, uid }: { ctx: Ctx; items: Flag[]; byId: Map<string, PersonView>; uid: string }) {
+  const care = ctx.pack.careTeam;
+  const guideline = items.filter((i) => i.tier === "guideline");
+  const noted = items.filter((i) => i.tier === "noted");
+  const shown = guideline.slice(0, 3);
+  const more = guideline.slice(3);
+  return (
+    <section aria-labelledby={`${uid}-review`} className={cn(styles.review, "rounded-r-md border-l-[3px] border-ink bg-mist px-5 py-4 sm:px-6 sm:py-5")}>
+      <Heading level={ctx.hl + 1} id={`${uid}-review`} className={cn(styles.reviewTitle, "flex items-center gap-2 font-sans text-ui font-strong text-ink")}>
+        <FlagIcon aria-hidden className="size-4" strokeWidth={2.25} />
+        For clinician review <span className="font-mono text-eyebrow font-medium text-ink-2">({guideline.length})</span>
+      </Heading>
+      <p className={cn(styles.reviewNote, "mt-1 text-caption text-ink-2")}>{care.reviewNote}</p>
+      {shown.length ? (
+        <ol className="mt-3 flex flex-col">
+          {shown.map((f, i) => (
+            <li key={f.personId + f.title} className={cn(styles.criterion, "grid grid-cols-[1.75rem_1fr] gap-x-2 border-t border-ink/12 py-3")}>
+              <span aria-hidden className="pt-0.5 font-mono text-eyebrow text-ink-3">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div className="min-w-0">
+                <p className="text-ui font-strong text-ink">{f.title}</p>
+                <p className="mt-0.5 text-small text-ink-2">{f.detail}</p>
+                {f.basis ? <p className={cn(styles.basis, "mt-1.5 font-mono text-eyebrow text-ink-3")}>Basis: {f.basis}</p> : null}
+              </div>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <p className="mt-3 border-t border-ink/12 pt-3 text-small text-ink-2">{care.noneMatched}</p>
+      )}
+      {more.length ? (
+        <p className="mt-1 text-small text-ink-2">
+          Also matched: {more.map((f) => `${f.title} (${byId.get(f.personId)?.person.label ?? "relative"})`).join("; ")}.
+        </p>
+      ) : null}
+      {noted.length ? (
+        <div className={cn(styles.noted, "mt-2 border-t border-ink/12 pt-3")}>
+          <Heading level={ctx.hl + 2} className="font-mono text-eyebrow font-medium text-ink-3 uppercase">
+            {care.notedHeading}
+          </Heading>
+          <ul className="mt-1.5 flex flex-col gap-1 text-small text-ink-2">
+            {noted.map((f) => (
+              <li key={f.personId + f.title}>
+                <span className="font-medium text-ink">{f.title}.</span> {f.detail}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+/**
+ * The review band for a visit type with no criteria (the general pack): no count, no criteria list, no "nothing matched"
+ * line (that would imply criteria were checked). What each relative reported, as reported, first-degree relatives first
+ * (documentOrder), the first few, then a pointer to the table.
+ */
+function ReportedBand({ ctx, views, noted, uid }: { ctx: Ctx; views: PersonView[]; noted: Flag[]; uid: string }) {
+  const care = ctx.pack.careTeam;
+  const order = new Map(documentOrder(views).map((v, i) => [v.person.id, i]));
+  const sorted = [...noted].sort((a, b) => (order.get(a.personId) ?? 0) - (order.get(b.personId) ?? 0));
+  const limit = care.notedLimit ?? sorted.length;
+  const shown = sorted.slice(0, limit);
+  const more = sorted.length - shown.length;
+  return (
+    <section aria-labelledby={`${uid}-review`} className={cn(styles.review, "rounded-r-md border-l-[3px] border-ink bg-mist px-5 py-4 sm:px-6 sm:py-5")}>
+      <Heading level={ctx.hl + 1} id={`${uid}-review`} className={cn(styles.reviewTitle, "flex items-center gap-2 font-sans text-ui font-strong text-ink")}>
+        <FlagIcon aria-hidden className="size-4" strokeWidth={2.25} />
+        For clinician review
+      </Heading>
+      <p className={cn(styles.reviewNote, "mt-1 text-caption text-ink-2")}>{care.reviewNote}</p>
+      <div className={cn(styles.noted, "mt-3 border-t border-ink/12 pt-3")}>
+        <Heading level={ctx.hl + 2} className="font-mono text-eyebrow font-medium text-ink-3 uppercase">
+          {care.notedHeading}
+        </Heading>
+        {shown.length ? (
+          <ul className="mt-1.5 flex flex-col gap-1 text-small text-ink-2">
+            {shown.map((f) => (
+              <li key={f.personId + f.title} data-row={f.personId}>
+                <span className="font-medium text-ink">{f.title}.</span> {f.detail}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-1.5 text-small text-ink-2">{care.noneMatched}</p>
+        )}
+        {more > 0 ? (
+          <p className="mt-1.5 text-small text-ink-2">
+            {`And ${more} more ${more === 1 ? "relative" : "relatives"} in the table below.`}
+          </p>
+        ) : null}
+      </div>
+    </section>
   );
 }
 

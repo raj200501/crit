@@ -1,5 +1,5 @@
-import { capitalize, formatCondition, isCardiac, normalizeCondition } from "./conditions";
-import { noneLabel, nonePhrase, packFor } from "./packs";
+import { capitalize, formatCondition, isCardiac, normalizeCondition, sameCondition } from "./conditions";
+import { noneLabel, nonePhrase, packById, packFor } from "./packs";
 import type { FamilyTree, Person, Report, Status } from "./types";
 
 export { formatCondition, isCardiac, normalizeCondition } from "./conditions";
@@ -75,10 +75,17 @@ export function viewPerson(tree: FamilyTree, person: Person): PersonView {
 
   // A "none" vs a reported condition. A firsthand "none" contradicts anyone's condition;
   // a secondhand "none" only contradicts other secondhand reports (a record or the person outranks it).
-  if (latestFirst?.kind === "no-history" && conditions.length) reasons.push(`${latestFirst.reportedBy} says ${nonePhrase(latestFirst)}`);
+  // A "none" answers only the questions it was asked: from the tree's own question set it covers every condition (the
+  // rule before visit types); from another set, only the conditions that set counts. So Mom's cardiology "No heart
+  // history" never contradicts a breast cancer added after a switch to primary care.
+  const covers = (none: Report, c: Report) => {
+    const asked = packById(none.pack); // missing or unknown: cardiology, like its words (packs/none.ts)
+    return asked.id === pack.id || asked.isFinding(c.condition);
+  };
+  if (latestFirst?.kind === "no-history" && conditions.some((c) => covers(latestFirst, c))) reasons.push(`${latestFirst.reportedBy} says ${nonePhrase(latestFirst)}`);
   if (!latestFirst) {
     const noneBy = new Set(noHistory.map((r) => r.reportedBy));
-    if (conditions.some((r) => !noneBy.has(r.reportedBy)) && noHistory.length) reasons.push("no history vs. a reported condition");
+    if (conditions.some((r) => !noneBy.has(r.reportedBy) && noHistory.some((n) => covers(n, r)))) reasons.push("no history vs. a reported condition");
   }
 
   // Two reporters whose condition lists share nothing (Mom: heart attack, Uncle: angina). A portal
@@ -89,7 +96,8 @@ export function viewPerson(tree: FamilyTree, person: Person): PersonView {
     sets.get(r.reportedBy)!.add(normalizeCondition(r.condition));
   }
   const lists = [...sets.values()];
-  const disjoint = lists.some((a, i) => lists.slice(i + 1).some((b) => ![...a].some((x) => b.has(x))));
+  // A "What kind?" answer agrees with its plain form ("Other cancer: prostate" and "Other cancer").
+  const disjoint = lists.some((a, i) => lists.slice(i + 1).some((b) => ![...a].some((x) => [...b].some((y) => sameCondition(x, y)))));
   if (disjoint) reasons.push("different conditions reported");
 
   // Same condition, ages more than 2 years apart.

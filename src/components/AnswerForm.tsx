@@ -2,7 +2,7 @@
 
 import { Info, Plus } from "lucide-react";
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
-import { CARDIOLOGY, groupedChoices, type SpecialtyPack } from "@/lib/packs";
+import { CARDIOLOGY, groupedChoices, type Choice, type PackId, type SpecialtyPack } from "@/lib/packs";
 import type { ReportKind } from "@/lib/types";
 import { Button } from "./ui/Button";
 import { cn } from "./ui/cn";
@@ -18,6 +18,8 @@ export interface Answer {
   ageAtOnset?: number;
   approximate?: boolean;
   note?: string;
+  /** On "None of these" only: the question set it answered, when that isn't cardiology. */
+  pack?: PackId;
 }
 
 interface Props {
@@ -39,7 +41,8 @@ interface Props {
   pack?: SpecialtyPack;
 }
 
-type Pick = { age: string; approx: boolean };
+/** A ticked card: its age row, and the "What kind?" text for cards that ask it. */
+type Pick = { age: string; approx: boolean; text: string };
 type Alt = "none" | "dont-know" | "declined";
 
 const digits = (s: string) => s.replace(/\D/g, "").slice(0, 3);
@@ -122,7 +125,7 @@ export default function AnswerForm({
     setPicked((p) => {
       const next = { ...p };
       if (!on) delete next[cid];
-      else next[cid] = next[cid] ?? { age: "", approx: false };
+      else next[cid] = next[cid] ?? { age: "", approx: false, text: "" };
       return next;
     });
   };
@@ -144,16 +147,20 @@ export default function AnswerForm({
     e.preventDefault();
     const trimmedNote = note.trim() || undefined;
     if (alt) {
-      onSubmit([{ kind: alt === "none" ? "no-history" : alt, note: alt === "declined" ? undefined : trimmedNote }]);
+      // A "none" records which questions it answered (only when they aren't cardiology's, so cardiology answers keep their shape).
+      const asked = alt === "none" && pack.id !== "cardiology" ? { pack: pack.id } : {};
+      onSubmit([{ kind: alt === "none" ? "no-history" : alt, note: alt === "declined" ? undefined : trimmedNote, ...asked }]);
       return;
     }
     if (!anyPicked) {
       setError("Pick at least one, or choose “None of these” or “I don’t know”.");
       return;
     }
+    // "Other cancer: prostate" when a "What kind?" card has text; the plain stored name otherwise (at most 74 characters).
+    const conditionOf = (c: Choice) => (c.detail && picked[c.id].text.trim() ? `${c.condition}: ${picked[c.id].text.trim()}` : c.condition);
     const answers: Answer[] = pack.choices.filter((c) => picked[c.id]).map((c) => ({
       kind: "condition",
-      condition: c.condition,
+      condition: conditionOf(c),
       ageAtOnset: parseAge(picked[c.id].age),
       approximate: picked[c.id].approx || undefined,
     }));
@@ -201,14 +208,42 @@ export default function AnswerForm({
                 return (
                   <CheckboxCard key={c.id} size={cardSize} checked={!!pick} onChange={(on) => toggle(c.id, on)} title={c.label} description={c.examples}>
                     {pick ? (
-                      <AgeRow
-                        id={`${id}-${c.id}-age`}
-                        label={ageLabel}
-                        value={pick.age}
-                        approx={pick.approx}
-                        onAge={(age) => setPicked((p) => ({ ...p, [c.id]: { ...p[c.id], age } }))}
-                        onApprox={(approx) => setPicked((p) => ({ ...p, [c.id]: { ...p[c.id], approx } }))}
-                      />
+                      c.detail ? (
+                        <div className="flex flex-col gap-3">
+                          <div className="flex flex-col gap-1.5">
+                            <label htmlFor={`${id}-${c.id}-kind`} className="text-small font-medium text-fg">
+                              {c.detail.label}
+                            </label>
+                            <Input
+                              id={`${id}-${c.id}-kind`}
+                              autoComplete="off"
+                              placeholder={c.detail.placeholder}
+                              value={pick.text}
+                              onChange={(e) => {
+                                const text = e.target.value.slice(0, 60);
+                                setPicked((p) => ({ ...p, [c.id]: { ...p[c.id], text } }));
+                              }}
+                            />
+                          </div>
+                          <AgeRow
+                            id={`${id}-${c.id}-age`}
+                            label={ageLabel}
+                            value={pick.age}
+                            approx={pick.approx}
+                            onAge={(age) => setPicked((p) => ({ ...p, [c.id]: { ...p[c.id], age } }))}
+                            onApprox={(approx) => setPicked((p) => ({ ...p, [c.id]: { ...p[c.id], approx } }))}
+                          />
+                        </div>
+                      ) : (
+                        <AgeRow
+                          id={`${id}-${c.id}-age`}
+                          label={ageLabel}
+                          value={pick.age}
+                          approx={pick.approx}
+                          onAge={(age) => setPicked((p) => ({ ...p, [c.id]: { ...p[c.id], age } }))}
+                          onApprox={(approx) => setPicked((p) => ({ ...p, [c.id]: { ...p[c.id], approx } }))}
+                        />
+                      )
                     ) : null}
                   </CheckboxCard>
                 );

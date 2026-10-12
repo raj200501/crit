@@ -127,6 +127,16 @@ export function ageText(r: Report | undefined): string {
 
 // ---------- Pedigree annotations ----------
 const ABBR: [RegExp, string][] = [
+  // The general cards' stored names, first and anchored: abbreviate() takes the first match and "What kind?" text is free,
+  // so "Other cancer: leukemia, initially lymphoma" must read "cancer", never "stroke/TIA". No heart card or demo
+  // condition starts with these, so every cardiology abbreviation is unchanged.
+  [/^other cancer/, "cancer"],
+  [/^other heart disease/, "heart dis."],
+  [/^high blood pressure/, "HTN"],
+  [/^diabetes/, "diabetes"],
+  [/^breast cancer/, "breast ca."],
+  [/^ovarian, fallopian/, "ovarian ca."],
+  [/^colon or rectal cancer/, "CRC"],
   [/atrial fibrillation|afib|a-fib/, "AF"],
   [/heart attack or coronary/, "MI/CAD"],
   [/heart attack|myocardial/, "MI"],

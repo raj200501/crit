@@ -1,6 +1,8 @@
 // Everything that arrives from a link or from storage is untrusted: validate shape, types and
 // lengths before it reaches the tree, so a malformed or forged link can't break or poison it.
 
+import type { VisitType } from "./packs/types";
+import { VISIT_TYPE_IDS } from "./packs/visits";
 import type { FamilyTree, Invite, Person, RecordProvenance, Relation, Report, ReportKind, Sex, SourceKind } from "./types";
 
 const KINDS = new Set<ReportKind>(["condition", "no-history", "declined", "dont-know"]);
@@ -49,6 +51,9 @@ export function cleanReport(v: unknown): Omit<Report, "id"> | null {
   if (!personId || !KINDS.has(kind) || !SOURCES.has(source)) return null;
   const condition = kind === "condition" ? str(v.condition, 120) : undefined;
   if (kind === "condition" && !condition) return null;
+  // Only a "none" carries its question set, and only when it isn't cardiology (missing = cardiology), so cardiology
+  // reports keep exactly the shape they had before visit types.
+  const pack = kind === "no-history" && v.pack === "general" ? ("general" as const) : undefined;
   const age =
     typeof v.ageAtOnset === "number" && Number.isFinite(v.ageAtOnset) && v.ageAtOnset >= 0 && v.ageAtOnset < 130 ? Math.round(v.ageAtOnset) : undefined;
   return {
@@ -64,6 +69,7 @@ export function cleanReport(v: unknown): Omit<Report, "id"> | null {
     source,
     reportedAt: isDate(v.reportedAt) ? String(v.reportedAt) : new Date(0).toISOString(),
     record: source === "record" ? cleanRecord(v.record) : undefined,
+    ...(pack ? { pack } : {}),
   };
 }
 
@@ -113,9 +119,11 @@ export function cleanTree(v: unknown): FamilyTree | null {
       return c && rid && ids.has(c.personId) ? { ...c, id: rid } : null;
     })
     .filter((r): r is Report => !!r);
+  // A visit saved before visit types has no `type` (cardiology); an unknown type is dropped, which means cardiology too.
+  const type = isObj(v.visit) && typeof v.visit.type === "string" && VISIT_TYPE_IDS.has(v.visit.type) ? (v.visit.type as VisitType) : undefined;
   const visit =
     isObj(v.visit) && str(v.visit.specialty, 40)
-      ? { specialty: str(v.visit.specialty, 40)!, date: str(v.visit.date, 10) ?? "", practice: str(v.visit.practice, 80) }
+      ? { specialty: str(v.visit.specialty, 40)!, date: str(v.visit.date, 10) ?? "", practice: str(v.visit.practice, 80), ...(type ? { type } : {}) }
       : undefined;
   return {
     id,
