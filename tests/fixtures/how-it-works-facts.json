@@ -106,24 +106,24 @@
     "market": [
       [
         "US independent cardiology",
-        "7,699 cardiologists × $1,188–1,788/yr",
-        "$9.1M – $13.8M"
-      ],
-      [
-        "At FamGenix's $500/yr anchor",
-        "7,699 × $500",
+        "7,699 cardiologists × $500/yr",
         "$3.8M"
       ],
       [
+        "Same, at $99/month (a hypothesis we test)",
+        "7,699 × $1,188/yr",
+        "$9.1M"
+      ],
+      [
         "NYC independent",
-        "280–320 × $1,800",
-        "$0.50M – $0.58M"
+        "280–320 × $500/yr",
+        "$0.14M – $0.16M"
       ]
     ],
     "risks": [
       [
         "A practice manager will pay for a tool that bills nothing",
-        "5 manager interviews with a price card; ask for a paid pilot letter ($500–1,000)",
+        "5 manager interviews with a price card; ask for a paid pilot letter ($1,000)",
         "≥ 1 signed paid pilot"
       ],
       [
@@ -191,11 +191,12 @@
     "Family-history criteria named in current guidelines. The app matches what was reported against these and lists them for the clinician to interpret. It never computes a risk score and never shows these to the patient as a recommendation.",
     "Who pays, and for what",
     "Free for patients and relatives, with no ads and no data sales written into the terms.",
-    "Independent cardiology practices pay a flat fee per cardiologist ($99–149/month to start). Never priced per referral or new patient (anti-kickback risk).",
+    "Practices pay, starting with independent cardiology: a $1,000, 12-week pilot credited to year one, then a flat $500 per cardiologist per year ($99 per cardiologist per month is a hypothesis we also test). Never priced per referral or new patient (anti-kickback risk).",
     "No billing code pays for family history (96160 risk assessment: $3.01; genetic counseling is bundled). The value is staff time saved and relatives identified for screening.",
     "Competition: we found no patient-facing cardiology family-tree product combining relative-filled branches, per-fact sources, a portal fact and a cardiology one-pager. Lab-funded tools are mostly cancer-focused; FamGenix ($500/yr, with a cardio add-on) deserves a hands-on look.",
     "Market size, with the math",
     "NYC is a pilot market, not a revenue market; 76–79% of NYC cardiology clinicians sit inside six large health systems (NYU, Columbia, Mount Sinai, Northwell, Montefiore, Weill Cornell). Growth would come from larger groups, health systems, primary care (the Medicare wellness visit requires family history) and genetics programs.",
-    "Pilot: 8–12 weeks with 1–3 independent NYC groups, $500–1,000 flat, credited to an annual contract. Continue if at least 1 of 3 practices converts to paid and at least 40% of invited patients complete the tree before the visit."
+    "Each new specialty reuses the tree and adds its own questions and clinician criteria; cardiology’s are the only ones built.",
+    "Pilot: 12 weeks with 1–3 independent NYC groups, $1,000 flat, credited to year one. Continue if at least 1 of 3 practices converts to paid and at least 40% of invited patients complete the tree before the visit."
   ]
 }

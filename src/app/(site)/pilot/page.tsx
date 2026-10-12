@@ -13,7 +13,7 @@ import { HONESTY, PILOT, pilotCta, SITE } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Pilot",
-  description: "A paid 8–12 week Stemma pilot for independent NYC cardiology practices: pricing, the metrics we agree on first, and the go/no-go. Prints on one page.",
+  description: "A paid 12-week Stemma pilot for independent NYC cardiology practices: pricing, the metrics we agree on first, and the go/no-go. Prints on one page.",
 };
 
 // DESIGN §10.3 + §14: this brief prints on ONE Letter page (SiteNav and SiteFooter are print:hidden). Every band below
@@ -41,8 +41,8 @@ function Band({ id, eyebrow, title, lead, children, className }: { id: string; e
 function PilotArc() {
   const steps = [
     { when: "Before we start", what: "We agree the metrics and the go/no-go with you." },
-    { when: "8–12 weeks", what: "The intake link goes out with your new-patient paperwork. You get the care-team summaries." },
-    { when: "At the end", what: "We continue only if it worked. The fee is credited toward an annual contract." },
+    { when: "12 weeks", what: "The intake link goes out with your new-patient paperwork. You get the care-team summaries." },
+    { when: "At the end", what: "We continue only if it worked. The $1,000 fee is credited to year one." },
   ];
   return (
     <div className="relative mx-auto max-w-[30rem] print:hidden lg:mr-0">
@@ -85,7 +85,7 @@ export default function PilotPage() {
       </p>
       <PageHero
         eyebrow="Pilot"
-        title="A paid 8–12 week pilot for independent NYC cardiology practices."
+        title="A paid 12-week pilot for independent NYC cardiology practices."
         size="l"
         lead="We’re recruiting 1–3 practices to test whether this saves staff time and helps clinicians, and whether it’s worth paying for."
         className="print:[&_h1]:mt-1 print:[&_h1]:text-[21px] print:[&_h1]:leading-tight print:[&_p:first-child]:hidden"
@@ -101,7 +101,7 @@ export default function PilotPage() {
           <PrintButton variant="secondary" size="lg" className="max-sm:w-full" />
         </div>
         <ul className="mt-8 flex flex-wrap gap-2 print:hidden" aria-label="The pilot in brief">
-          {["8–12 weeks", "1–3 practices", "$500–1,000 flat", "Credited toward an annual contract"].map((t) => (
+          {["12 weeks", "1–3 practices", "$1,000 flat", "Credited to year one"].map((t) => (
             <li key={t} className="rounded-full border border-line-strong bg-surface/70 px-3 py-1 font-mono text-eyebrow text-fg-2 uppercase print:px-2 print:py-0">
               {t}
             </li>

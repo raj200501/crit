@@ -63,14 +63,16 @@ export const PROOF_POINTS = [
   { text: "With a guided tool, 99.8% of pedigrees met quality criteria, against under 4% of charts.", cite: 84 },
 ] as const;
 
-// research.md l.19, l.343–344, l.389–399
+// research.md l.19, l.343–344, l.389–399. Prices and pilot length follow docs/pitch/value-creation-analysis.md
+// (Revenue Streams; "Choices made"): a $1,000 12-week pilot credited to year one, then $500 per cardiologist per year;
+// $99 per cardiologist per month is tested on the same card (a hypothesis).
 export const PILOT = {
   stamp: "Proposed pilot",
   headline: "Now recruiting 1–3 independent NYC cardiology practices",
-  terms: ["8–12 weeks", "$500–1,000 flat, credited toward an annual contract"],
+  terms: ["12 weeks", "$1,000 flat, credited to year one"],
   never: "Never priced per referral, new patient or booking.",
   free: "Free for patients and relatives. No ads. No data sales.",
-  after: "After the pilot: a flat annual subscription per cardiologist. Our working hypothesis is $99–149 per cardiologist per month, and the pilot is how we test it.",
+  after: "After the pilot: $500 per cardiologist per year. A second price, $99 per cardiologist per month, is a hypothesis we test on the same price card.",
   metrics: [
     "Share of invited new patients who complete before the visit (target ≥ 40%)",
     "Share with at least one relative's contribution (target ≥ 25%)",
@@ -172,6 +174,7 @@ export const FAQ = [
   { q: "Is it HIPAA compliant?", a: "There's no such thing as HIPAA certification, and the prototype holds only made-up data. In a pilot, we will operate as a HIPAA business associate: we'll sign BAAs with practices and use only vendors that sign BAAs with us." },
   { q: "Does the patient-portal connection really work?", a: "Yes, as a demo. It's a real SMART on FHIR sign-in against a public sandbox with made-up patients. The relative picks one fact to share, and everything else is discarded on the page. Shared facts are labeled “from a portal record”, never “verified”." },
   { q: "What if a relative says no?", a: "Then that's the answer. “Chose not to share” shows on the tree and the summary, and only that person can decline for themselves." },
-  { q: "Who pays?", a: "Cardiology practices, at a flat fee that's never tied to referrals or new patients. Patients and relatives never pay. No ads, no data sales." },
+  { q: "Who pays?", a: "Practices, starting with cardiology, at a flat fee that's never tied to referrals or new patients. Patients and relatives never pay. No ads, no data sales." },
+  { q: "Why cardiology?", a: "It's where we start. Cardiology guidelines need the most detail: which relative, which side of the family, and what age. The tree, relative links and sources don't depend on the specialty; the questions and the clinician's criteria do, and cardiology's are the only ones built so far. Primary care wellness visits, where Medicare requires family history, come later." },
   { q: "Why not just a form?", a: "Forms flatten “I think it was 58?” into a checkbox. We keep who said it, how they know and what nobody knows yet, and relatives answer for themselves." },
 ] as const;

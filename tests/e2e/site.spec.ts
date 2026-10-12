@@ -15,7 +15,7 @@ const PAGES = [
   { path: "/research/interviews", title: "Interviews · Stemma", h1: "The research behind Stemma" },
   { path: "/for-practices", title: "For practices · Stemma", h1: "Family history that arrives before the patient does." },
   { path: "/privacy", title: "Security & privacy · Stemma", h1: "Security & privacy" },
-  { path: "/pilot", title: "Pilot · Stemma", h1: "A paid 8–12 week pilot for independent NYC cardiology practices." },
+  { path: "/pilot", title: "Pilot · Stemma", h1: "A paid 12-week pilot for independent NYC cardiology practices." },
 ] as const;
 
 /** Text with typographic quotes, non-breaking spaces and runs of whitespace flattened, for verbatim comparisons. */
@@ -281,7 +281,9 @@ test.describe("/pilot", () => {
     await gotoApp(page, "/pilot");
     await expect(page.locator("#pricing")).toContainText(PILOT.stamp, { ignoreCase: true });
     await expect(page.locator("#pricing")).toContainText("Never priced per referral, new patient or booking");
-    await expect(page.locator("#pricing")).toContainText("$99–149 per cardiologist per month");
+    await expect(page.locator("#pricing")).toContainText("$1,000 flat for 12 weeks, credited to year one");
+    await expect(page.locator("#pricing")).toContainText("$500 per cardiologist per year");
+    await expect(page.locator("#pricing")).toContainText("We also test $99 per cardiologist per month (a hypothesis)");
     await expect(page.locator("#pricing")).toContainText(PILOT.beforeRealData);
     for (const m of PILOT.metrics) await expect(page.locator("#metrics")).toContainText(m);
     await expect(page.locator("#metrics")).toContainText(PILOT.goNoGo);
