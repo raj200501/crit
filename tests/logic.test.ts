@@ -124,6 +124,20 @@ test("Marfan syndrome and a bicuspid aortic valve are 'also noted', never a guid
   assert.deepEqual(titles(t), ["Aortic aneurysm or dissection in a parent or sibling"]);
   t.reports = [rep("mom", { condition: "Brain aneurysm" })];
   assert.deepEqual(titles(t), []);
+  // a valve named without the word "valve" is still the valve; a widened root or a tear is still the aorta
+  for (const condition of ["Aortic stenosis", "Aortic regurgitation", "Aortic insufficiency"]) {
+    t.reports = [rep("mom", { condition, ageAtOnset: 50 })];
+    assert.deepEqual(reviewItems(t, viewTree(t)).filter((f) => f.tier !== "clarify"), [], condition);
+  }
+  for (const condition of ["Dilated aortic root", "Bicuspid aortic valve with a dilated aorta", "Aortic dissection", "Type A dissection"]) {
+    t.reports = [rep("mom", { condition })];
+    assert.deepEqual(titles(t), ["Aortic aneurysm or dissection in a parent or sibling"], condition);
+  }
+  // a tear in another artery is not an aortic dissection, and not early heart disease either
+  for (const condition of ["Spontaneous coronary artery dissection", "Carotid artery dissection"]) {
+    t.reports = [rep("mom", { condition, ageAtOnset: 44 })];
+    assert.deepEqual(reviewItems(t, viewTree(t)).filter((f) => f.tier !== "clarify"), [], condition);
+  }
 });
 
 test("the aortic card's examples no longer name Marfan syndrome", () => {
@@ -184,6 +198,11 @@ test("sudden death is sanitized, kept on the care-team copy, and shown in the fa
 
   // the practice link carries age, cause and "sudden", so the care team gets the same rule
   const shared = shareableTree(clean);
+  // the line carries the cause the patient gave, so an accident reads differently from an unexplained death
+  assert.equal(
+    reviewItems(shared, viewTree(shared)).find((f) => f.personId === "dad" && f.tier === "guideline")!.detail,
+    "Dad (father's side): died suddenly or unexpectedly (cause given: Collapsed while jogging), age 38, reported by Alex.",
+  );
   const dad = shared.people.find((p) => p.id === "dad")!;
   assert.deepEqual([dad.ageAtDeath, dad.causeOfDeath, dad.suddenDeath], [38, "Collapsed while jogging", true]);
   assert.equal(shared.people.find((p) => p.id === "mom")!.suddenDeath, undefined);

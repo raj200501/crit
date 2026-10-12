@@ -249,7 +249,7 @@ export default function AnswerForm({
               setOther((o) => ({ ...o, on }));
             }}
             title="Something else heart-related"
-            description="Say it in your own words"
+            description="In your own words, like Marfan syndrome or a bicuspid valve"
           >
             {other.on ? (
               <div className="flex flex-col gap-3">

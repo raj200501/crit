@@ -113,6 +113,18 @@ export const CRITERIA_FOOTNOTE = "ACC/AHA 2018 and 2026 (lipids), Simon Broome a
 
 const has = (name: string, ...terms: string[]) => terms.some((t) => name.includes(t));
 
+/**
+ * The aorta itself: an aneurysm, a dissection or a widened root (docs/research.md §3.1, ACC/AHA 2022). An aortic valve
+ * problem is not aortic disease: "bicuspid aortic valve", "aortic stenosis" and "aortic regurgitation" name the valve.
+ * A dissection counts unless it names another artery (a coronary or carotid tear is not an aortic one).
+ */
+function aorticDisease(name: string): boolean {
+  const aorta = has(name, "aort");
+  if (has(name, "dissection") && (aorta || !has(name, "coronary", "carotid", "vertebral", "scad"))) return true;
+  if (!aorta) return false;
+  return has(name, "aneurysm", "dilat", "enlarg", "root", "tear") || !has(name, "valve", "stenosis", "regurgitation", "insufficiency");
+}
+
 function sideOf(r: Relation) {
   if (r.startsWith("paternal") || r === "father") return "father's side";
   if (r.startsWith("maternal") || r === "mother") return "mother's side";
@@ -153,10 +165,13 @@ export function reviewItems(tree: FamilyTree, views: PersonView[]): Flag[] {
         cardioPeople.add(p.id);
         if (first) add("guideline", "Cardiomyopathy in a parent or sibling", line, BASIS.cardiomyopathy);
         else add("noted", "Cardiomyopathy in a relative", line, BASIS.none);
-      } else if (has(name, "dissection") || (has(name, "aort") && (has(name, "aneurysm") || !has(name, "valve")))) {
-        // An aortic valve problem is not aortic disease ("bicuspid aortic valve" names the valve, not the aorta).
+      } else if (aorticDisease(name)) {
         if (first) add("guideline", "Aortic aneurysm or dissection in a parent or sibling", line, BASIS.aortic);
         else add("noted", "Aortic aneurysm or dissection in a relative", line, BASIS.none);
+      } else if (has(name, "dissection") && !has(name, "marfan", "bicuspid")) {
+        // A tear in another artery (coronary, carotid): no verified family-history criterion, and not the premature
+        // coronary heart disease the next rule means. It still shows in the family history table.
+        continue;
       } else if (has(name, "marfan", "bicuspid")) {
         // Not in the verified guideline text (docs/research.md §3.1): ask about it, never alert on it.
         add("noted", "Marfan syndrome or bicuspid aortic valve in a relative", line, BASIS.none);
@@ -189,10 +204,12 @@ export function reviewItems(tree: FamilyTree, views: PersonView[]): Flag[] {
     }
 
     // A death the patient marked "sudden or unexpected" (Edit details), under the same rule as a reported sudden death.
-    // A report that already says so gives the same title, and the de-duplication below keeps one.
+    // A report that already says so gives the same title, and the de-duplication below keeps one. The cause the patient
+    // gave goes in the line, so the clinician can tell an unexplained death from, say, an accident.
     if (p.deceased && p.suddenDeath) {
       const a = p.ageAtDeath;
-      const l = `${who}: died suddenly or unexpectedly, ${a != null ? `age ${a}` : "age not known"}, reported by ${tree.patientName}.`;
+      const cause = p.causeOfDeath ? ` (cause given: ${p.causeOfDeath})` : "";
+      const l = `${who}: died suddenly or unexpectedly${cause}, ${a != null ? `age ${a}` : "age not known"}, reported by ${tree.patientName}.`;
       if (a != null && a < 40) add("guideline", "Sudden death or cardiac arrest before 40", l, BASIS.sudden);
       else add("noted", "Sudden death or cardiac arrest", `${l} Ask age, circumstances and autopsy.`, BASIS.sudden);
     }
