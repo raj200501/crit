@@ -135,6 +135,26 @@ test.describe("tree", () => {
     await expect(panel).toContainText("Heart attack or coronary artery disease · age 48");
   });
 
+  test("answer form for a living relative: ask first, with 'Send Mom a link instead'", async ({ page }) => {
+    await page.getByRole("button", { name: /^Mom:/ }).click();
+    const panel = page.locator('section[aria-label="Mom details"]');
+    await panel.getByRole("button", { name: "Add what you know" }).click();
+    // focus still lands on the form's question, not on the note above it
+    await expect(panel.locator("legend").first()).toBeFocused();
+    await expect(panel).toContainText("Mom can answer for themselves, and only they can choose not to share.");
+    await a11y(page);
+    await panel.getByRole("button", { name: "Send Mom a link instead" }).click();
+    await expect(panel.getByRole("textbox", { name: "Invite message" })).toBeVisible();
+    // not for someone who passed away, and not for you
+    for (const name of ["Dad", "Alex (you)"]) {
+      await page.locator(`button[aria-label^="${name}:"]`).click();
+      const other = page.locator(`section[aria-label="${name} details"]`);
+      await other.getByRole("button", { name: /^Add (what you know|your own history)$/ }).click();
+      await expect(other.locator("legend").first()).toBeVisible();
+      await expect(other.getByRole("button", { name: /a link instead$/ })).toHaveCount(0);
+    }
+  });
+
   test("answer form: radios are real, and an empty submit moves focus to the inline error", async ({ page }) => {
     await page.getByRole("button", { name: /^Grandpa Luis:/ }).click();
     const panel = page.locator('section[aria-label="Grandpa Luis details"]');

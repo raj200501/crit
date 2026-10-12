@@ -188,15 +188,31 @@ export default function PersonPanel({ view, tree, onClose, focusOnOpen, initialM
       <AutoHeight step={mode}>
         <div key={mode} ref={body} tabIndex={-1} className="border-t border-line pt-5 outline-none">
           {mode === "answer" ? (
-            <AnswerForm
-              subject={isSelf ? "you" : p.label}
-              self={isSelf}
-              allowDecline={false}
-              compact
-              submitLabel="Add to tree"
-              onSubmit={save}
-              onCancel={() => go("view")}
-            />
+            <>
+              {/* Ask first: a living relative can answer for themselves. A paragraph, not a heading, so the focus move
+                  above still lands on the form's question. */}
+              {!isSelf && !p.deceased ? (
+                <p className="mb-5 rounded-md bg-sunken/70 px-4 py-3 text-small text-fg-2">
+                  {short} can answer for themselves, and only they can choose not to share.{" "}
+                  <button
+                    type="button"
+                    onClick={() => go("invite")}
+                    className="cursor-pointer rounded-xs font-medium text-brand underline decoration-brand/30 underline-offset-2 hover:text-brand-strong hover:decoration-current"
+                  >
+                    Send {short} a link instead
+                  </button>
+                </p>
+              ) : null}
+              <AnswerForm
+                subject={isSelf ? "you" : p.label}
+                self={isSelf}
+                allowDecline={false}
+                compact
+                submitLabel="Add to tree"
+                onSubmit={save}
+                onCancel={() => go("view")}
+              />
+            </>
           ) : mode === "invite" ? (
             <InviteBox tree={tree} view={view} onDone={() => go("view")} />
           ) : mode === "edit" ? (
