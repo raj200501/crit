@@ -132,7 +132,7 @@ const STEPS = [
   {
     n: "04",
     title: "Walk in with one page",
-    body: "Facts, gaps and questions for you. A separate care-team version for your cardiologist.",
+    body: "Facts, gaps and questions for you. A separate care-team version for your doctor, with guideline criteria when the visit is cardiology.",
   },
 ] as const;
 

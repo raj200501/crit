@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/Button";
 import { TextReveal } from "@/components/ui/TextReveal";
 import { SITE } from "@/content/site";
 
-const H1 = "Turn “heart problems run in the family” into who, what, and at what age.";
-const ACCENT = "“heart problems run in the family”";
+const H1 = "Turn “it runs in the family” into who, what, and at what age.";
+const ACCENT = "“it runs in the family”";
 const MARK = "at what age.";
 
 // Staggered entrance for the supporting copy (CSS only, so it runs at first paint). The H1 never fades: it is the LCP.
@@ -52,8 +52,8 @@ export function HeroCopy() {
         className="mt-6 font-display text-display-xl font-book text-fg sm:mt-7"
       />
       <p className="mt-6 max-w-[34rem] text-lead text-fg-2">
-        Build your family&rsquo;s heart history before your cardiology visit. Relatives fill in their own branch from one text link, and every answer keeps who
-        said it and how sure they are.
+        Build your family&rsquo;s health history before any doctor&rsquo;s visit. Relatives fill in their own branch from one text link, and every answer keeps
+        who said it and how sure they are. Clinician criteria start with cardiology.
       </p>
       <div
         className="mt-8 flex w-full flex-col items-stretch gap-3 motion-safe:animate-fade-up sm:w-auto sm:flex-row sm:items-center sm:gap-6"
@@ -69,7 +69,7 @@ export function HeroCopy() {
           Try the demo family
         </Button>
         <Button href="#two-readers" variant="link" size="lg" className="self-center sm:self-auto">
-          See what your cardiologist gets
+          See what your doctor gets
         </Button>
       </div>
       <p className="mt-8 font-mono text-eyebrow text-fg-3 uppercase motion-safe:animate-fade-up" style={enter(480)}>

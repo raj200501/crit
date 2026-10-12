@@ -11,7 +11,7 @@ export function GuidedChips() {
         <h2 id="chips-title" className="font-display text-display-m font-book text-fg">
           Guided questions, not a blank box.
         </h2>
-        <p className="max-w-[44ch] text-lead text-fg-2">Plain words and real examples, so &ldquo;any heart history?&rdquo; isn&rsquo;t a guessing game.</p>
+        <p className="max-w-[44ch] text-lead text-fg-2">Plain words and real examples, so &ldquo;any family history?&rdquo; isn&rsquo;t a guessing game.</p>
       </Reveal>
       <div className="mx-auto mt-10 w-full max-w-[1240px] px-4 sm:px-6 lg:px-8">
         <Marquee items={CHIP_EXAMPLES} label="Examples the questions use" className="[&>button]:-ml-3" />

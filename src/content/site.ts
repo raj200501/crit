@@ -161,11 +161,12 @@ export const INTERVIEWS = {
   ],
 } as const;
 
-// Words from src/lib/clinical.ts HEART_CHOICES examples (display only)
+// Words from the question cards in src/lib/packs/choices.ts (cardiology and general), display only
 export const CHIP_EXAMPLES = [
   "Heart attack", "Stent", "Bypass surgery", "Angina", "AFib", "Pacemaker", "Cardiac arrest", "ICD",
   "Sudden death", "Cardiomyopathy", "Long QT", "Brugada", "Unexplained fainting", "Very high cholesterol",
-  "Aortic aneurysm", "Stroke or TIA", "Not sure", "I'd rather not share",
+  "Aortic aneurysm", "Stroke or TIA", "High blood pressure", "Diabetes", "Breast cancer", "Colon or rectal cancer",
+  "Ovarian cancer", "Not sure", "I'd rather not share",
 ] as const;
 
 export const FAQ = [
@@ -175,6 +176,6 @@ export const FAQ = [
   { q: "Does the patient-portal connection really work?", a: "Yes, as a demo. It's a real SMART on FHIR sign-in against a public sandbox with made-up patients. The relative picks one fact to share, and everything else is discarded on the page. Shared facts are labeled “from a portal record”, never “verified”." },
   { q: "What if a relative says no?", a: "Then that's the answer. “Chose not to share” shows on the tree and the summary, and only that person can decline for themselves." },
   { q: "Who pays?", a: "Practices, starting with cardiology, at a flat fee that's never tied to referrals or new patients. Patients and relatives never pay. No ads, no data sales." },
-  { q: "Why cardiology?", a: "It's where we start. Cardiology guidelines turn on which relative had a condition and at what age. The tree, relative links and sources don't depend on the specialty; the questions and the clinician's criteria do, and cardiology's are the only ones built so far. Primary care wellness visits, where Medicare requires family history, come later." },
+  { q: "Why cardiology?", a: "It's where clinician criteria start, because cardiology guidelines need the most detail: which relative, which side of the family and what age. Patients can use Stemma for any doctor's visit. They pick the visit type and the questions change with it: heart questions for cardiology, and a general set (heart disease, stroke, blood pressure, cholesterol, diabetes and common cancers) for any other visit. Only cardiology's care-team page adds guideline criteria; for other visits it lists the facts and the gaps, with no criteria applied." },
   { q: "Why not just a form?", a: "Forms flatten “I think it was 58?” into a checkbox. We keep who said it, how they know and what nobody knows yet, and relatives answer for themselves." },
 ] as const;

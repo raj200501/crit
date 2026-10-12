@@ -176,7 +176,8 @@ export default function ForPracticesPage() {
               <Cite n={FDA_LINE.cite} />
             </p>
             <p className="mt-4 max-w-[52ch] text-body text-fg">
-              Guideline criteria appear only on the care-team page, each with its basis, inputs and what&rsquo;s missing.
+              Guideline criteria appear only on the care-team page, each with its basis, inputs and what&rsquo;s missing. Today those criteria are
+              cardiology&rsquo;s; for other visit types the page lists facts and gaps with no criteria.
             </p>
           </div>
           <RegulatoryLine className="lg:col-span-7 lg:self-center" />
@@ -209,6 +210,10 @@ export default function ForPracticesPage() {
               Start with a paid pilot.
             </h2>
             <p className="mt-6 max-w-[48ch] text-lead text-fg-2">{PILOT.after}</p>
+            <p className="mt-4 max-w-[48ch] text-body text-fg-2">
+              The pilot is for cardiology practices because that is where Stemma&rsquo;s clinician criteria are built. Patients can use the same tree for any
+              other doctor&rsquo;s visit.
+            </p>
             <p className="mt-6 font-mono text-eyebrow text-fg-3 uppercase">12 weeks · $1,000 flat · you see results before any annual contract</p>
             <Button href="/pilot" variant="link" iconRight={<ArrowRight />} className="mt-4">
               Pricing, metrics and the go/no-go

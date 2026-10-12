@@ -200,8 +200,8 @@ export function Gallery({ tone }: { tone: Tone }) {
           <Group title="TextReveal · SectionHeading · Cite · SourceTag · Kbd">
             <TextReveal
               as="p"
-              text="Turn “heart problems run in the family” into who, what, and at what age."
-              accent={{ text: "“heart problems run in the family”", style: "italic-muted" }}
+              text="Turn “it runs in the family” into who, what, and at what age."
+              accent={{ text: "“it runs in the family”", style: "italic-muted" }}
               animate="after-accent"
               className="max-w-[18ch] font-display text-display-l font-book"
             />

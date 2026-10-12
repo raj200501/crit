@@ -29,6 +29,9 @@ export function TwoReaders({ patientDoc, clinicianDoc }: { patientDoc: ReactNode
             {FDA_LINE.text}
             <Cite n={FDA_LINE.cite} />
           </p>
+          <p className="text-body text-fg-2">
+            Clinician criteria are built for cardiology so far. For any other visit, the care team gets the same facts and gaps, with no criteria applied.
+          </p>
           <ul className="flex flex-wrap justify-center gap-2">
             <li>
               <Badge icon={<Printer />}>Prints on one Letter page</Badge>

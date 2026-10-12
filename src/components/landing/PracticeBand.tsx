@@ -38,6 +38,7 @@ export function PracticeBand() {
                 ) : null}
               </div>
               <p className="font-mono text-eyebrow text-fg-3 uppercase">12 weeks · $1,000 flat · you see results before any annual contract</p>
+              <p className="text-small text-fg-2">Patients can use Stemma for any visit. Clinician criteria start with cardiology, so the pilot does too.</p>
             </div>
           </Reveal>
           <Reveal delay={0.08} className="relative lg:sticky lg:top-28">

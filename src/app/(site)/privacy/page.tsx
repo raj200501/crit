@@ -149,7 +149,8 @@ export default function PrivacyPage() {
               <H3>What the # holds, and who sees it</H3>
               <p className="max-w-[62ch] text-body text-fg-2">
                 Invite, reply and summary links put their data after the <span className="font-mono text-fg">#</span>. Browsers keep that part to
-                themselves: it never reaches a server, and pages send no referrer.
+                themselves: it never reaches a server, and pages send no referrer. An invite link also names the visit, like &ldquo;cardiology visit&rdquo;,
+                and the relative sees it; it never carries anyone&rsquo;s answers.
               </p>
               <UrlBarVisual host={SITE_HOST} path="/invite" fragment={fragment} decoded={payload as unknown as Record<string, unknown>} />
             </div>

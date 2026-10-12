@@ -114,7 +114,7 @@ const roles = [
     icon: UserRound,
     steps: [
       "Gets the link with the practice’s new-patient paperwork.",
-      "Builds the tree by side of family, with guided heart questions.",
+      "Builds the tree by side of family, with guided questions for their visit (heart questions for cardiology).",
       "Invites relatives once there’s something useful to show.",
       "Reviews, then prints or shares the summary.",
     ],
@@ -473,7 +473,8 @@ export default function HowItWorks() {
             <div className="flex min-w-0 flex-col gap-5 lg:col-span-8">
               <Note className="text-body">
                 Family-history criteria named in current guidelines. The app matches what was reported against these and lists them for the clinician to
-                interpret. It never computes a risk score and never shows these to the patient as a recommendation.
+                interpret. It never computes a risk score and never shows these to the patient as a recommendation. Only cardiology&rsquo;s criteria are
+                built. For any other visit type the care-team page applies no criteria: it lists what was reported and the gaps.
               </Note>
               <ResponsiveTable
                 caption="Family-history criteria in current guidelines"
@@ -525,7 +526,8 @@ export default function HowItWorks() {
               <Note>
                 NYC is a pilot market, not a revenue market; 76–79% of NYC cardiology clinicians sit inside six large health systems (NYU, Columbia, Mount Sinai,
                 Northwell, Montefiore, Weill Cornell). Growth would come from larger groups, health systems, primary care (the Medicare wellness visit requires family history) and genetics programs.
-                <Cite n={[99, 104]} /> Each new specialty reuses the tree and adds its own questions and clinician criteria; cardiology’s are the only ones built.
+                <Cite n={[99, 104]} /> Each new specialty reuses the tree and adds its own questions and clinician criteria. Two question sets exist today: cardiology’s,
+                with guideline criteria, and a general set for any other visit, with none.
               </Note>
               <Button href="/pilot" variant="link" iconRight={<ArrowRight />} className="self-start">
                 The proposed pilot

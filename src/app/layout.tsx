@@ -35,7 +35,7 @@ const display = Newsreader({
 });
 
 const DESCRIPTION =
-  "Stemma, the family health tree, turns “heart problems run in the family” into who, what, and at what age, before the cardiology visit. A Team 709 student prototype with a made-up demo family.";
+  "Stemma, the family health tree, turns “it runs in the family” into who, what, and at what age, before any doctor’s visit. A Team 709 student prototype with a made-up demo family.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),

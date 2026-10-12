@@ -19,7 +19,7 @@ import type { Page } from "@playwright/test";
 
 const DOC = 'article[aria-label="Pre-visit family history summary"]';
 
-const H1 = "Turn “heart problems run in the family” into who, what, and at what age.";
+const H1 = "Turn “it runs in the family” into who, what, and at what age.";
 // §8 order (§8.11 "What we heard" and the hero's chapter list carry visually hidden h2s).
 const H2S = [
   "How it works, in four chapters", // the hero's chapter cards (sr-only h2 over their h3s)
@@ -94,7 +94,7 @@ test.describe("structure", () => {
     await expect(page.locator('a[href*="view=care-team"]')).toHaveCount(0);
     await expect(page.getByRole("link", { name: "See the care-team view" })).toHaveAttribute("href", "/practice");
     await expect(page.getByRole("button", { name: "Practice view" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "See what your cardiologist gets" })).toHaveAttribute("href", "#two-readers");
+    await expect(page.getByRole("link", { name: "See what your doctor gets" })).toHaveAttribute("href", "#two-readers");
     await expect(page.locator("section#two-readers")).toHaveCount(1);
   });
 });
