@@ -55,10 +55,10 @@ export default function InterviewsPage() {
       />
       <ResearchTabs current="interviews" />
 
-      <Section theme="paper" aria-labelledby="interviews-title" className="py-14 lg:py-24">
+      <Section theme="paper" aria-label="The interviews" className="py-14 lg:py-24">
         <Container>
           {/* What we heard: the story, and how far it reaches */}
-          <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
+          <section aria-labelledby="interviews-title" className="grid gap-10 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-7">
               <BandHeading id="interviews-title" eyebrow={`Interviews · ${R.period}`} title={`What we heard in ${total} interviews`} />
               <p className="mt-6 max-w-[64ch] text-body text-fg-2 sm:text-lead">{R.intro}</p>
@@ -91,7 +91,7 @@ export default function InterviewsPage() {
                 <p className="mt-1.5 text-small text-fg-2">{R.gaps}</p>
               </div>
             </aside>
-          </div>
+          </section>
 
           {/* Themes */}
           <section aria-labelledby="themes-title" className="mt-20 lg:mt-28">
@@ -115,7 +115,7 @@ export default function InterviewsPage() {
                       <ul aria-label={`Interviews behind “${t.title}”`} className="mt-2 flex flex-wrap gap-1.5">
                         {t.ids.map((id) => (
                           <li key={id}>
-                            <IdChip id={id} />
+                            <IdChip id={id} onTint={fh} />
                           </li>
                         ))}
                       </ul>
@@ -148,12 +148,16 @@ export default function InterviewsPage() {
   );
 }
 
-/** An interview ID that jumps to its row in the list below. */
-function IdChip({ id }: { id: string }) {
+/** An interview ID that jumps to its row in the list below. `onTint`: on the tinted family-history card, where the
+ *  sunken fill would vanish into the card, the chip is a white pill instead. */
+function IdChip({ id, onTint }: { id: string; onTint?: boolean }) {
   return (
     <a
       href={`#${id}`}
-      className="inline-flex h-7 items-center rounded-full bg-sunken px-2.5 font-mono text-caption font-medium text-fg-2 tabular-nums transition-colors duration-(--dur-hover) hover:bg-mist-2 hover:text-fg"
+      className={cn(
+        "inline-flex h-7 items-center rounded-full bg-sunken px-2.5 font-mono text-caption font-medium text-fg-2 tabular-nums transition-colors duration-(--dur-hover) hover:bg-mist-2 hover:text-fg",
+        onTint && "bg-surface",
+      )}
     >
       {id}
     </a>
