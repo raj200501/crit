@@ -438,7 +438,7 @@ We need to run seven operations. Who already runs them (Y yes, P partly, N no, ?
 | --- | --- | ---: | ---: |
 | Founding pilot | $1,000 flat for 12 weeks, credited to year one | n/a | n/a |
 | **A (lead)** | **$500 per cardiologist per year** | $41.67 | $83 |
-| B (tested on the same card) | $99 per cardiologist per month | $99 | $198 |
+| B (a higher price we test on the same card) | $99 per cardiologist per month | $99 | $198 |
 | C (higher; our first guess, modeled only, not on the price card) | $149 per cardiologist per month | $149 | $298 |
 
 **Break-even** (operating cost ÷ revenue; rounded up):
@@ -500,11 +500,11 @@ After the two sentences Raj says: "We start with three New York cardiology group
 
 | Canvas box | Chosen configuration | Other options, in order |
 | --- | --- | --- |
-| Customer segments | **Payer:** independent NYC cardiology groups with 2–10 cardiologists (manager budgets, owner signs). **Users:** their adult new patients, sharpest for palpitations, fainting, chest pain, high cholesterol or a relative's heart event. **Contributors:** adult relatives | Large independent and PE groups; solo cardiologists; health-system cardiogenetics and lipid clinics; primary care (AWV); consumers directly (free side door) |
+| Customer segments | **Payer:** independent NYC cardiology groups with 2–10 cardiologists (manager budgets, owner signs; untested). **Users:** their adult new patients, sharpest for palpitations, fainting, chest pain, high cholesterol or a relative's heart event. **Contributors:** adult relatives | Large independent and PE groups; solo cardiologists; health-system cardiogenetics and lipid clinics; primary care (AWV); consumers directly (free side door) |
 | Value propositions | **Clinician:** one page with who, what, what age, source and status for every fact, plus guideline criteria for review. **Practice:** more family history in the chart before visit one. **Patient:** walk in prepared. **Relative:** answer once, for yourself; decline any time | Relatives who may need screening, flagged for the clinician (never priced on); staff time saved (measure, don't claim) |
 | Channels | **Practice sends the link with new-patient paperwork; patient texts relatives from own phone; the practice opens the care-team page by read-only link or check-in QR and files it as a PDF; founder-led sales** | Patient upload (after counsel); SMART Health Link QR (pilot); EHR app (product stage) |
 | Customer relationships | **Founder-led setup, week-6 and week-12 reports, help line; each relative consents to their own branch** | Self-serve onboarding once the playbook is written |
-| Revenue streams | **$1,000 12-week founding pilot, credited to year one; then $500 per cardiologist per year; free for patients and relatives** | $99 per cardiologist per month (tested); per completed summary; never per referral or new patient |
+| Revenue streams | **$1,000 12-week founding pilot, credited to year one; then $500 per cardiologist per year; free for patients and relatives** | $99 per cardiologist per month (a higher price we test); per completed summary; never per referral or new patient |
 | Key resources | **Prototype; per-fact data model; versioned rule table signed by a cardiologist; a company that can sign BAAs; BAA and privacy documents** | Production Epic app (USCDI-only); pilot outcome data |
 | Key activities | **Sell pilots; measure; keep rules current; operate as a business associate** | EHR integrations, only when a paying practice needs one |
 | Key partners | **1–3 pilot groups; a cardiologist reviewer; BAA vendors (Vercel Pro, Neon, SES); a law clinic** | AWS-only stack to drop the $350 add-on; fax vendor with a BAA |
@@ -598,7 +598,7 @@ All six were captured from the production prototype on Oct 7, 2026, after the op
 5. **Insurance quotes, legal cost and company formation** (estimates or unknown; NY LLC publication rules [S53]).
 6. **FHIR export validation** against US Core 9 before calling it conformant.
 7. Use **D021** (not ID021) for the genetics counselor and keep her first name off the board.
-8. **Product fixes before screenshots** (redesign; done Oct 7, 2026: (a), (b) and (c) are all in the production prototype): (a) the patient's Print button prints the patient's copy, the patient-side care-team preview goes, and the care-team copy reaches the practice only by read-only link, QR or fax; otherwise ask counsel before showing a patient carrying it. (b) In `src/lib/clinical.ts`, label a second-degree relative's reported high cholesterol "Simon Broome criteria (first- or second-degree adult relative with total cholesterol > 290 mg/dL; level not reported)" and use Dutch Lipid Clinic only for first-degree relatives. (c) Invite text: no health information and no "about 2 minutes" claim. Screenshot cutoff: if the redesign is not on production by end of day Oct 13, capture from the current build that day.
+8. **Product fixes before screenshots** (redesign; done Oct 7, 2026: (a), (b) and (c) are all in the production prototype): (a) the patient's Print button prints the patient's copy, the patient-side care-team preview goes, and the care-team copy reaches the practice only by read-only link or check-in QR (fax only in the pilot); otherwise ask counsel before showing a patient carrying it. (b) In `src/lib/clinical.ts`, label a second-degree relative's reported high cholesterol "Simon Broome criteria (first- or second-degree adult relative with total cholesterol > 290 mg/dL; level not reported)" and use Dutch Lipid Clinic only for first-degree relatives. (c) Invite text: no health information and no "about 2 minutes" claim. Screenshot cutoff: if the redesign is not on production by end of day Oct 13, capture from the current build that day.
 9. **Five independent practices' intake forms** (test 7), so the first business-logic clause rests on the wedge's own forms, not one health-system form.
 10. **Name and trademark.** There is a pending US trademark application for **STEMMAMD** (Stemma Inc, filed Aug 25, 2026, classes 9 and 38, patient medical-information software), close to our name and field. Get a clearance search from counsel before incorporating or filing under the name, and keep a fallback name (see the Maker Day 2 pitch, open item 15).
 

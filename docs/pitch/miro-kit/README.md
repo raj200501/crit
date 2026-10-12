@@ -58,22 +58,44 @@ They fit without overlapping: the new Step 5a and 5b end above the next row (y 1
 
 ### Old wording left in frames that stay
 
-These frames were not rebuilt, but one line in each still uses wording the final deck changed. Double-click the item and edit the words (each id opens with the link pattern above):
+These frames were not rebuilt, but some lines in them still use wording the final deck or the VCA changed. Double-click the item and edit the words (each id opens with the link pattern above). Read back from the board on Oct 12, 2026.
+
+**These contradict the deck** (status words, scores, pilot price, how the care-team copy travels, what a relative can do today). Fix them before the PDF:
 
 | Frame | Item id | Change | To |
 | --- | --- | --- | --- |
 | Step 1 canvas (1 of 3), sticky Value Propositions, Patient 4 | 3458764686319551153 | "Every fact marked known, conflicting, unknown or declined" | "Every fact: Known, Reports disagree, Unknown, Chose not to share or Not asked yet" |
-| Step 1 canvas (1 of 3), sticky Key Resources 2 | 3458764686319551137 | "Cardiology rule set, cited and versioned by guideline year" | "Cited rule packs per specialty; cardiology first" |
 | Why each Post-it (2 of 3), Patient 4 | 3458764686324718427 | same as the Patient 4 sticky | same |
-| Why each Post-it (1 of 3), Key Resources 2 | 3458764686324541909 | same as the Key Resources 2 sticky | same |
 | Why each Post-it (3 of 3), Revenue 1 | 3458764686324915152 | "fallback $500 for 8 weeks" | "the only pilot price we offer" |
 | Step 3 · What's new and what's old | 3458764686481011011 | "per-fact known/conflicting/unknown/declined" | "a per-fact status (Known, Reports disagree, Unknown, Chose not to share, Not asked yet)" |
 | Step 5a · Technical feasibility | 3458764686481535884 | "(known / conflicting / unknown / declined)" | "(Known / Reports disagree / Unknown / Chose not to share / Not asked yet)" |
 | Step 5b · Operational feasibility | 3458764686481998926 | "Consent: each relative owns their branch, can decline, correct or delete; a decline wins" | "Consent: each relative can answer or decline today; correcting or deleting a sent answer comes with the pilot (A10). A decline wins" |
-| Step 5d · Year 1 and market check | 3458764686320889349 | "about ten 2-cardiologist groups" | "9–11 groups of two" |
-| Step 4e · Cheapest tests | 3458764686320572184 | "result goes on slide 6" | "result goes on slide 7 and in A8's Gap box" |
+| Step 4a · Net benefit, Net column (patient) | 3458764686320269187 | "+ when the practice asks" | "+2: gains if the practice asks" |
+| Step 4a · Net benefit, Net column (relative) | 3458764686320269193 | "0, unproven: a favor to family (no relative interviewed)" | "0: even; relatives untested (a favor to family; no relative interviewed)" |
+| Step 4a · Net benefit, Net column (clinician) | 3458764686320269198 | "+? if it scans in under a minute with at most two specific alerts (no cardiologist asked yet)" | "+3: gains if read in < 1 min, with at most two specific alerts (no cardiologist asked yet)" |
+| Step 4a · Net benefit, Net column (practice) | 3458764686320269205 | "? not proven" | "−2 plus unmeasured staff time: worse unless a pilot shows time saved or clinical value" |
+| Step 4b · Scored version, Net row | 3458764686320269859, 3458764686320269860, 3458764686320269861, 3458764686320269862 | "+ when the practice asks" · "0, unproven" · "+? until a cardiologist scans it" · "? not proven: negative unless the pilot shows staff time saved or clinical value" | "Gains if the practice asks" · "Even; relatives untested" · "Gains if read in < 1 min (untested until a cardiologist scans it)" · "Worse unless a pilot shows time saved or clinical value" (slide 7's words; deck A3 scores them +2, 0, +3, −2) |
+| Step 4 · Verdict, Net row | 3458764686320417030, 3458764686320417031, 3458764686320417032, 3458764686320417033 | same four cells as Step 4b | same as Step 4b |
+| Choices made, and open items, open item 8 | 3458764686325030251 | "reaches the practice only by read-only link, QR or fax" | "reaches the practice only by read-only link or check-in QR (fax only in the pilot)" |
 
-The last two only match the deck's numbers and slide numbers; the others contradict it (status words, pilot price, what a relative can do today).
+**These only lag the deck's or the VCA's words and numbers** (no contradiction). Fix them if there's time:
+
+| Frame | Item id | Change | To |
+| --- | --- | --- | --- |
+| Step 1 canvas (1 of 3), sticky Key Resources 2 | 3458764686319551137 | "Cardiology rule set, cited and versioned by guideline year" | "Cited rule packs per specialty; cardiology first" |
+| Why each Post-it (1 of 3), Key Resources 2 | 3458764686324541909 | same as the Key Resources 2 sticky | same |
+| Step 1 canvas (3 of 3), sticky From practices 3 | 3458764686319730394 | "Tested on same card: $99 per cardiologist per month" | "Tested on same card: a higher $99 per cardiologist per month" |
+| Why each Post-it (3 of 3), Revenue 3 | 3458764686324915154 | "Tested on same card: $99 per cardiologist per month" and "Low end of the original hypothesis [research §4.3]" | "Tested on same card: a higher $99 per cardiologist per month" and "Low end of the original hypothesis [research §4.3]; $149 is modeled only (Step 5.3)" |
+| Step 4d · Willingness to pay and what is unproven | 3458764686320438795 | "1. A practice will pay (no buyer interviews, letters or pilots)." | "1. A practice pays $500 per cardiologist a year despite free intake tools (no buyer interviews, letters or pilots)." |
+| Step 4e · Cheapest tests | 3458764686320572184 | "result goes on slide 6" | "result goes on slide 7 and in A8's Gap box" |
+| Step 5c · Revenue and break-even | 3458764686320889076 | "C (original hypothesis, high end)" | "C (higher; our first guess, modeled only, not on the price card)" |
+| Step 5c · Revenue and break-even | 3458764686320889103 | "Plus one salary (BLS median wage …" | "Plus one developer's wage (BLS median wage …" |
+| Step 5d · Year 1 and market check, financial verdict | 3458764686320889349 | "at our lead price (about ten 2-cardiologist groups), and one salary (wage only) needs about every independent cardiologist in NYC" | "at our price (9–11 groups of two), and one developer's wage on top needs about 290, about every independent cardiologist in NYC" |
+| Step 5d · Year 1 and market check, market check | 3458764686320889347 | "or $9.1–13.8M at $99–149 a month" and the last sentence, "NYC is a pilot market, independent cardiology is a wedge, and growth has to come from larger groups, health-system clinics and primary care." | "or $9.1–13.8M at the higher prices in the break-even table ($99–149 a month)" and "…are worth $142–160k a year at $500: a pilot market, not a business. Independent cardiology is the wedge; growth adds specialties, one at a time: the rest of NYC's ~20 cardiology groups, larger groups, genetics and lipid clinics, then primary care wellness visits (slide 9, A9). Markets beyond independent cardiology are not yet sized." |
+| Step 5 · Verdict | 3458764686320889487 | "Financials: the pilot covers its own cost; a business needs larger groups, health systems or primary care." | "Financials: three pilots cover their own cost; a business needs more specialties, one at a time (slide 9, A9)." |
+| Choices made, and open items, Price row | 3458764686325030212 | "$500 per cardiologist per year after a $1,000 pilot; $99/mo tested on the same card." | "$500 per cardiologist per year after a $1,000 12-week pilot credited to year one; $99/mo is a higher price we test on the same card; $149/mo is modeled only." |
+
+Step 5a doesn't list the six tree changes shipped Oct 12 (VCA Step 5.1, last six rows). That is an omission, not a contradiction: the deck doesn't present them either.
 
 ## 4. Order and export
 
