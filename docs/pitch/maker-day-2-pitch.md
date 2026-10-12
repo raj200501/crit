@@ -1,354 +1,760 @@
 # Maker Day 2 pitch: Stemma, the family health tree
 
 Team 709 · Section 7 · TECH 5900 Product Studio · Maker Day 2, Oct 16, 2026 (slides as one PDF by 5:00 pm Oct 16)
-Raj Kashikar · Viha Srinivas · Unser Jaffry · Draft of Oct 6, 2026 (revised after review; renamed Stemma on Oct 7)
+Raj Kashikar · Viha Srinivas · Unser Jaffry · Final deck of Oct 12, 2026 (renamed Stemma on Oct 7; revised on Oct 12 so the PDF stands alone without presenters)
 
-**How to read this.** `[n]` = numbered source in `../research.md`. `[S#]` = source opened for the pitch work; the full list with URLs is at the end of this file and in `vca.md`. Interview IDs match the Team Hub "Interview Logs". "(note)" = the note-taker's wording; quotation marks only where the Team Hub notes have them. **Assumption** = our estimate, with its math. Canvas tags: **N** new, **O** old, **N/O** some of each.
+**The deck is the source of truth.** The final deck is the Google Slides file `1JGhz-94qJGlWLe-9ZmBesYhjJp6ZIuggMYgFx6BK6kM` ("Team709_MakerDay2_Stemma"): 9 main slides, a divider, and backup A0 to A12. This file copies every slide's text and speaker notes from it word for word (read live on Oct 12, 2026, revision `tLDff4ET2Ki_Mw`). If the deck and this file ever differ, the deck wins; update this file.
 
-**Deck look.** The deck has its own look and does not follow the website. Use the Team 709 theme from Maker Day 1: white background; headline in the dark navy bold display face used for the Maker Day 1 title (now set as "STEMMA"); body text in dark gray; orange as the one accent color; the small "Team 709" mark top right and a page counter bottom right ("2 / 8"). The deck's status colors (**known** = green outline, **conflicting** = orange outline, **unknown** = gray dashed outline, **declined** = gray fill) appear only on slide 1, which is drawn natively. The only things the deck takes from the website are the screenshots on slides 3–5 and backup A12, placed in plain gray browser or phone frames. The deck is not restyled to match them, and slide 3 has no deck-colored legend: the app's own status labels, visible in the screenshot, carry the statuses. Every slide except 3–5 and backup A12 can be built now.
+**How to read this.** `[n]` = numbered source in `../research.md` (the deck links them at stemmahealth.vercel.app/research). `[S#]` = source opened for the pitch work; the full list with URLs is at the end of this file and in `value-creation-analysis.md`. Interview IDs (ID001–ID020, D021) match the Team Hub "Interview Logs"; the site's anonymized /research/interviews tab lists the same 21. "(notes)" = the note-taker's wording. Canvas tags: **[N]** new, **[N/O]** done elsewhere, new here, **[O]** old (Phreesia or a competitor does it). On-slide text is in `code` spans, one span per paragraph; the speaker notes are in text blocks, and the quoted paragraph at the top of each is the script.
 
-**Main deck: 8 slides, 4:49 of talk** (11 seconds of slack before the 5:00 hard stop; the script is about 665 words, 4:26 at 150 words a minute). Raj 1:51 (slides 1, 2, 8), Viha 1:20 (slides 3–5), Unser 1:38 (slides 6–7), handoffs included in the incoming speaker's time.
+**Honesty rules (the same as the deck).**
+- The prototype uses synthetic data only. Everyone shown is a synthetic demo family.
+- Never say "HIPAA compliant" or "certified". When a practice pays, we become a HIPAA business associate under signed BAAs.
+- Status words, exactly: Known · Reports disagree · Unknown · Chose not to share · Not asked yet.
+- Nobody uploads medical records. A relative can share one condition, read-only, from their own patient portal (a public test server today).
+- Interviews: 21 logged; 0 practice managers, 0 cardiologists, 0 relatives.
+- Price: $1,000 for a 12-week pilot, credited to year one, then $500 per cardiologist a year; free to patients. $99 a month is a higher price we test on the same card. A4 also models $149 a month (our first guess); it is not on the price card.
+- Positioning: the wedge is 3 independent NYC cardiology groups; the vision is any doctor who needs a family history, one specialty at a time. Never "built for any physician".
 
-| # | Element | Story title | Speaker | Seconds | Clock at end |
-| --- | --- | --- | --- | ---: | ---: |
-| 1 | Opens 1 | Stemma turns "it runs in the family" into facts. | Raj | 18 | 0:18 |
-| 2 | 1 Customer and problem | Patients know heart trouble runs in the family, not who. | Raj | 44 | 1:02 |
-| 3 | 2 Mockup | The patient builds the tree by side of family, uncertainty included. | Viha | 23 | 1:25 |
-| 4 | 2 Mockup | Relatives answer for themselves, on their phone, with no account. | Viha | 25 | 1:50 |
-| 5 | 2 Mockup | The patient walks in with one page the cardiologist can act on. | Viha | 32 | 2:22 |
-| 6 | 3 Will people buy it? | People use it when the practice sends the link; no practice has agreed to pay yet. | Unser | 47 | 3:09 |
-| 7 | 4 Can you make it? | We can pilot by January; salaries need a bigger market. | Unser | 51 | 4:00 |
-| 8 | 5 Central business logic and wedge | Start with three NYC cardiology groups, then grow into primary care. | Raj | 49 | **4:49** |
+**Deck look.** The deck has its own look, not the website's: white slides and a dark #1F2937 cover; Cambria bold navy titles; a 10 pt orange-red (#C2410C) caps kicker; Calibri body; "Team 709" at 9.5 pt top right on every slide except the cover; an 8 pt page counter bottom right ("2 / 9  ·  Customer and problem" on the main slides, "Backup A3  ·  Net benefit" in the backup); 7.5 pt gray footers. Status chips are drawn in the deck only on slide 1. The only things taken from the website are the screenshots on slides 4–6 and A12 (`public/pitch/`), in plain frames, and the slide 9 QR code; the screenshots show the app's own status labels, so no deck-colored legend sits next to them.
+
+**Main deck: 9 slides, about 4:45 of talk** (4:39 of speech at 0.43 s per spoken word, the team's own rate, with numbers counted as spoken, plus three handoffs of about 2 s; about 15 s of slack before the 5:00 hard stop). Raj 1:46 (slides 1, 2, 9), Viha 1:25 (slides 3–6), Unser 1:28 (slides 7–8). Every member presents. The clock column includes each handoff.
+
+| # | Slide (element id) | Title on the slide | Speaker | Seconds | Clock at end |
+| ---: | --- | --- | --- | ---: | ---: |
+| 1 | Title (`s01_pg`) | Stemma | Raj | 19 | 0:19 |
+| 2 | Customer and problem (`s02_pg`) | Patients know heart trouble runs in the family, not who or when. | Raj | 39 | 1:00 |
+| 3 | How Stemma works (`s02b_pg`, new) | The practice sends the patient a link; relatives answer; the practice gets a page. | Viha | 20 | 1:20 |
+| 4 | Mockup 1, the patient (`s03_pg`) | The patient builds the tree by side of family, uncertainty included. | Viha | 19 | 1:39 |
+| 5 | Mockup 2, the relative (`s04_pg`) | Relatives answer for themselves, on their phone, with no account. | Viha | 15 | 1:54 |
+| 6 | Mockup 3, the visit (`s05_pg`) | The patient reviews one page; the cardiologist gets a care-team copy. | Viha | 31 | 2:27 |
+| 7 | Will people buy it? (`s06_pg`) | Patients use tools their practice sends; no practice has agreed to pay us yet. | Unser | 46 | 3:13 |
+| 8 | Can we make it? (`s07_pg`) | We can pilot by January 2027; salaries need a bigger market. | Unser | 42 | 3:57 |
+| 9 | Central business logic and wedge (`s08_pg`) | 3 NYC cardiology groups first, then other specialties, one at a time. | Raj | 48 | **4:45** |
+
+**Cut from the script to make room** (each is still on the slide or in the notes): slide 2's "with a few lines for details"; slide 5's "He sees who asked and who will read his answers" (screen 1 shows it); slide 7's spoken verdict (the title says it) and a longer chatbot sentence; slide 8's "What you saw runs today on synthetic data…" (the checklist shows it); slide 9's reason for cardiology first (the wedge box says it).
 
 ---
 
 ## Main deck
 
-### Slide 1 · Title
+### Slide 1 · Title (`s01_pg`)
 
-- **Story title:** Stemma turns "it runs in the family" into facts.
-- **Speaker / time:** Raj · 18 s
+- **Title on the slide:** Stemma
+- **Speaker / time:** Raj · 19 s (clock 0:19)
 - **On-slide text:**
-  - Top strip (small caps): `TEAM 709 · SECTION 7 · PRODUCT STUDIO · MAKER DAY 2 · OCT 16, 2026`
-  - Headline: `STEMMA`
-  - Descriptor (small caps, directly under the headline): `THE FAMILY HEALTH TREE`
-  - Subhead: `"Heart problems run in the family" → who, what, at what age. Before the first cardiology visit.`
-  - Line: `Free for patients · cardiology practices pay`
-  - Names: `Raj Kashikar · Viha Srinivas · Unser Jaffry`
-  - Footer (small): `Prototype uses synthetic data only.`
-- **Visual:** Left half: the text above, in the Maker Day 1 layout. Right half, built natively in Slides (not a screenshot): a gray speech bubble reading "Heart problems run in the family." with an orange arrow to three status chips stacked vertically, in the deck's status colors: green-outline chip `Uncle Dev · atrial fibrillation at 34 · his answer + his portal record`; orange-outline chip `Dad · heart attack at 60? or angina at ~58?`; gray-dashed chip `Grandpa Ray · unknown`. This previews the whole idea in one picture. It is the only slide with deck-colored status chips.
-- **Logo files:** `public/brand/stemma-lockup-1200.png` (mark + "Stemma" + descriptor in ink and evergreen, transparent, for white slides) and `public/brand/stemma-lockup-night-1200.png` (ivory and lumen, transparent, for a dark #1F2937 slide); the mark alone is `stemma-mark-512.png` / `stemma-mark-night-512.png`. If the logo goes on the slide, it sits above or beside the headline; the headline stays text.
-- **Script (Raj):** "We're Team 709, and this is Stemma. In ancient Greece, medicine was a family business. Stemma brings the family back into it: it turns 'heart problems run in the family' into who had what, at what age, before the first cardiology visit." (18 s; the slide's "Free for patients · cardiology practices pay" line is no longer read aloud.)
-- **Why the name (for Q&A, not read aloud):** a *stemma* (Greek στέμμα) is the ancient family-tree diagram; Roman households displayed stemmata of their ancestors. The mark is a pedigree couple whose descent line becomes the Rod of Asclepius, the Greek god of medicine's staff with one snake (not the two-snake caduceus). Medicine was a family business: Asclepius's children included Hygieia, Iaso and Aceso, and Greek doctors called themselves Asclepiads, "of the family of Asclepius". Before using the name beyond the class, see open item 15 (trademark).
-- **Evidence notes:** Uncle Dev's portal record gives the condition and the date it went on his problem list (2009); the age, 34, is his own answer [8] (`src/lib/demo.ts`).
+  - Top strip: `TEAM 709 · SECTION 7 · PRODUCT STUDIO · MAKER DAY 2 · OCT 16, 2026`
+  - Headline: `Stemma`
+  - Descriptor: `THE FAMILY HEALTH TREE`
+  - Subhead: `“Heart problems run in the family” → who, what, and at what age, before the first cardiology visit.`
+  - Model line: `Free for patients  ·  practices pay  ·  cardiology first`
+  - Names: `Raj Kashikar, Viha Srinivas, Unser Jaffry`
+  - Footer: `Prototype uses synthetic data only.`
+  - Page counter: `1 / 9`
+  - Speech bubble: `“Heart problems run in the family.”`
+  - Status chip 1:
+    - `Uncle Dev · atrial fibrillation at 34`
+    - `Known · his answer + his patient-portal record`
+  - Status chip 2:
+    - `Dad · heart attack at 60? angina at ~58?`
+    - `Reports disagree · Mom and Uncle Dev`
+  - Status chip 3:
+    - `Grandpa Ray`
+    - `Unknown · no one knows yet`
+- **Visual:** dark cover (#1F2937). Left: the text above and the Stemma mark (`public/pitch/mark-night.png`). Right, drawn natively in Slides: the speech bubble, an arrow, and the three status chips stacked. Slide 1 is the only slide with deck-drawn status chips. Logo files for other uses: `public/brand/stemma-lockup-1200.png` (white slides) and `public/brand/stemma-lockup-night-1200.png` (dark slides).
+- **Speaker notes** (word for word from the deck):
 
-### Slide 2 · Customer and problem
+  ```text
+  RAJ (19 s)
+  "We're Team 709, and this is Stemma. In ancient Greece, medicine was a family business. Stemma brings the family back into it: it turns 'heart problems run in the family' into who had what, at what age, before the first cardiology visit."
 
-- **Story title:** Patients know heart trouble runs in the family, not who.
-- **Speaker / time:** Raj · 44 s
+  Evidence: Uncle Dev's condition and its 2009 problem-list date come from his portal record; the age, 34, is his own answer. Everyone shown is a synthetic demo family. If asked about the name: a stemma is the ancient family-tree diagram; the logo is the Rod of Asclepius, the Greek god of medicine.
+  ```
+
+### Slide 2 · Customer and problem (`s02_pg`)
+
+- **Title on the slide:** Patients know heart trouble runs in the family, not who or when.
+- **Speaker / time:** Raj · 39 s (clock 1:00, with the handoff to Viha)
 - **On-slide text:**
   - Kicker: `CUSTOMER AND PROBLEM`
-  - Column 1 header `WHO`: `Patient: adult booked for a first cardiology visit (33-day average wait [S2])` · `Payer: the independent practice; the manager holds the budget`
-  - Column 2 header `WHAT THEY USE TODAY`: `Patient: memory, then calling relatives after the visit` · `Practice: intake form (yes/no "Heart Disease?" + a few lines for details), then a quick question in the room`
-  - Column 3 header `THE GAP`: stat `1 in 7` + label `US adults have actively collected their family health history (15.2%; CDC/NCHS survey, 2024 data, published 2026) [S1]`; stat `11%` + label `of positive heart family-history entries in UK GP records named relative and age (1.5M patients, 1998–2008) [89]`
-  - Footer strip: `ID007: knew heart problems ran in the family, not who or when (paraphrase of notes).`
-- **Visual:** Three columns. Column 1: a simple person icon with a calendar showing "visit in 3 weeks" over the patient line, a small building icon over the payer line. Column 2: a tight crop of the family-history grid on page 3 of a posted cardiology new-patient form (rows Father, Mother, Brother(s), Sister(s), Son(s), Daughter(s), Other(s); columns including "Heart Disease?"), including the free-text detail lines under it, with an orange box around the "Heart Disease?" column. Caption under it, small: `Health-system example (2016 version). Independent practices' forms not yet collected [S5]`. Column 3: the two stat tiles, large numerals in navy.
-- **Script (Raj):** "Our user is an adult booked for a first visit at an independent cardiology practice, and that practice pays. One patient we interviewed knew heart problems ran in the family, but not who, what, or when. The cardiologist sent them home to ask, and they learned an uncle had a rhythm problem young. Today it's memory, a yes-or-no heart disease grid on the intake form with a few lines for details, and a quick question in the room. Only one in seven American adults says they've collected their family history. Viha will show you what our made-up patient, Alex, does instead."
-- **Evidence notes:** ID007 (Team Hub note; the only words in quotation marks there are "heart problems run in the family"). The form [S5] (Weill Cornell Medicine Cardiology, ver. 2-7-16) asks "Heart Disease?" per relative, then asks for type and age of onset on free-text lines and about sudden death; it has no side of family and no "not sure". Independent practices' forms and EHR check-ins are not yet collected (open item 9; athenahealth's check-in can show family-history questions [S52]). "Quick question in the room": family history was discussed in 51% of new-patient visits, under 2.5 minutes (US family physicians, Acheson et al. 2000, via [117]); spoken only. [S1]: NCHS Rapid Surveys System, Jan–Feb 2024, published 2026. [89]: UK THIN records, 1,504,535 patients registered 1998–2008.
+  - Column 1 header: `WHO`
+  - Column 1:
+    - `Patient`
+    - `An adult booked for a first visit at an independent cardiology practice, our first market. Average wait: 33 days, time to ask relatives.`
+    - `Payer`
+    - `That practice; its manager holds the budget (untested).`
+  - Column 2 header: `WHAT THEY USE TODAY`
+  - Column 2:
+    - `Patient: memory, then calling relatives.`
+    - `Practice: a yes/no intake grid and a quick question in the room.`
+  - Column 2 grid (recreated from the 2016 form [S5], drawn as a table):
 
-### Slide 3 · Mockup 1: the patient builds the tree
+    | Relative | Heart disease? |
+    | --- | --- |
+    | Father | Y  /  N |
+    | Mother | Y  /  N |
+    | Brother(s), sister(s) | Y  /  N |
 
-- **Story title:** The patient builds the tree by side of family, uncertainty included.
-- **Speaker / time:** Viha · 23 s (includes the handoff)
+  - Grid caption: `A “Y” can't show if it came before 55, the age guidelines count.`
+  - Column 3 header: `THE GAP`
+  - Stat tile `1 in 7`: `US adults have collected their family health history (15.2%)`
+  - Stat tile `11%`: `of family heart-history entries in UK charts named relative and age`
+  - Quote strip: `Cardiac patient, our interview notes: knew heart problems ran in the family, not who or when. The cardiologist sent them home to ask.`
+  - Footer: `Sources: CDC/NCHS survey, Kava et al., 2026 · AMN Healthcare wait-time survey, 2025 · Weill Cornell cardiology new-patient form, 2016 (grid recreated) · UK records study, Dhiman et al., 2014 · ACC/AHA cholesterol guideline, 2018.`
+  - Page counter: `2 / 9  ·  Customer and problem`
+- **Visual:** three columns. Column 2 shows the recreated yes/no grid with a highlight box; column 3 has the two stat tiles; the quote strip runs across the bottom.
+- **Speaker notes** (word for word from the deck):
+
+  ```text
+  RAJ (39 s)
+  "Our user is an adult booked for a first visit at an independent cardiology practice, and that practice pays. One patient we interviewed knew heart problems ran in the family, but not who, what, or when. The cardiologist sent them home to ask. Today it's memory, a yes-or-no grid on the intake form, and a quick question in the room. But a yes alone can't say if Dad's heart attack came before 55, the age the guideline counts. Viha will show you what our made-up patient, Alex, does instead."
+
+  Saved for Q&A: 'and they learned an uncle had a rhythm problem young', 'a few lines for details' (the form has free-text lines after the grid) and 'Only one in seven American adults...' (the slide shows it). Evidence: 2018 ACC/AHA guideline, premature heart disease in a parent or sibling, men < 55, women < 65 [76]. Intake grid recreated from Weill Cornell's 2016 form [S5]. 'Quick question in the room': family history discussed in 51% of new-patient visits, under 2.5 minutes (Acheson, via [117]). 33-day wait: AMN Healthcare, 1,391 offices in 15 metros, May 2025 [S2]. 1 in 7 = 15.2% [S1]. 'Its manager holds the budget' is marked untested on the slide: 0 of 21 interviews were managers.
+  ```
+
+### Slide 3 · How Stemma works (`s02b_pg`, new in the final deck)
+
+- **Title on the slide:** The practice sends the patient a link; relatives answer; the practice gets a page.
+- **Speaker / time:** Viha · 20 s (clock 1:20)
 - **On-slide text:**
-  - Kicker: `MOCKUP · 1 OF 3 · THE PATIENT`
-  - Caption: `Alex builds the tree, one side at a time`
-  - Callouts: `① Mother's side and father's side are fixed slots` · `② "Not sure" is a real answer` · `③ Every person shows a status in words: Known · Reports disagree · Unknown · Declined to share · Not asked yet` (copy the exact labels from the final screenshot)
-  - Small caption under the frame: `Statuses as shown in the app`
-- **Visual:** Screenshot of the redesigned **tree view** with the demo family loaded, captured from the production URL at desktop width, 2× scale, cropped to the tree area with the app's own status labels (or legend) inside the frame, in a plain gray browser frame. No deck-colored legend row: two color codes for the same statuses on one slide would contradict each other. Callouts are navy circles with white numerals, not orange, so they don't read as a status. Expected nodes: Mom (known), Dad (reports disagree), Uncle Dev (known, from a portal record), Grandma Rosa (known), Grandpa Ray (unknown), Grandma June (declined to share), Grandpa Luis (not asked yet). Callout ① on the mother's-side / father's-side grouping, ② on one "Not sure" / "Doesn't know" answer, ③ on a status label. Optional inset (bottom right, phone-sized): the guided question card showing plain-word examples and the "Not sure" option.
-- **Script (Viha):** "Alex builds the tree one side of the family at a time, so nobody lands on the wrong side. Each relative gets plain questions with examples, and 'not sure' is a real answer. Every person gets a status in plain words: known, reports disagree, unknown, chose not to share, or not asked yet."
-- **Evidence notes:** D021 expects most patients would make structural errors, such as wrong side of family or wrong relationship type (note), and favored a guided flow that builds the pedigree (note); ID006 would have answered differently with a specific question (note); a guided tool recorded lineage in 100% of MeTree pedigrees vs 28.4% of chart pedigrees [84]. Status words above are from the redesign's current build (`shots/desktop-5-answers-end.png`); if the final labels differ, change the callout and the script to match.
+  - Kicker: `HOW STEMMA WORKS`
+  - Step 1 arrow: `1  Practice sends a link`
+  - Step 1 text: `With the new-patient paperwork, at booking.`
+  - Step 2 arrow: `2  Patient builds tree`
+  - Step 2 text: `Mom's side and Dad's side, then a link to each relative.`
+  - Step 3 arrow: `3  Relatives answer`
+  - Step 3 text: `On their phone, with no account. They can decline, or share one condition from their portal.`
+  - Step 4 arrow: `4  Practice opens page`
+  - Step 4 text: `The patient reviews it; the practice opens its own copy by link or QR.`
+  - Comparison strip: `Compared with 23andMe's family tree: there, you type in relatives' conditions and only you can see them. Here, relatives can answer for themselves, every fact keeps who said it, and the practice gets a page.`
+  - Price bar: `Practice pays: $1,000 for a 12-week pilot, credited to year one, then $500 per cardiologist a year. Free to patients.`
+  - Footer: `Prototype with synthetic data only. Patient portal = the website where a person sees their own medical record; the portal step runs on a public test server today. 23andMe: help article, Oct 11, 2026.`
+  - Page counter: `3 / 9  ·  How it works`
+- **Visual:** four arrow shapes in a row (a home plate, then three chevrons), each with its line of text under it; below them the full-width comparison strip and the full-width price bar.
+- **Speaker notes** (word for word from the deck):
 
-### Slide 4 · Mockup 2: a relative answers
+  ```text
+  VIHA (20 s)
+  "Here's how it works. Alex's cardiology practice texts a link with the new-patient paperwork. Alex builds the tree and texts each relative. Relatives can answer for themselves; on 23andMe, you type in their conditions yourself. Then the practice opens its own copy, and the practice pays."
 
-- **Story title:** Relatives answer for themselves, on their phone, with no account.
-- **Speaker / time:** Viha · 25 s
+  New slide. Leave the price on the slide; say it only if ahead of time. Don't say 'upload their medical records': a relative shares one condition, read-only, from a public test server today. If asked what we're taking from 23andMe: their editing tools (add a relative from any person, change a relationship, undo a removal) shipped on Oct 12 and are live on stemmahealth.vercel.app/tree (synthetic data only). Their help page also tells users to get a living relative's permission before entering that relative's health information; our relative link asks the relative directly instead. If asked when the link goes out: with the new-patient paperwork when the visit is booked (average cardiology wait 33 days, slide 2); how far ahead is up to each practice.
+  ```
+
+### Slide 4 · Mockup 1: the patient (`s03_pg`)
+
+- **Title on the slide:** The patient builds the tree by side of family, uncertainty included.
+- **Speaker / time:** Viha · 19 s (clock 1:39)
 - **On-slide text:**
-  - Kicker: `MOCKUP · 2 OF 3 · THE RELATIVE`
-  - Callout 1: `Grandpa Luis opens Alex's link.` No account and no app; he sees who asked and who will read his answers, and "I'd rather not share" is always an option.
-  - Callout 2: `He shares one condition from his own portal.` A real SMART on FHIR launch: he ticks atrial fibrillation, labeled "on your problem list since 2016", and confirms the age (69) himself. Nothing else leaves the page.
-  - Footnote (small): `Sandbox: Willis Crona is a made-up patient on the public SMART on FHIR test server, not a real MyChart. The invite text Alex sends carries no health information.`
-- **Visual:** Two plain gray phone frames side by side (390 × 844 captures at 2–3× scale). **Phone A:** the redesigned **relative invite screen** (who asked, who will see the answers, "Prefer not to share", the 18+ check, the made-up-data notice). Outline on the "who will see" line and the decline button. **Phone B:** the **MyChart sandbox pick screen** ("Pick what to share" after the SMART sandbox launch) with exactly one condition ticked, ideally "Atrial fibrillation · on the problem list since 2009", and the age-to-confirm field. Outline on the ticked condition and its source label. If the sandbox patient shows different conditions, use the labeled "Simulated portal record" fallback, which lists atrial fibrillation, and keep its label visible.
-- **Script (Viha):** "Then Alex texts each relative a link. Here's Grandpa Luis, Mom's dad, on his phone. No account. He sees who asked and who will read his answers, and he can decline. He answers for himself. He can also log in to his own patient portal and share one condition, labeled with where it came from."
-- **Evidence notes:** The deck uses Grandpa Luis (not asked yet in the demo) because the real sandbox record (made-up patient Willis Crona: atrial fibrillation on the problem list since 2016, age 69) fits him; Uncle Dev's portal fact (atrial fibrillation at 34, mirroring ID007's uncle) is already in the tree and shows on slide 5. The portal label says "on your problem list since <year>", never "verified", because Epic's onset date can be the date the problem was listed [8]; the relative confirms the age. The sandbox launcher preselects a synthetic patient and skips the login screen (`src/lib/smart.ts`). The invite message carries no health information (fixed in the redesign).
+  - Kicker: `MOCKUP  ·  1 OF 3  ·  THE PATIENT`
+  - Browser bar: `stemmahealth.vercel.app/tree`
+  - Markers on the screenshot: `1` `2` `3`
+  - Callout `1`: `Fixed slots for Mom's side and Dad's side, so nobody lands on the wrong side.`
+  - Callout `2`: `“Not sure” is a real answer. Grandpa Ray shows Unknown, never “no history”.`
+  - Callout `3`: `Every person has a status in words: Known · Reports disagree · Unknown · Chose not to share · Not asked yet.`
+  - Footer: `Live prototype, synthetic demo family; labels as the app shows them. RECORD = shared from that relative's own patient portal.`
+  - Page counter: `4 / 9  ·  Mockup: the patient`
+- **Visual:** screenshot of the live `/tree` page with the synthetic demo family (`public/pitch/slide3-tree.png`) in a plain browser frame, with the app's own status labels; numbered markers on the screenshot match the three callouts beside it.
+- **Speaker notes** (word for word from the deck):
 
-### Slide 5 · Mockup 3: the one page
+  ```text
+  VIHA (19 s)
+  "Alex fills in Mom's side and Dad's side in fixed slots, so nobody lands on the wrong side, and 'not sure' is a real answer. Every person gets a status in plain words: known, reports disagree, unknown, chose not to share, or not asked yet."
 
-- **Story title:** The patient walks in with one page the cardiologist can act on.
-- **Speaker / time:** Viha · 32 s
+  Saved: 'Each relative gets plain questions with examples' (the slide shows it). Evidence: D021 expects structural errors such as the wrong side of the family (notes); ID006 would have answered differently with a specific question (notes); a guided tool recorded lineage in 100% of MeTree family trees vs 28.4% of charts [84].
+  ```
+
+### Slide 5 · Mockup 2: the relative (`s04_pg`)
+
+- **Title on the slide:** Relatives answer for themselves, on their phone, with no account.
+- **Speaker / time:** Viha · 15 s (clock 1:54)
 - **On-slide text:**
-  - Kicker: `MOCKUP · 3 OF 3 · THE VISIT`
-  - Title: `One page the cardiologist can act on`
-  - Label over left image: `Alex's copy: facts, gaps, questions`
-  - Label over right image: `Care-team copy (the practice files it)`
-  - Three highlight tags on the right image: `Family-history item in the Simon Broome FH criteria, for clinician review` · `To clarify: reports disagree` · `Source on every line`
-  - Footer: `Alex's copy shows facts, gaps and questions, never risk scores. Guideline criteria appear only on the care-team copy, written for the clinician to review.`
-- **Visual:** Left, about one third of the width: the redesigned **pre-visit summary, patient view** (facts, "Still to confirm", "Questions you could ask your cardiologist", the "I've checked this" box), shrunk. Right, two thirds: the **care-team summary** as the practice opens it, cropped to its top half so text is readable, with the synthetic-data watermark visible. Three highlights: (1) Grandma Rosa, mother's side, very high cholesterol around 35, reported by Mom; (2) Dad: Mom reports heart attack at 60, Uncle Dev reports angina at about 58; (3) a source tag on any line ("from a portal record" on Uncle Dev's atrial fibrillation is best). Plain gray frames.
-- **Script (Viha):** "Alex checks it and brings it in. Alex's copy shows facts, gaps and questions. The care-team copy, the one the practice gets by link or QR, adds a block for the cardiologist: Grandma Rosa, Mom's mother, very high cholesterol around 35, reported by Mom. That's a family-history item in the Simon Broome criteria for inherited high cholesterol, for the cardiologist to review. To clarify: Mom says Dad had a heart attack at 60; Uncle Dev says angina at about 58. Unser?"
-- **Evidence notes:** Grandma Rosa is a second-degree relative. Dutch Lipid Clinic family-history points count first-degree relatives only; Simon Broome counts a first- or second-degree adult relative with total cholesterol > 290 mg/dL [77]. Mom reports "very high cholesterol", not a measured value, so the line is a family-history item for review, not a match. The current build labels it "Dutch Lipid Clinic / Simon Broome; 2026 ACC/AHA dyslipidemia guideline (cascade screening)" (`src/lib/clinical.ts`), and the 2026 cascade-screening line is about screening children [74][75]; fix the label before the screenshot (open item 8). Also on the page: one "also noted" item (Uncle Dev, atrial fibrillation at 34: condition from his portal record, age from his answer; atrial fibrillation in a relative has no verified family-history criterion [79]) and Dad's disagreeing reports under "to clarify". The current build prints the care-team copy for the patient and lets the patient preview it; whether a patient-carried care-team page changes the FDA analysis is a question for counsel (research §3.5, open question 5), so the redesign should print the patient copy and send the care-team copy to the practice by link or fax (open item 8). FDA line: [95]. If the redesign changes the demo family or labels, rewrite this script to match the screenshot.
+  - Kicker: `MOCKUP  ·  2 OF 3  ·  THE RELATIVE`
+  - Markers on the screens: `1` `2`
+  - Callout `1`:
+    - `Grandpa Luis (Mom's dad) opens Alex's link.`
+    - `No account and no app. He sees who asked and who will read his answers, and “I'd rather not share” is always an option.`
+  - Callout `2`:
+    - `He can share one condition from his own portal.`
+    - `A real SMART on FHIR login (the standard way apps read a patient portal): he ticks one condition and confirms the age himself. Nothing else leaves the page.`
+  - Footer: `Screen 2 logs in to a public test server, so the record shown (atrial fibrillation since 2016, age 69) is a made-up test patient's, not Grandpa Luis's. In the demo tree on slides 4 and 6 he is still Not asked yet; Uncle Dev's atrial fibrillation came in this way. The invite text has no health information.`
+  - Page counter: `5 / 9  ·  Mockup: the relative`
+- **Visual:** two phone frames side by side: screen 1 is the relative's invite page (`public/pitch/slide4-relative.png`), screen 2 the portal pick screen after the SMART on FHIR login on the public test server (`public/pitch/slide4-portal.png`).
+- **Speaker notes** (word for word from the deck):
 
-### Slide 6 · Will people buy it?
+  ```text
+  VIHA (15 s)
+  "Here's Grandpa Luis, Mom's dad, on his phone. No account, and he can decline. He can also log in to his own patient portal and share one condition, labeled with where it came from."
 
-- **Story title:** People use it when the practice sends the link; no practice has agreed to pay yet.
-- **Speaker / time:** Unser · 47 s (includes the handoff)
+  Saved: 'He sees who asked and who will read his answers' (screen 1 shows it) and 'Then Alex texts each relative a link' (now on slide 3). If asked about the screenshot: screen 2 logs in to a public test server, so the record shown belongs to a made-up test patient and its date (2016) and age (69) are that patient's; in the demo tree Luis is still Not asked yet, and Uncle Dev's atrial fibrillation came in this way. The label says 'on your problem list since <year>', never 'verified', because a problem-list date can be when it was listed, not diagnosed [8].
+  ```
+
+### Slide 6 · Mockup 3: the visit (`s05_pg`)
+
+- **Title on the slide:** The patient reviews one page; the cardiologist gets a care-team copy.
+- **Speaker / time:** Viha · 31 s (clock 2:27, with the handoff to Unser)
+- **On-slide text:**
+  - Kicker: `MOCKUP  ·  3 OF 3  ·  THE VISIT`
+  - Label over the left screenshot: `ALEX'S COPY · FACTS, GAPS, QUESTIONS`
+  - Label over the right screenshot: `CARE-TEAM COPY · THE PRACTICE OPENS IT`
+  - Markers on the screenshots: `1` `2` `3`
+  - Callout 1: `For clinician review: Grandma Rosa's “very high cholesterol” (no number) is a possible Simon Broome item (inherited high cholesterol).`
+  - Callout 2: `Source on every line: Uncle Dev's diagnosis is “from a portal record”.`
+  - Callout 3: `To clarify: Mom says heart attack at 60; Uncle Dev, angina (chest pain) at ~58. Both kept.`
+  - Footer: `Criteria go only on the care-team copy, which the practice opens by link or QR: under FDA guidance (Jan 2026), any recommendation shown to patients is a device. The patient's copy shows facts, gaps and questions.`
+  - Page counter: `6 / 9  ·  Mockup: the visit`
+- **Visual:** two framed screenshots: Alex's copy (`public/pitch/slide5-patient.png`) on the left, the care-team copy as the practice opens it (`public/pitch/slide5-care.png`) on the right.
+- **Speaker notes** (word for word from the deck):
+
+  ```text
+  VIHA (31 s)
+  "Alex reviews a one-page summary: facts, gaps and questions. The practice opens its own care-team copy, which adds a block for the cardiologist: Grandma Rosa, Mom's mother, very high cholesterol around 35, reported by Mom. That may count toward the Simon Broome criteria for inherited high cholesterol, for the cardiologist to review. To clarify: Mom says Dad had a heart attack at 60; Uncle Dev says angina at about 58. Unser?"
+
+  Evidence: Simon Broome counts a first- or second-degree adult relative with total cholesterol > 290 mg/dL [77]; Mom reported 'very high', not a number, so it is an item for review, not a match. Atrial fibrillation in a relative has no verified family-history criterion [79], so the page lists it as 'also noted'. Why criteria stay off the patient's copy: under FDA's Jan 2026 guidance, any recommendation shown to patients is a device [95]. The patient's Print button prints Alex's copy; the care-team copy reaches the practice only by read-only link or check-in QR.
+  ```
+
+### Slide 7 · Will people buy it? (`s06_pg`)
+
+- **Title on the slide:** Patients use tools their practice sends; no practice has agreed to pay us yet.
+- **Speaker / time:** Unser · 46 s (clock 3:13)
 - **On-slide text:**
   - Kicker: `WILL PEOPLE BUY IT?`
-  - Table (4 rows):
+  - Table:
 
-    | Who | Today | Gain with us | Net |
+    | Who | Today (next best option) | Gain with us | Net vs today |
     | --- | --- | --- | --- |
-    | Patient (free) | Memory + intake form | Relatives answer; one page to bring | **+** if the practice asks |
-    | Relative (free) | A phone call | Answer once, for yourself; can decline | **0**, unproven |
-    | Cardiologist | Quick question in the visit | Who, what, what age, source | **+?** if < 1 min scan (none asked yet) |
-    | Practice (pays) | Its form or EHR check-in · free intake · FamGenix | More history in the chart before visit one | **?** not proven |
+    | Patient (free) | Memory + intake form | Relatives answer; one page to review | Gains if the practice asks |
+    | Relative (free) | A phone call | Answer once, for yourself; can decline | Even; relatives untested |
+    | Cardiologist | Quick question in the visit | Who, what, what age, and the source | Gains if read in < 1 min |
+    | Practice (pays) | Its form; free intake apps; FamGenix $500/clinician/yr | Who, what, what age, with sources, in the chart before visit one | Worse unless a pilot shows time saved or clinical value |
 
-  - Tile 1: `99.8% vs < 4%` · `pedigrees meeting quality criteria: guided tool vs charts [84]`
-  - Tile 2: `57%` · `of 95,166 invited finished a clinic-sent pre-visit chatbot (cancer risk, women's health, lab-funded) [92]`
-  - Tile 3 (orange outline): `0 of 21` · `interviews were practice managers. Riskiest claim: a manager pays. Next test: 5 NYC managers by Oct 23.`
-- **Visual:** The table across the top two thirds, "Net" column in bold with + in green, 0 in gray, +? and ? in orange. Three tiles across the bottom, the third outlined in orange. No verdict bar: the title carries the verdict.
-- **Script (Unser):** "Against what each person uses today, patients gain the most. Duke's MeTree got high-quality family trees for 99.8 percent of patients, against under 4 percent of charts. Use depends on who sends the link: when women's health clinics texted a cancer-risk chatbot before visits, 57 percent of everyone invited finished it. The cost: about half an hour on average, and asking family. The practice pays, and its options are cheap or free. So our riskiest claim is that a practice manager will pay. None of our 21 interviews was one yet. Verdict: use is likely if the practice sends the link; payment is unproven."
-- **Replace the riskiest-claim lines with whatever is true on Oct 16:** if calls happened, "We asked [N] practice managers; [M] named a budget owner and [K] would sign a letter of intent." Tile 3 becomes `[M] of [N] managers named a budget`. If the clinician scan test (VCA test 2) has run, replace "none asked yet" with its result. Never say calls are "booked" unless they are.
-- **Evidence notes:** Net labels follow the scored table in `vca.md` Step 4.2 (quality of what reaches the visit counted double: patient +2, relative 0, clinician +3 with a < 1 min scan, practice −2 plus unmeasured staff time). [84] MeTree, US primary care, 1,184 vs 390 pedigrees. [92] 64.2% of 95,166 invited engaged and 89.4% of them finished, so 57% of everyone invited (61,070 × 0.894 / 95,166); the link went about 5 days before the visit with reminders at 72 and 24 hours, for a 15-minute cancer-risk chatbot that labs funded [S54]; a weeks-ahead tree that depends on relatives should expect less. "Half an hour": MeTree averaged 27.1 minutes [90]. "Cheap or free": the EHR check-in the practice already has [S52], Phreesia intake free through at least Dec 31, 2026 [112], lab tools free [107], FamGenix free up to 20 pedigrees and $500 a year for an Individual license, with questionnaires and the cardio model extra [111]. Interview count: Team Hub logs 21, none a manager, cardiologist or relative.
+  - Tile `16.1% vs 0.2%`: `of patients got new family history in their chart in 30 days: emailed form, filed automatically, vs usual care (not ours)`
+  - Tile `57%`: `of 95,166 patients their clinics invited finished a 15-min cancer-risk chatbot (lab-funded; not ours)`
+  - Tile `0 of 21`: `interviews were practice managers. Riskiest claim: a practice pays $500 per cardiologist a year despite free intake tools.`
+  - Footer: `Sources: Carroll et al., 2025 (Toronto family practices); Nazareth et al., 2021 (64.2% started, 89.4% of them finished = 57% of invited); FamGenix (family-tree software) price page, 2026. Interviews: our course log, 21. Net = our judgment (A3).`
+  - Page counter: `7 / 9  ·  Will people buy it?`
+- **Visual:** the table across the top, three number tiles across the bottom; the third tile carries the riskiest claim. No separate verdict bar: the title carries the verdict.
+- **Speaker notes** (word for word from the deck):
 
-### Slide 7 · Can we make it?
+  ```text
+  UNSER (46 s)
+  "Against what each person uses today, patients gain the most, if their practice sends the link. When clinics sent a cancer-risk chatbot link before visits, 57 percent of everyone invited finished it. In a Toronto trial, an emailed family-history form got new family history into 16 percent of charts, against almost none without it. Those are other tools, not ours. The practice pays, its options are cheap or free, and it comes out behind unless a pilot shows time saved or clinical value. Our riskiest claim: a practice pays 500 dollars per cardiologist a year. None of our 21 interviews was a practice manager yet."
 
-- **Story title:** We can pilot by January; salaries need a bigger market.
-- **Speaker / time:** Unser · 51 s
+  Cut for time: the spoken verdict (the title says it). Only if calls happen before Oct 16, replace the riskiest-claim lines with 'We asked [N] practice managers; [M] named a budget owner and [K] would sign a letter of intent', and change tile 3 to match. Never say calls are 'booked' unless they are. Evidence: [92] women's health clinics sent the link by text or email about 5 days ahead, with reminders at 72 and 24 h, for a 15-minute lab-funded chatbot [S54]; a tree that depends on relatives should expect less. [S10] 93 of 576 vs 5 of 2,203 within 30 days (Toronto family practices; emailed questionnaire with answers filed into the chart automatically, vs matched usual care). If asked about Toronto: 'Their form filed itself into the chart; ours arrives as a PDF the practice opens.' Cheap or free: EHR check-in [S52], Phreesia intake free through at least 2026 [112], lab tools free [107], FamGenix $500 a year per clinician [111]. If asked 'why pay?': free tools ask yes or no; we get which relative and what age, with sources, into the chart. At $500 a year, saved staff time only breaks even (A3), so FamGenix's license sets our price, and the pilot has to show time saved or clinical value.
+  ```
+
+### Slide 8 · Can we make it? (`s07_pg`)
+
+- **Title on the slide:** We can pilot by January 2027; salaries need a bigger market. (line break after the semicolon)
+- **Speaker / time:** Unser · 42 s (clock 3:57, with the handoff to Raj)
 - **On-slide text:**
   - Kicker: `CAN WE MAKE IT?`
-  - Block 1 `TECHNICAL · runs today (synthetic data)`: `Tree → relative link → sandbox portal launch → one page → FHIR export` · `Epic can't write family history → we send a PDF` · `Next build: pilot backend (storage, logins, MFA, audit log)`
-  - Block 2 `OPERATIONAL · when a practice pays`: `We become its HIPAA business associate (BAAs, breach plan)` · `Each relative consents for their own branch` · `Guideline criteria on the clinician's copy only (FDA CDS guidance, 2026)`
-  - Block 3 `FINANCIAL · cheap to run, small to earn`: table
+  - Column 1 header: `TECHNICAL`
+  - Column 1 subhead: `Runs today, on synthetic data`
+  - Column 1 checklist: `✓  Patient builds the tree` · `✓  Relative opens a link` · `✓  Shares one portal fact (test server)` · `✓  One page, reviewed` · `✓  PDF + data export`
+  - Column 1 text:
+    - `Epic can't write family history from apps into the chart, so we send a PDF.`
+    - `Next: a pilot server with secure logins.`
+  - Column 2 header: `OPERATIONAL`
+  - Column 2 subhead: `When a practice pays`
+  - Column 2 text:
+    - `We sign BAAs: the HIPAA contract with the practice and with each vendor that handles patient data.`
+    - `Staff add our link to new-patient texts and open each page by link or QR.`
+    - `Guideline criteria go on the care-team copy only (FDA guidance, Jan 2026).`
+    - `A cardiologist signs off the rules before any pilot.`
+  - Column 3 header: `FINANCIAL`
+  - Column 3 subhead: `Cheap to run, small to earn`
+  - Figure `$689–834 / mo`: `to run once real patient data flows`
+  - Figure `17–21 cardiologists`: `at $500 a year cover it: 9–11 groups of two`
+  - Figure `~290 cardiologists`: `would also cover one developer's wage: about every independent cardiologist in NYC`
+  - Verdict bar: `Verdict: yes at pilot scale from about January 2027, not yet salaries. NYC is a pilot, not our market.`
+  - Footer: `Costs: vendor price pages, Oct 6, 2026 (Vercel, Neon, Amazon SES); insurance: Insureon medians (estimate). Founders unpaid; support and sales time not counted. One developer = median US software-developer wage, $135,980 (BLS).`
+  - Page counter: `8 / 9  ·  Can we make it?`
+- **Visual:** three columns (technical, operational, financial) with the checklist in column 1 and three figures in column 3; the verdict bar runs across the bottom.
+- **Speaker notes** (word for word from the deck):
 
-    | | |
-    | --- | --- |
-    | Cost to run, real data | **$689–834 / month** |
-    | Break-even at $500/cardiologist/yr | **17–21 cardiologists** (≈ 10 groups) |
-    | One salary (wage only) | ~290 ≈ all NYC independents |
+  ```text
+  UNSER (42 s)
+  "Yes, at pilot scale. Epic charts can't take family history from apps, so the page goes in as a PDF. Next we build a pilot server with secure logins. Once a practice pays, we sign the HIPAA contracts, called BAAs, with it and every vendor. Running it costs about 690 to 830 dollars a month, so 17 to 21 cardiologists paying 500 dollars a year cover it. Adding one developer's pay takes about 290, roughly every independent cardiologist in New York. So New York is our pilot, not our market."
 
-  - Verdict bar: `Verdict: yes at pilot scale, from about January 2027; not yet salaries. Main risk: price.`
-  - Footnote (small): `Price pages Oct 6, 2026; insurance estimated. Founders unpaid; support and sales time not counted.`
-- **Visual:** Three columns of equal width with the headers above; the financial mini-table in column 3 with the first two rows bold. A thin flow diagram in column 1 (five small boxes with arrows) and the "next build" line under it. Navy verdict bar at the bottom.
-- **Script (Unser):** "Yes, at pilot scale. What you just saw runs today on synthetic data, with a real SMART on FHIR launch against a public test server. Portals only have to share problem lists, not family history, and Epic can't write it in, so the page goes in as a PDF. Next we build a standard backend with two-factor login and audit logs. Once a practice pays, we become its HIPAA business associate under signed BAAs. Running it costs about 690 to 830 dollars a month. At 500 dollars per cardiologist a year, about ten practices cover that. One salary would take about 145 practices, roughly every independent cardiologist in New York. So New York is our pilot, not our market."
-- **Evidence notes:** live prototype checks Oct 6 [S28]; the sandbox launcher preselects a synthetic patient and skips the login screen (`src/lib/smart.ts`); today a relative's answers come back as a reply link the relative texts to the patient, and nothing is stored on our servers (`InviteFlow.tsx`), so the pilot backend (server storage, logins, staff MFA, expiring invite tokens, audit log) is the next build. FamilyMemberHistory is not USCDI and Epic has no create API [7][10]; business associate [35]; FDA CDS guidance [95]. Costs: Vercel Pro + HIPAA add-on [61], Neon Scale [64][S18], SES [S19], insurance medians [S21][S22]. Salary: BLS median wage $135,980, before payroll taxes and benefits [S23]. NYC independent cardiologists 285–320 (re-run Oct 6) [S27]. Earliest pilot start about January 2027, after a company, counsel review, a signed rule table, the backend, and the BAA stack with insurance (critical path in `vca.md` 5.2). Founder support time, 1–2 hours per practice a month, is worth $65–131 a month at the BLS median wage, against $83 a month from a 2-cardiologist practice (A4). Break-even math in Appendix A4.
+  Cut for time: 'What you saw runs today on synthetic data, including a real portal login on a public test server' (the checklist on the slide shows it) and 'Portals only have to share problem lists, not family history' (Q&A). Evidence: family history is not a required portal data class and Epic has no API to create it [7][10]; business associate [35]; costs from vendor price pages Oct 6 [61][64][S19], insurance medians [S21][S22]; one developer = BLS median $135,980 [S23]; NYC independent cardiologists 285-320 [S27]. Earliest pilot about January 2027, after a company, counsel review, a signed rule table, the backend, and hosting and insurance under BAAs. Founder support of 1-2 h per practice a month is worth $65-131, against $83 a month from a 2-cardiologist practice (A4). If asked about market size: US independent cardiology is about $3.8M a year at $500 (slide 9, A9), so growth means more specialties.
+  ```
 
-### Slide 8 · Central business logic and wedge
+### Slide 9 · Central business logic and wedge (`s08_pg`)
 
-- **Story title:** Start with three NYC cardiology groups, then grow into primary care.
-- **Speaker / time:** Raj · 49 s (includes the handoff)
+- **Title on the slide:** 3 NYC cardiology groups first, then other specialties, one at a time.
+- **Speaker / time:** Raj · 48 s (clock 4:45)
 - **On-slide text:**
-  - Kicker: `CENTRAL BUSINESS LOGIC · WEDGE`
-  - Card 1: `People will buy it because cardiology practices need which relative, what condition and what age, their intake forms take it from memory, and a link they send gets those details, each with its source, into the chart before visit one.`
-  - Card 2: `We can make it because the patient side already runs on public standards, a PDF reaches any chart, and a pilot on vendors that sign BAAs costs under $850 a month, which about ten two-cardiologist practices cover with founders unpaid.`
-  - Left column `WEDGE · NOW`: `3 independent NYC cardiology groups · all adult new patients · $1,000, 12-week pilot · goal: 4 in 10 have a reviewed page in the chart before visit one`
-  - Right column `VISION · LATER`: `Larger groups → genetics and lipid clinics → primary care`
-  - Ask (orange): `Our ask: introductions to NYC cardiology practice managers.`
-  - Corner: QR code + `stemmahealth.vercel.app · synthetic data only`
-- **Visual:** Two full-width sentence cards stacked at the top (navy text, "People will buy it because" and "We can make it because" in bold). Below, two columns joined by an orange arrow: a small narrow box "WEDGE · NOW" on the left, a wider box "VISION · LATER" on the right, so the wedge is visibly smaller than the vision. Ask line under them. Bottom right: the QR code and the URL as text. No website thumbnail: the closing slide stays in the deck's own look.
-- **Script (Raj), reads both cards word for word:** "People will buy it because cardiology practices need which relative, what condition and what age, their intake forms take it from memory, and a link they send gets those details, each with its source, into the chart before visit one. We can make it because the patient side already runs on public standards, a PDF reaches any chart, and a pilot on vendors that sign BAAs costs under 850 dollars a month, which about ten two-cardiologist practices cover with founders unpaid. We start with three independent New York cardiology groups in a paid 12-week pilot. Success: four in ten new patients have a reviewed page in the chart before visit one. Our ask: introductions to practice managers."
-- **Evidence notes:** each clause is traced in `vca.md` (Central business logic table). "Take it from memory": the form asks yes or no per relative, then leaves a few lines for details, with no side of family and no room for "not sure" [S5]. Wedge: R5 scoring (Appendix A6), research §5 pilot design, 39 NYC groups with 2+ independent cardiologists, about 19–20 cardiology-focused once hospital-linked groups are removed [S27]. "About ten two-cardiologist practices": 9–11 at $500 per cardiologist per year (A4). Success metric: of invited new patients whose first visit falls in pilot weeks 2–12, the share with a patient-reviewed summary in the chart before that visit (A11). Primary care: the Annual Wellness Visit requires family history [104].
+  - Kicker: `CENTRAL BUSINESS LOGIC  ·  WEDGE`
+  - Card 1: `People will buy it because cardiology guidelines need which relative and what age, intake forms take it from memory, and for $500 per cardiologist a year a practice-sent link puts those details, sourced, in the chart before visit one.`
+  - Card 2: `We can make it because the patient side already runs on open health standards, a PDF reaches any chart, and a pilot on vendors that sign HIPAA contracts costs under $850 a month, which 17–21 paying cardiologists cover, founders unpaid.`
+  - Wedge box (left, smaller):
+    - `WEDGE · NOW`
+    - `3 independent NYC cardiology groups. Why cardiology first: its guidelines count grandparents, aunts and uncles, by side and age.`
+    - `Goal: 4 in 10 invited new patients have a reviewed page in the chart before visit one.`
+  - Vision box (right, wider):
+    - `VISION · LATER`
+    - `Any doctor who needs a family history, one specialty at a time: the rest of NYC's ~20 cardiology groups → larger groups → genetics and lipid clinics → primary care wellness visits. US independent cardiology alone: 7,699 cardiologists, $3.8M a year at $500. Markets beyond it are not yet sized.`
+  - Ask: `Our ask: introductions to NYC cardiology practice managers.`
+  - Corner text, beside the QR code:
+    - `Try it: stemmahealth.vercel.app  ·  synthetic data only`
+    - `Sources: ACC/AHA 2018 and AHA/ACC 2024 guidelines, Simon Broome criteria · market: CMS clinician file (A9) · costs: A4`
+  - Page counter: `9 / 9  ·  Business logic and wedge`
+- **Visual:** the two sentence cards stacked full width at the top; below them the small wedge box and the wider vision box joined by an arrow, so the wedge is visibly smaller than the vision; the ask line; bottom right, the URL line and the QR code (`public/pitch/qr-stemmahealth.png`) to stemmahealth.vercel.app.
+- **Speaker notes** (word for word from the deck):
+
+  ```text
+  RAJ (48 s)
+  "People will buy it because cardiology guidelines need which relative and what age, intake forms take it from memory, and for 500 dollars per cardiologist a year a practice-sent link puts those details, sourced, in the chart before visit one. We can make it because the patient side already runs on open health standards, a PDF reaches any chart, and a pilot on vendors that sign HIPAA contracts costs under 850 dollars a month, which 17 to 21 paying cardiologists cover, founders unpaid. We start with three New York cardiology groups, then add other specialties one at a time. Our ask: introductions to New York cardiology practice managers."
+
+  Read both cards word for word (update the VCA central business logic and the Miro board to these exact words before Oct 23). If Raj starts after 4:07, drop the 'We start...' sentence; the slide says it. If asked why cardiology first: its guidelines need more detail than primary care (grandparents, aunts and uncles, by side and age), and one manager can say yes (wedge card, A6). If asked 'shouldn't this be for any doctor?' (about 20 s): 'Eventually, yes. The tree shouldn't care which doctor reads it; only the questions and the clinician's criteria change. But a wedge needs one buyer who can say yes. Cardiology needs more detail than primary care: which relative, which side, what age, while Medicare's wellness visit requires, at minimum, only parents, siblings and children. And we haven't spoken to a single practice manager yet. If cardiology managers don't name a budget owner, primary care is our next call list.' If asked about price: $1,000 for a 12-week pilot, credited to year one, then $500 per cardiologist a year; $99 a month is a higher price we test on the same card (the website shows the same). Evidence: [76][77][72]; Medicare wellness visit rule [104]; 39 NYC groups with 2+ independent cardiologists, about 19-20 cardiology-focused [S27]; 17-21 and $689-834 from A4; 7,699 US independent cardiologists, $3.8M a year at $500 (A9).
+  ```
 
 ### Timekeeper checkpoints and cut list
 
-The teammate not speaking holds a phone stopwatch where the speaker can see it.
+The member not speaking holds a phone stopwatch where the speaker can see it. Agree the cuts in a timed run-through before Oct 16.
 
-| Checkpoint | Who should be talking | If more than 10 s late, cut this |
-| --- | --- | --- |
-| 1:02 | Viha starts slide 3 | Viha drops "Each relative gets plain questions with examples" (the slide shows it) |
-| 2:22 | Unser starts slide 6 | Unser drops the MeTree sentence; keeps the 57 percent line and the riskiest claim |
-| 3:09 | Unser starts slide 7 | Unser drops the salary sentence; says "about ten practices cover the cost; price is the risk" |
-| 4:00 | Raj starts slide 8 | **Hard rule:** by 4:04 Unser hands over mid-sentence if needed. Raj keeps both sentences word for word, the wedge and the ask; drops the success line (it stays on the slide) |
+| Clock | Who should be talking | If more than 10 s late, cut this |
+| ---: | --- | --- |
+| 1:00 | Viha starts slide 3 (How it works) | Viha skips the 23andMe sentence on slide 3 (the comparison strip shows it). |
+| 2:27 | Unser starts slide 7 (Will people buy it?) | Unser drops the Toronto sentence; keeps the 57% line, "not ours", what the pilot must show, and the riskiest claim. |
+| 3:13 | Unser starts slide 8 (Can we make it?) | Unser drops the developer sentence and says "17 to 21 paying cardiologists cover the cost; New York is our pilot, not our market." |
+| 3:57 | Raj starts slide 9 (business logic) | **Hard rule:** by 4:07 Unser hands over mid-sentence. Raj keeps both cards word for word and the ask; drops "We start with three New York cardiology groups…" (the slide says it). |
 
-Handoff lines: Raj → Viha: "Viha will show you what our made-up patient, Alex, does instead." / "Alex builds the tree one side of the family at a time…". Viha → Unser: "…Uncle Dev says angina at about 58. Unser?" / "Against what each person uses today…". Unser → Raj: "…New York is our pilot, not our market." (turns to Raj) / "People will buy it because…". Stand in speaking order (Raj, Viha, Unser), pass one clicker, never say "next slide".
+Handoff lines: Raj → Viha: "…Viha will show you what our made-up patient, Alex, does instead." / "Here's how it works." Viha → Unser: "…Uncle Dev says angina at about 58. Unser?" / "Against what each person uses today…". Unser → Raj: "…So New York is our pilot, not our market." / "People will buy it because…". Stand in speaking order (Raj, Viha, Unser), pass one clicker, never say "next slide".
 
-No live demo inside the five minutes: the PDF is what gets graded and uploaded, and the relative path leaves our site for the sandbox launch. Keep the production `/tree` page open on one laptop for Q&A only.
+No live demo inside the five minutes: the PDF is what gets graded and uploaded, and the relative's portal step leaves our site for the public test server. Keep the production `/tree` page open on one laptop for Q&A only.
 
 ---
 
-## Appendix: backup slides (after a divider slide titled "Backup for questions"; not presented)
+## Appendix: backup slides (after the divider "Backup for questions"; not presented)
 
-These also serve the Milestone 4 PDF. Full detail is in `vca.md`.
+These pages also serve the Milestone 4 PDF; full detail is in `value-creation-analysis.md`. Pages A0 to A12 each carry "Team 709" top right and a "Backup A#" page counter; the divider has no counter.
 
-### A1 · Business Model Canvas
+### Divider · Backup for questions (`s09_pg`)
 
-- **Story title:** A new product inside an old, proven business model.
-- **On-slide:** the standard 9-box canvas grid. Top 3–5 Post-its per box, each as `sub-group rank [tag] text` (ranks restart at 1 in each sub-group); footer `88 Post-its: 2 N · 17 N/O · 69 O. Full canvas on the Miro board.`
+- **On-slide text:**
+  - Kicker: `APPENDIX  ·  ALSO OUR MILESTONE 4 VALUE CREATION ANALYSIS`
+  - Title: `Backup for questions`
+  - Subtitle:
+    - `Start with A0: how to read these pages, and the words we use.`
+    - `A1 business model · A2 comparisons · A3 net benefit · A4 financials · A5 new vs old · A6 why cardiology · A7 competitors · A8 evidence · A9 market · A10 privacy · A11 pilot · A12 care-team page`
+- **Speaker notes** (word for word from the deck):
 
-| Box | Post-its shown on the slide |
-| --- | --- |
-| Key Partnerships | 1 [O] 1–3 independent NYC cardiology groups as pilot sites · 2 [O] Clinical reviewers to recruit: a cardiologist, a genetics counselor · 4 [O] BAA vendors: Vercel Pro, Neon, Amazon SES · 6 [N/O] SMART Health Links and CMS-aligned receiving EHRs |
-| Key Activities | 1 [O] Sell paid pilots to practice managers · 2 [O] Measure completion, relative replies, staff minutes, clinician use · 3 [N/O] Keep each relative's consent, declines and deletions straight · 7 [O] Operate as business associate: BAAs, MFA, audit, breach plan |
-| Key Resources | 1 [N] Data model: every fact stores status and source · 2 [N/O] Cardiology rule set, cited and versioned by guideline year · 3 [O] Working prototype with real SMART on FHIR sandbox launch · 5 [O] 21 logged interviews; 1 target patient; no buyers yet |
-| Value Propositions | Patient 1 [N/O] Who, what, what age, before the cardiology visit · Patient 3 [N/O] Relatives answer for themselves by link, no account · Patient 4 [N] Every fact marked known, conflicting, unknown or declined · Clinician 1 [N/O] Clinician gets one page: criteria, gaps, conflicts, pedigree · Practice 1 [O] More family history in the chart before visit one |
-| Customer Relationships | Practice 1 [O] Paid 12-week founding pilot, metrics agreed upfront · Patient and relative 1 [O] Help line for patients and older relatives · Patient and relative 3 [N/O] Relatives: one-time link to answer, decline, correct, delete |
-| Channels | Patients 1 [O] Practice texts our link with new-patient paperwork · Relatives 1 [N/O] Patient texts each relative a link from own phone · Page 1 [O] Practice opens the care-team page by link or QR · Buyers 1 [O] Founders call and visit NYC practice managers |
-| Customer Segments | Pays 1 [O] Independent NYC cardiology groups, 2–10 cardiologists · Pays 2 [O] Practice manager holds budget; owner cardiologist signs · Users 1 [O] Adult new patients, in the weeks before visit one · Users 3 [N/O] Adult relatives who answer for their own branch |
-| Cost Structure | Pilot 1 [O] Hosting + database under BAAs: $411–457 a month · Pilot 2 [O] Cyber + tech E&O insurance: about $255–305 a month · Pilot 4 [O] Total about $689–834 a month; per-practice cash ≈ 0 · Pilot 5 [O] Founder support: 1–2 h per practice monthly, unpaid |
-| Revenue Streams | Practices 1 [O] $1,000 founding pilot, 12 weeks, credited to year one · Practices 2 [O] Then $500 per cardiologist per year · Practices 3 [O] Tested on same card: $99 per cardiologist per month · Never 1 [O] Never: patient fees, ads, data sales, per-referral pricing |
+  ```text
+  Not presented. Jump here during Q&A. A0 (next page) explains the markers, prices and terms.
+  ```
 
-- **Visual:** canvas grid in the deck theme; sticky color by tag (pick three colors and show the legend).
-- **If asked (notes):** "Every sub-group is ranked from 1. The new parts are all in what we sell; the way we sell copies Phreesia."
+### A0 · How to read the backup (`a00_pg`, new in the final deck)
 
-### A2 · Points of comparison
+- **Title:** How to read the backup, and the words we use.
+- **On-slide text:**
+  - Kicker: `A0  ·  HOW TO READ THE BACKUP`
+  - Card 1, header: `HOW TO READ`
+  - Card 1:
+    - `Markers: [n] = research source, linked at stemmahealth.vercel.app/research (#source-n). [S#] = source opened for this pitch, named in each page's footer.`
+    - `Prices: $500 per cardiologist a year is our price, after a $1,000 12-week pilot credited to year one. $99 a month is a higher price we test.`
+    - `Tags (A1, A5): [O] old: Phreesia or a competitor does it · [N/O] done elsewhere, new here · [N] new.`
+    - `Net (slide 7, A3): gains, even or worse against the person's next best option today. A3's net score sums five factors, each +2 to −2, quality counted twice. Our judgment.`
+    - `Interviews: ID001–ID020 and D021, our 21 logged interviews. “(notes)” = the note-taker's words.`
+    - `Status words: Known · Reports disagree · Unknown · Chose not to share · Not asked yet.`
+  - Card 2, header: `HEALTH WORDS`
+  - Card 2:
+    - `Atrial fibrillation (AF): an irregular heartbeat.`
+    - `Angina: chest pain from reduced blood flow to the heart. MI: heart attack.`
+    - `Pedigree: a medical family-tree diagram.`
+    - `First-degree relatives: parents, siblings, children. Second-degree: grandparents, aunts, uncles.`
+    - `Premature heart disease: in a parent or sibling before 55 (men) or 65 (women), the ages the 2018 ACC/AHA guideline counts [76].`
+    - `Simon Broome criteria: a checklist for inherited very high cholesterol (familial hypercholesterolemia, FH) [77].`
+    - `Cardiogenetics clinic: a clinic for inherited heart disease.`
+    - `Sensitivity 57.6%: self-report caught about 58 of 100 parents' and siblings' heart attacks [87].`
+  - Card 3, header: `SYSTEMS, LAW AND BUYERS`
+  - Card 3:
+    - `Chart / EHR: the practice's electronic medical record. Epic: a large EHR vendor; MyChart is its patient portal.`
+    - `Patient portal: the website where you see your own record. Problem list: the diagnoses in it.`
+    - `FHIR: the standard format for health data. SMART on FHIR: the standard way an app reads a portal after you log in and agree. Sandbox: a public test server with made-up patients.`
+    - `HIPAA: US health-privacy law. BAA: the contract HIPAA requires with any vendor handling patient data (a business associate).`
+    - `GINA: US law against genetic discrimination in health insurance and jobs; not life, disability or long-term-care insurance [51].`
+    - `E&O: errors-and-omissions insurance. Independent practice: owned by its doctors, not a hospital.`
+  - Footer: `All people shown are a synthetic demo family. Definitions are ours, in plain words, from the sources cited on the backup pages; [n] sources link from stemmahealth.vercel.app/research, [S#] sources are named in each page's footer.`
+  - Page counter: `Backup A0  ·  How to read`
+- **Speaker notes** (word for word from the deck):
 
-- **Story title:** We copy Phreesia's operations and refuse pharma money.
-- **On-slide:** three panels.
-  - **Next best option:** Patient: memory + the intake form; Relative: a phone call; Clinician: a quick question; Practice: its own EHR check-in [S52] or form, Phreesia intake free through at least 2026 [112], IntakeQ $54.90/mo [114], free lab tools [107], FamGenix (free up to 20 pedigrees; $500/yr; questionnaires and cardio model extra) [111].
-  - **Closest operations: Phreesia.** Sells to practices; practice-sent link "a few days before your appointment" [S43]; lands in the chart; ~180M visits a year, FY2026 revenue $480.6M [S29][113]. Runner-up for the clinical half: CancerIQ (cancer, health systems) [110].
-  - **Where the model already works:** Calendly (no-account link) [S34] · DocuSign (audit trail) [S36][S37] · Zocdoc (consumer free, independent practice pays) [S32]. Refuse: Zocdoc's per-new-patient fee, Doximity's pharma payer [S42]. **Also borrowed (different payer):** Ancestry/MyHeritage (relatives add to one tree) [S38][S39] · TurboTax (guided interview, import then confirm) [S44].
-- **Visual:** three columns with small logos replaced by plain text labels (no third-party logos needed).
+  ```text
+  Not presented. For readers of the PDF; point to it if a term or a price comes up in Q&A. Prices: $500 per cardiologist a year is our price, after a $1,000 12-week pilot credited to year one; $99 a month is a higher price we test on the same card (the website shows the same). A4 also models $149, our first guess.
+  ```
 
-### A3 · Net benefit vs next best option
+### A1 · Business Model Canvas (`a01_pg`)
 
-- **Story title:** Patients gain most; the practice is unproven.
-- **On-slide table:**
+- **Title:** A new product inside an old, proven business model.
+- **On-slide text** (the nine canvas boxes, each starting with its header):
+  - Kicker: `A1  ·  BUSINESS MODEL CANVAS`
+  - Key Partners:
+    - `KEY PARTNERS`
+    - `[O] 1–3 NYC cardiology groups as pilot sites`
+    - `[O] Reviewers to recruit: a cardiologist, a genetics counselor`
+    - `[O] Vendors that sign BAAs: Vercel, Neon, Amazon`
+    - `[N/O] Health-record QR links (SMART Health Links)`
+  - Key Activities:
+    - `KEY ACTIVITIES`
+    - `[O] Sell paid pilots to practice managers`
+    - `[O] Measure completion, replies, staff minutes`
+    - `[N/O] Keep each relative's consent and deletions straight`
+  - Key Resources:
+    - `KEY RESOURCES`
+    - `[N] Data model: every fact has status + source`
+    - `[N/O] Cited rule packs; cardiology first`
+    - `[O] Prototype with a real portal login (test server)`
+  - Value Propositions:
+    - `VALUE PROPOSITIONS`
+    - `[N/O] Patient: who, what, what age, before the visit`
+    - `[N/O] Relatives answer for themselves, no account`
+    - `[N] Every fact: Known, Reports disagree, Unknown, Chose not to share or Not asked yet`
+    - `[N/O] Clinician: one page of criteria, gaps, conflicts`
+    - `[O] Practice: more history in the chart before visit one`
+  - Customer Relationships:
+    - `CUSTOMER RELATIONSHIPS`
+    - `[O] Paid 12-week pilot, metrics agreed upfront`
+    - `[N/O] Relatives: one link to answer, decline, delete`
+  - Channels:
+    - `CHANNELS`
+    - `[O] Practice texts our link with new-patient paperwork`
+    - `[N/O] Patient texts each relative a link`
+    - `[O] Practice opens the care-team page by link or QR`
+  - Customer Segments:
+    - `CUSTOMER SEGMENTS`
+    - `[O] Pays: NYC cardiology groups, 2–10 cardiologists`
+    - `[O] Manager holds budget; owner signs (untested)`
+    - `[O] Uses: adult new patients before visit one`
+    - `[N/O] Adult relatives answer for their branch`
+  - Cost Structure:
+    - `COST STRUCTURE`
+    - `[O] Hosting + database under BAAs: $411–457/mo`
+    - `[O] Email, storage, domain, inbox: $23–72/mo`
+    - `[O] Cyber + errors-and-omissions insurance: ~$255–305/mo`
+    - `[O] Total ~$689–834/mo; founder support unpaid`
+  - Revenue Streams:
+    - `REVENUE STREAMS`
+    - `[O] $1,000 founding pilot, 12 weeks, credited to year one`
+    - `[O] Then $500 per cardiologist per year; we also test a higher $99/mo`
+    - `[O] Never: patient fees, ads, data sales, per-referral fees`
+  - Legend:
+    - `[N] new · [N/O] done elsewhere, new here · [O] old: Phreesia or a competitor does it.`
+    - `88 canvas notes: 2 N · 17 N/O · 69 O; top items shown.`
+  - Page counter: `Backup A1  ·  Business Model Canvas`
+- **Visual:** the standard nine-box canvas grid; full canvas (88 notes, ranked within each sub-group) on the Miro board.
+- **Speaker notes** (word for word from the deck):
 
-| Who | Next best option | Gain | Cost | Net |
-| --- | --- | --- | --- | --- |
-| Patient | Memory, a call to Mom, the intake form | Guided by side of family; relatives answer; one page | About half an hour on average [90]; asking family | + when the practice asks |
-| Relative | A phone call | Answer once, for yourself; can decline | Minutes; trusting a health link | 0, unproven |
-| Clinician | Asking in the visit; EHR box | Who, what, what age, how sure; criteria for review | One more document; self-report 57.6% sensitive [87] | +? if < 1 min scan (no cardiologist asked yet) |
-| Practice | EHR check-in or form; free intake and lab tools; FamGenix $500/yr | More history reaches the chart: new family history documented for 16.1% vs 0.2% (emailed questionnaire + EHR upload, Toronto primary care, within 30 days of the visit) [S10] | Fee vs free; workflow; BAA; no billing code [103][105] | ? not proven |
+  ```text
+  Every sub-group is ranked from 1 on the Miro board. The new parts are all in what we sell; the way we sell copies Phreesia. Untested assumptions: who pays (1-2), revenue (1-3), key partnership 1.
+  ```
 
-- **Score line:** `Scores (VCA 4.2, quality of what reaches the visit counted double): patient +2 · relative 0 · clinician +3 with a < 1 min scan · practice −2 + unmeasured staff time.`
-- **Verdict line:** `Use: yes, if the practice sends the link. Buy: not yet shown.`
-- **ROI footnote (assumption):** `If 10 staff minutes are saved (unproven; [S9] found no time difference) × $30/h ≈ $5 per summary; Medicare FFS median ≈ 4 new patients per cardiologist per month [S17] × 5 for all payers (our guess, to check on manager calls) ≈ 21 × 40% ≈ $42/month ≈ $500/yr. At $500/yr the practice only breaks even, so time savings don't set our price; FamGenix's $500/yr [111] does.`
+### A2 · Points of comparison (`a02_pg`)
 
-### A4 · Financials
+- **Title:** We sell like Phreesia does, but take no pharma money.
+- **On-slide text** (three panels):
+  - Kicker: `A2  ·  POINTS OF COMPARISON`
+  - Panel 1, header: `NEXT BEST OPTION`
+  - Panel 1:
+    - `Patient: memory and the intake form`
+    - `Relative: a phone call`
+    - `Clinician: a quick question in the visit`
+    - `Practice: its EHR check-in or form [S52]; Phreesia intake, free through at least 2026 [112]; IntakeQ forms $54.90/mo [114]; free lab tools [107]; FamGenix family-tree software, free up to 20 trees, $500/yr per clinician [111]`
+  - Panel 2, header: `CLOSEST OPERATIONS: PHREESIA`
+  - Panel 2:
+    - `Sells to practices; the practice sends the patient a link a few days before the appointment [S43].`
+    - `Answers land in the chart; direct sales, 3–12 month cycles [S29].`
+    - `~180M visits a year; FY2026 revenue $480.6M, 29% of it from life-sciences (pharma) clients (our math) [S29][113].`
+    - `Clinical runner-up: CancerIQ (cancer, health systems) [110].`
+  - Panel 3, header: `WHERE THE MODEL ALREADY WORKS`
+  - Panel 3:
+    - `Calendly: invitees need no account [S34]`
+    - `DocuSign: no-account signers, audit trail [S36][S37]`
+    - `Zocdoc: free for the consumer, the practice pays [S32]`
+    - `Borrowed: Ancestry/MyHeritage relatives add to one tree [S38][S39]; TurboTax imports a form, then you confirm [S44]`
+    - `Refuse: Zocdoc's per-new-patient fee; Doximity's pharma payer [S42]`
+  - Footer: `[S29] Phreesia 10-K, FY2026 · [S32] Zocdoc fee explainer · [S34] Calendly pricing · [S36][S37] DocuSign pricing, certificate · [S38] Ancestry help · [S39] MyHeritage · [S42] Doximity 10-K · [S43] Phreesia patient FAQ · [S44] TurboTax help · [S52] athenahealth help. [n]: stemmahealth.vercel.app/research. Opened Oct 6, 2026.`
+  - Page counter: `Backup A2  ·  Points of comparison`
+- **Speaker notes** (word for word from the deck):
 
-- **Story title:** The pilot pays for itself; a salary needs a bigger market.
-- **On-slide:** two tables.
+  ```text
+  Closest operations = Phreesia: practice-sent pre-visit links, delivery into the chart, direct sales. Copy its playbook; our product differs (relatives answer, per-fact source, cardiology page).
+  ```
 
-| Operating cost per month (real data) | Low | High |
-| --- | ---: | ---: |
-| Hosting + database under BAAs (Vercel Pro + $350 HIPAA add-on, Neon Scale) [61][64] | $411 | $457 |
-| Email, storage, domain, team inbox [S19][S25] | $23 | $72 |
-| Cyber + tech E&O insurance (estimate) [S21][S22] | $255 | $305 |
-| Epic registration, SMS, founders | $0 | $0 |
-| **Total** | **$689** | **$834** |
+### A3 · Net benefit (`a03_pg`)
 
-| Price per cardiologist | $500/yr (lead) | $99/mo (tested) | $149/mo |
-| --- | ---: | ---: | ---: |
-| Break-even, paying cardiologists | 17–21 | 7–9 | 5–6 |
-| Break-even, 2-cardiologist groups | 9–11 | 4–5 | 3 |
-| One salary (BLS median wage $135,980, before payroll taxes and benefits [S23]), cardiologists | ~290 | ~123 | ~82 |
+- **Title:** Patients gain; the paying practice scores −2 so far.
+- **On-slide text:**
+  - Kicker: `A3  ·  NET BENEFIT (MILESTONE 4, STEP 4)`
+  - Table:
 
-- **Support line:** `Founder support time (unpaid now): 1–2 h per practice per month; at $65/h (BLS median $135,980 ÷ 2,080 h [S23]) that is $65–131 a month, against $83 a month from a 2-cardiologist practice at $500/yr.`
-- **Year 1 line:** `Three $1,000 pilots ($3,000) cover 12 weeks of the BAA stack (~$1,900–2,300). Year 1 (Oct 2026–Sep 2027) nets −$200 to −$6,500 depending on uptake; founders unpaid.`
-- **Verdict:** `Cheap to run, small to earn. Yes at pilot scale; not yet salaries. Support must fall under 1 hour per practice a month, or the price must rise.`
+    | Who | Next best option | Gain | Cost | Net score |
+    | --- | --- | --- | --- | --- |
+    | Patient | Memory, a call to Mom, the intake form | Guided by side of family; relatives answer; one page | MeTree took ~27 min [90]; asking family | +2 when the practice asks |
+    | Relative | A phone call | Answer once, for yourself; can decline | Minutes; trusting a health link | 0; relatives untested |
+    | Clinician | Asking in the visit; the chart's family-history box | Who, what, what age, how sure; criteria for review | Extra page; self-report misses ~4 in 10 family MIs [87] | +3 if read in < 1 min |
+    | Practice | EHR check-in or form; free tools; FamGenix $500/clinician/yr | New family history in the chart: 16.1% vs 0.2% (Toronto trial) [S10] | Fee vs free; workflow; BAA; insurers don't pay [103][105] | −2 plus unmeasured staff time |
 
-### A5 · What's new and what's old
+  - Verdict bar: `Verdict: use, yes, if the practice sends the link. Buy: not shown. Riskiest: a practice pays $500 per cardiologist a year.`
+  - Footer: `Can saved staff time pay for it? Only break-even (assumption, weak): 10 staff minutes saved × $30/h ≈ $5 per summary × ~21 new patients per cardiologist a month (our guess) × 40% ≈ $500 a year, and a 2026 trial found no shorter counseling time [S9]. So FamGenix's $500/yr license [111] sets our price; the pilot must show time saved or clinical value. Net score: five factors, each +2 to −2, quality counted double; team judgment. [S9] Orlando 2026 · [S10] Carroll 2025 · [87] SCAPIS 2026 · [90] MeTree 2013 · [103] CMS fee file 2026 · [105] MGMA.`
+  - Page counter: `Backup A3  ·  Net benefit`
+- **Speaker notes** (word for word from the deck):
 
-- **Story title:** What we sell is new; how we sell it is old.
-- **On-slide:** bar or tally: `N 2 · N/O 17 · O 69 (88 Post-its)`. Two lists: `New: per-fact status · the data model behind it` / `Some of each: relatives answer for themselves · one portal fact from a relative · guideline criteria on the clinician's copy only · patient-sent relative links · per-relative consent · "reviewed" lock`. Footer: `The new parts are the ones that need evidence: relatives answering [93], portal facts, clinicians trusting a patient-built page.`
+  ```text
+  Not presented. Q&A owner: Unser. If asked 'your own score for the payer is negative, why would they pay?': 'Because free tools ask yes or no, and cardiology criteria turn on which relative and what age. We priced at FamGenix's $500 clinician license, not at saved time, which is unproven. The score stays negative unless the pilot shows time saved or clinical value; the pilot measures staff minutes, and if managers won't pay, we switch buyers.'
+  ```
 
-### A6 · Wedge scoring
+### A4 · Financials (`a04_pg`)
 
-- **Story title:** Independent cardiology scores highest, by our judgment.
-- **On-slide table:**
+- **Title:** Three pilots pay their way; year one and salaries don't.
+- **On-slide text:**
+  - Kicker: `A4  ·  FINANCIALS (MILESTONE 4, STEP 5)`
+  - Table 1 header: `OPERATING COST PER MONTH, REAL DATA`
 
-| Wedge | Pain | Access | Cycle | Burden | Evidence | Expansion | Total /30 |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **Independent NYC cardiology** | 3 | 4 | 4 | 3 | 3 | 4 | **21** |
-| Primary care wellness visits | 2 | 3 | 3 | 3 | 3 | 5 | 19 |
-| Direct to consumer | 3 | 1 | 5 | 4 | 2 | 2 | 17 |
-| Cardiogenetics clinics | 5 | 2 | 1 | 2 | 2 | 3 | 15 |
-| Lipid / FH cascade clinics | 4 | 2 | 2 | 2 | 1 | 4 | 15 |
-| Sports pre-participation | 2 | 2 | 2 | 1 | 1 | 2 | 10 |
+    | Line | Low | High |
+    | --- | --- | --- |
+    | Hosting + database under BAAs [61][64] | $411 | $457 |
+    | Email, storage, domain, inbox [S19][S25] | $23 | $72 |
+    | Cyber + tech E&O insurance (est.) [S21][S22] | $255 | $305 |
+    | Epic registration, SMS, founders | $0 | $0 |
+    | Total | $689 | $834 |
 
-- Footer: `Team judgment, 1–5, before any manager call. If access is 2 instead of 4, primary care ties. Our deciding reason: cardiology criteria need which relative and what age [76][72].`
+  - Table 2 header: `BREAK-EVEN: OUR PRICE VS HIGHER PRICES`
 
-### A7 · Competitors
+    |   | $500/yr (our price) | $99/mo (higher) | $149/mo (higher) |
+    | --- | --- | --- | --- |
+    | Paying cardiologists | 17–21 | 7–9 | 5–6 |
+    | 2-cardiologist groups | 9–11 | 4–5 | 3 |
+    | + one developer [S23] | ~290 | ~123 | ~82 |
 
-- **Story title:** We found no product that does all four.
-- **On-slide table** (from research §4.5; "not documented" means the vendor's public pages don't say):
+  - Year 1 box: `Three pilots: $3,000 vs ~$1,900–2,300 of running costs for their 12 weeks. Year 1 (costs Jan–Sep, 9 × $689–834): revenue $1,000 (1 pilot) to $6,000 (3 convert at 4 cardiologists each); net −$201 to −$6,506.`
+  - Verdict bar: `Verdict: yes at pilot scale, not yet salaries. Support time must drop below 1 hour per practice a month, or the price must rise.`
+  - Footer: `Price pages checked Oct 6, 2026: [61] Vercel · [64] Neon · [S19] Amazon SES · [S25] Google Workspace (secondary). Insurance: Insureon medians [S21][S22] (estimate). [S23] BLS median software-developer wage $135,980, before payroll taxes and benefits. Year 1 = Oct 2026 to Sep 2027; real-data costs start with the pilots in January. Founders unpaid; their support (1–2 h per practice a month) is not in costs: ≈ $65–131/mo at that wage vs $83/mo from a 2-cardiologist practice.`
+  - Page counter: `Backup A4  ·  Financials`
+- **Speaker notes** (word for word from the deck):
 
-| | Relatives answer for themselves | Per-fact status and source | Fact from a relative's portal | Cardiology one-pager for the clinician | Price |
-| --- | --- | --- | --- | --- | --- |
-| Stemma | Yes | Yes | Yes (sandbox) | Yes | $500/cardiologist/yr (to test) |
-| FamGenix | Partly: invited relatives share and update their own data in its app [S31] | Not documented | Not documented | Cardio risk model (QRisk) at an extra fee [111] | Free up to 20 pedigrees; Individual $500/yr; questionnaires and cardio model extra [111] |
-| My Family Health Portrait | No | No | No | No | Free; original host offline Apr 2026 [97][S7] |
-| Invitae Family History Tool | No | No | No | Cancer focus | Free [107] |
-| Phreesia / IntakeQ | No | No | No | General intake | Free through at least 2026 [112] / $54.90/mo [114] |
-| MyChart eCheck-In | No (patient alone) | No | n/a | Inside Epic | Health system; opens up to 7 days before the visit [S4] |
+  ```text
+  Founder support time: 1-2 h per practice per month at $65/h = $65-131/month, against $83/month from a 2-cardiologist practice at $500/yr. That is why support time must fall or price must rise.
+  ```
 
-- Footer: `Say "we found no", not "there is no". FamGenix is the closest product.` Run the FamGenix hands-on test (open item 12) before Oct 16.
+### A5 · New vs old (`a05_pg`)
 
-### A8 · Evidence and interviews
+- **Title:** What we sell is new; how we sell it is old.
+- **On-slide text:**
+  - Kicker: `A5  ·  NEW VS OLD (MILESTONE 4, STEP 3)`
+  - Bar label (under a three-part N / N/O / O bar): `N 2   ·   N/O 17   ·   O 69   of 88 canvas notes (A1)`
+  - List 1 header: `NEW (N)`
+  - List 1:
+    - `A status in words on every fact: Known · Reports disagree · Unknown · Chose not to share · Not asked yet.`
+    - `The data model behind it.`
+  - List 2 header: `SOME OF EACH (N/O)`
+  - List 2:
+    - `Relatives answer for themselves.`
+    - `One portal fact from a relative.`
+    - `Guideline criteria on the care-team copy only.`
+    - `Patient-sent relative links.`
+    - `Per-relative consent; a clinician's “reviewed” lock.`
+  - Takeaway box: `The new parts are the ones that need evidence: relatives answering (29% dropped at the invite step in a similar app [93]), portal facts, and clinicians trusting a patient-built page.`
+  - Footer: `Tagging rule: O = our closest operations (Phreesia) or a competitor already does it; N = none of our points of comparison does; N/O = done in another industry or clinical area. [93] ItRunsInMyFamily app study, Health Informatics J 2024.`
+  - Page counter: `Backup A5  ·  New vs old`
+- **Speaker notes** (word for word from the deck):
 
-- **Story title:** Our evidence is strong for use and empty for payment.
-- **On-slide:** `21 logged interviews from our September diagnosis research: 15 patients; internist, RN, 2 PAs, ER doctor, genetics counselor. Target-user interviews: 1 (ID007).` Five spoke to family history: ID007 (cardiac; the core story), ID006 (a specific question surfaced a mother's condition), ID002 (family history among the most important factors), ID010 (a flagged, scannable summary; much higher value outside the ED, such as primary care, note), D021 (types every relative into Progeny by hand; ~20% questionnaire return; doubts patients can build pedigrees and favors a guided flow, note; "There has to be a human in the loop to make the judgment about what matters"). `Gap: 0 practice managers · 0 cardiologists · 0 relatives.` Key literature tiles: 57.6% [87] · 11% (UK GP records) [89] · 99.8% vs < 4% [84] · 64.2% engaged; 89.4% of them finished (57% of invited) [92] · 7.8% enrolled (research consent) [91].
+  ```text
+  The old parts lower business-model risk but also mean the buyer has cheap substitutes, which is why price is the riskiest assumption.
+  ```
 
-### A9 · Market and expansion
+### A6 · Wedge (`a06_pg`)
 
-- **Story title:** NYC is our pilot; growth comes from bigger buyers.
-- **On-slide:** `US independent cardiology: 7,699 cardiologists [99] → $3.8M/yr at $500; $9.1–13.8M at $99–149/mo` · `NYC independent: 285–320 cardiologists (re-run Oct 6) [S27] → $142–160k/yr at $500` · both tiles note `(organizations of ≤ 100 clinicians, a proxy; includes some hospital practices)` · Path: `3 pilot groups → rest of ~19–20 NYC groups → large independent and PE groups → health-system genetics and lipid clinics → primary care wellness visits [104]`.
+- **Title:** Why cardiology first: need plus a buyer who can say yes.
+- **On-slide text:**
+  - Kicker: `A6  ·  WEDGE`
+  - Table:
 
-### A10 · Privacy and safety lines
+    | Wedge | Pain | Access | Cycle | Burden | Evidence | Expansion | Total /30 |
+    | --- | --- | --- | --- | --- | --- | --- | --- |
+    | Independent NYC cardiology | 3 | 4 | 4 | 3 | 3 | 4 | 21 |
+    | Primary care wellness visits | 2 | 3 | 3 | 3 | 3 | 5 | 19 |
+    | Direct to consumer | 3 | 1 | 5 | 4 | 2 | 2 | 17 |
+    | Cardiogenetics clinics | 5 | 2 | 1 | 2 | 2 | 3 | 15 |
+    | Lipid (cholesterol) clinics | 4 | 2 | 2 | 2 | 1 | 4 | 15 |
+    | Sports screening (many minors) | 2 | 2 | 2 | 1 | 1 | 2 | 10 |
 
-- **Story title:** Synthetic now; a business associate the day practices pay.
-- **On-slide:** `Prototype uses synthetic data only.` · `When a practice pays: we become a HIPAA business associate; BAAs with practices and vendors; MFA; audit log; breach plan (30 days NY, 60 days FTC) [35][36][43]` · `Each relative owns their branch: decline, correct, delete` · `Patients see facts, gaps, questions. Guideline criteria appear only on the care-team copy, addressed to the clinician (FDA CDS guidance, Jan 2026) [95]; a care-team page carried by the patient is a question for counsel` · `No ads, no data sales, no insurer or employer channels (GINA gaps [51])`.
+  - Note: `Deciding reason: cardiology criteria need which relative, which side and what age, out to grandparents, aunts and uncles [76][77][72]; Medicare's wellness visit requires, at minimum, only parents, siblings and children [104]. One practice manager can say yes. If access were 2 instead of 4, primary care would tie, so the 5 manager calls on A11 decide.`
+  - Footer: `Team judgment before any buyer call; each column 1–5, 5 = good for us (Burden: 5 = light). [76] ACC/AHA 2018 · [77] Simon Broome · [72] AHA/ACC 2024 · [104] 42 CFR 410.15.`
+  - Page counter: `Backup A6  ·  Wedge scoring`
+- **Speaker notes** (word for word from the deck):
 
-### A11 · Pilot design
+  ```text
+  Not presented. Q&A owner: Raj. Use the 'any doctor' answer in slide 9's notes. Cardiology does not win on Pain (cardiogenetics and lipid clinics score higher); it wins on Access and Cycle: one practice manager can say yes. Decision rule from any-physician.md: if fewer than 3 of 5 cardiology practice managers name a budget owner by Oct 23, run the same five calls with primary care practice managers before choosing the pilot.
+  ```
 
-- **Story title:** One number decides the pilot: completion before visit one.
-- **On-slide:** Offer: `$1,000 flat, 12 weeks, credited to year one; then $500 per cardiologist per year; BAA first; no auto-renew`. Metric zero (by Oct 23): `5 manager conversations · 3 name the budget owner and accept $500/yr in principle · 1 signs a non-binding letter of intent with a target start month (paid letter once we have a company, BAA template and insurance)`. Pilot metric 1: `Of invited adult new patients whose first visit falls in weeks 2–12, ≥ 40% have a patient-reviewed summary in the chart before that visit; read at weeks 6 and 12 (day 1: also text patients already booked)`. Checks: `clinician rating ≥ 4/5, scan < 60 s · ≥ 25% get a relative's answer · staff minutes measured · ≤ 2 alerts per summary · founder support minutes per practice`. Go/no-go week 12: `go if metric 1 ≥ 40% and ≥ 1 of 3 signs annual; high completion but no payer → switch buyer; < 20% → fix the flow`. Critical path (proposed): `company formed Nov 15 · counsel reviews BAA and privacy policy Dec 1 · cardiologist signs rule table Dec 15 · pilot backend on synthetic data Dec 15 · BAA stack and insurance live Jan 5` (owners by role in `vca.md` 5.2; names to assign).
+### A7 · Competitors (`a07_pg`)
 
-### A12 · The full care-team page
+- **Title:** We found no product that does all four.
+- **On-slide text:**
+  - Kicker: `A7  ·  COMPETITORS`
+  - Table:
 
-- **Story title:** The whole page, for anyone who wants to read it.
-- **Visual:** full uncropped care-team summary for the demo family (redesigned site), with the synthetic-data watermark visible, in a plain gray frame.
+    |   | Relatives answer for themselves | Per-fact status + source | Fact from a relative's portal | Cardiology page for the clinician | Price |
+    | --- | --- | --- | --- | --- | --- |
+    | Stemma | Yes | Yes | Yes (test server) | Yes | $500 per cardiologist/yr after a $1,000 pilot |
+    | FamGenix | Partly [S31] | Not documented | Not documented | Heart model, extra fee | 20 trees free; $500/clinician/yr [111] |
+    | 23andMe family health tree | No: you type them in | Not documented | Not documented | No: private to you | Not checked |
+    | Invitae Family History Tool | No | No | No | Cancer focus | Free [107] |
+    | Phreesia / IntakeQ | No | No | No | General intake | Free through 2026 [112] / $54.90/mo [114] |
+    | Epic MyChart check-in | No (patient alone) | No | n/a | Inside Epic | Health system; opens up to 7 days before [S4] |
+
+  - Footer: `“Not documented” = the vendor's pages don't say; we say “we found no”, not “there is no”. FamGenix is closest; not yet tested hands-on. My Family Health Portrait (free US tool; original CDC host offline since Apr 2026 [S7]) does none of the four. 23andMe: help article, Oct 11, 2026. [S4] MyChart guide · [S31] FamGenix app listing.`
+  - Page counter: `Backup A7  ·  Competitors`
+- **Speaker notes** (word for word from the deck):
+
+  ```text
+  Not presented. Q&A owner: Viha. If asked 'how is this different from 23andMe?': 'On 23andMe's family health tree you type in your relatives' conditions yourself, and only you can see them. In Stemma relatives can answer for themselves, every fact keeps who said it, and the practice gets a page.' If the FamGenix hands-on test happens before Oct 16, replace the footer's 'not yet tested hands-on' with what we found.
+  ```
+
+### A8 · Evidence (`a08_pg`)
+
+- **Title:** Similar tools get used; payment has no evidence yet.
+- **On-slide text:**
+  - Kicker: `A8  ·  EVIDENCE`
+  - Column 1 header: `INTERVIEWS (OUR COURSE LOG)`
+  - Column 1:
+    - `21 logged: 15 patients, an internist, a nurse, 2 physician assistants, an ER doctor (ID010), a genetics counselor (D021).`
+    - `ID007, cardiac patient: the core story (notes).`
+    - `ID006: a specific question surfaced a mother's condition (notes).`
+    - `ID010: wants a flagged, scannable summary; more value in primary care (notes).`
+    - `D021: types every relative into Progeny (pedigree software) by hand; ~20% questionnaire return. “There has to be a human in the loop to make the judgment about what matters.”`
+  - Gap box: `Gap: 0 practice managers · 0 cardiologists · 0 relatives`
+  - Column 2 header: `LITERATURE`
+  - Figure `57.6%`: `of parent/sibling heart attacks caught by self-report [87]`
+  - Figure `48.9%`: `of new cardiology patients answered a no-login pre-visit link (Korea) [S12]`
+  - Figure `99.8% vs <4%`: `family trees meeting quality criteria: guided tool vs charts [84]`
+  - Figure `57%`: `of invited patients finished a short clinic-sent chatbot (cancer risk) [92]`
+  - Figure `7.8%`: `of eligible patients enrolled when invited to a consented research study (vs 57% above) [91]`
+  - Footer: `(notes) = our note-taker's wording; quotation marks only where the log has them. [84] Wu, MeTree, BMC Fam Pract 2014 · [87] SCAPIS, Eur J Epidemiol 2026 · [91] IGNITE, Genet Med 2019 · [92] Nazareth, Obstet Gynecol 2021 · [S12] Choi, JMIR Med Inform 2026.`
+  - Page counter: `Backup A8  ·  Evidence and interviews`
+- **Speaker notes** (word for word from the deck):
+
+  ```text
+  Not presented. Q&A owner: Raj. 21 logged interviews (ID001-ID020 and D021); only ID007 is a cardiology patient; 0 managers, 0 cardiologists, 0 relatives. Use 21; never 30. If calls or a clinician scan test happen before Oct 16, update the Gap box.
+  ```
+
+### A9 · Market and expansion (`a09_pg`)
+
+- **Title:** NYC cardiology first; growth adds specialties.
+- **On-slide text:**
+  - Kicker: `A9  ·  MARKET AND EXPANSION`
+  - Market tile `7,699`:
+    - `US independent cardiologists [99]`
+    - `$3.8M/yr at $500 · $9.1–13.8M at the higher prices on A4`
+  - Market tile `285–320`:
+    - `NYC independent cardiologists [S27]`
+    - `$142–160k a year at $500: a pilot market, not a business`
+  - Path (five arrow shapes, left to right): `3 pilot groups` → `~20 NYC cardiology groups` → `Larger and investor-owned groups` → `Genetics and lipid clinics` → `Primary care wellness visits [104]`
+  - Note:
+    - `Each step reuses the tree, relative links and sources; a new specialty adds its own questions and clinician criteria, signed off by that specialty (only cardiology's are built, not yet signed off). Markets beyond independent cardiology are not yet sized.`
+    - `“Independent” = organizations of ≤100 clinicians (includes some hospital practices). Of NYC's 285–320, 144 work in the 39 groups with 2+ independent cardiologists (median 2); about 19–20 of those groups are cardiology-focused once hospital-linked ones are removed (to confirm by phone).`
+  - Footer: `[99] CMS Doctors and Clinicians national file; [S27] our analysis of it, Oct 2 and Oct 6, 2026. [104] 42 CFR 410.15: the Medicare Annual Wellness Visit requires family history.`
+  - Page counter: `Backup A9  ·  Market`
+- **Speaker notes** (word for word from the deck):
+
+  ```text
+  If asked 'isn't the market tiny?': independent cardiology alone, yes. It's the wedge; growth is larger groups, then genetics and lipid clinics, then primary care (slide 9).
+  ```
+
+### A10 · Privacy and safety (`a10_pg`)
+
+- **Title:** Synthetic now; a business associate the day practices pay.
+- **On-slide text** (five rows, label then text):
+  - Kicker: `A10  ·  PRIVACY AND SAFETY`
+  - Row `Today`: `Synthetic data only. Links carry their data after the #, which browsers never send to a server.`
+  - Row `When a practice pays`: `We become a HIPAA business associate: signed BAAs with practices and vendors, two-step login, an access log, a breach plan (30 days NY, 60 FTC) [35][36][43].`
+  - Row `Relatives`: `Each relative can answer or decline today; correcting or deleting a sent answer comes with the pilot.`
+  - Row `Clinical line`: `Patients see facts, gaps and questions. Guideline criteria appear only on the care-team copy, addressed to the clinician (FDA clinical decision-support guidance, Jan 2026) [95].`
+  - Row `Never`: `No ads, data sales, or insurer and employer channels (GINA, the genetic-bias law, has gaps [51]). We claim no HIPAA certification: none exists [55].`
+  - Footer: `[35] 45 CFR 160.103 (HIPAA definitions). [36] FTC Health Breach Notification Rule. [43] NY Gen. Bus. Law 899-AA. [51] NHGRI. [55] Box HIPAA FAQ. [95] FDA decision-support software guidance, Jan 2026.`
+  - Page counter: `Backup A10  ·  Privacy and safety`
+- **Speaker notes** (word for word from the deck):
+
+  ```text
+  Is this a medical device? Patients see facts, gaps and questions, never risk scores. Criteria appear only on the care-team copy, each citing guideline and year. The care-team copy goes to the practice by link or QR, not through the patient's printer.
+  ```
+
+### A11 · Pilot design (`a11_pg`)
+
+- **Title:** Completion before visit one decides the pilot.
+- **On-slide text** (four cards, label then text, and two lines under them):
+  - Kicker: `A11  ·  PILOT DESIGN`
+  - Card `BY OCT 23`: `5 practice-manager conversations. 3 name the budget owner and accept $500/yr in principle; 1 signs a non-binding letter of intent.`
+  - Card `THE OFFER`: `$1,000 flat for 12 weeks, credited to year one; then $500 per cardiologist per year. BAA first; no auto-renew.`
+  - Card `THE METRIC`: `≥ 40% of invited adult new patients (first visit in weeks 2–12) have a reviewed summary in the chart before the visit. Benchmarks (A8): 48.9% (cardiology, Korea); 57% (short chatbot).`
+  - Card `GO / NO-GO, WEEK 12`: `Go only if the metric is ≥ 40% and 1 of 3 signs annual. High completion but no payer: switch buyer (lipid or cardiogenetics clinics, or primary care). Under 20%: fix the flow.`
+  - Checks line: `Also measured: clinician rating ≥ 4/5 with a scan under 60 s · ≥ 25% get a relative's answer · staff minutes · ≤ 2 alerts per summary (alert fatigue) · founder support minutes`
+  - Critical path line: `Critical path (proposed): company Nov 15 · counsel reviews BAA and privacy policy Dec 1 · cardiologist signs rule table Dec 15 · pilot backend Dec 15 · hosting under BAAs and insurance Jan 5`
+  - Page counter: `Backup A11  ·  Pilot design`
+- **Speaker notes** (word for word from the deck):
+
+  ```text
+  Day 1 of the pilot: also text patients already booked, so the first weeks produce data.
+  ```
+
+### A12 · The full care-team page (`a12_pg`)
+
+- **Title:** The full care-team page, as the practice gets it.
+- **On-slide text:**
+  - Kicker: `A12  ·  THE FULL CARE-TEAM PAGE`
+  - Footer: `One printed page, shown as two halves; open stemmahealth.vercel.app/practice to read it. Synthetic demo family. On this copy “Declined to share” means Chose not to share.`
+  - Page counter: `Backup A12  ·  Care-team page`
+- **Visual:** the full care-team page for the synthetic demo family (`public/pitch/a12-care-full.png`) in a plain frame.
+- **Speaker notes** (word for word from the deck):
+
+  ```text
+  The practice view (/practice) shows this page for the demo patient, with Print, Copy as chart text, Download FHIR and a clinician-review switch. In a pilot it arrives by the read-only link or the check-in QR.
+  ```
 
 ---
 
 ## Q&A bank
 
-One person answers, in about 20 seconds, then stops. Default owners: Raj (problem, interviews, privacy, safety, technical), Viha (product, relatives, competitors), Unser (buyers, price, costs, market).
+One person answers, in about 20 seconds, then stops. Default owners: Raj (problem, interviews, privacy, safety, technical), Viha (product, relatives, competitors), Unser (buyers, price, costs, market). The backup page to jump to is in the last column.
 
-| # | Question | Answer | Owner · backup |
+| # | Question | Answer | Owner · page |
 | --- | --- | --- | --- |
-| 1 | Why would a practice pay when intake tools and lab pedigree tools are free? | Maybe it won't; that's our riskiest claim and our next test. Free tools don't have relatives answering for themselves, a source on every fact, or a cardiology page, and FamGenix's patient questionnaire and cardio model cost extra on top of its $500 [111]. If managers say no but patients finish, we switch buyers to genetics and lipid clinics or primary care. | Unser · A3, A11 |
-| 2 | How is this different from FamGenix, the government's free tool, or MyChart's questionnaire? | We found no product that does all four: relatives answer for themselves, every fact keeps its source and status, one fact can come from a relative's own portal, and the clinician gets a cardiology one-pager. FamGenix comes closest: invited relatives can share their own data in its app [S31]. MyChart's eCheck-In is the patient alone, from memory, up to 7 days before the visit [S4]. | Viha · A7 |
-| 3 | Isn't self-reported family history unreliable? | Often, yes: self-reports caught only 57.6% of heart attacks in parents and siblings [87]. That's why every fact shows who said it and how, relatives answer for themselves, and the clinician decides what matters. | Viha · A8 |
-| 4 | What if relatives don't answer, or grandparents can't use a phone? | The tree still works; gaps show as unknown, never as "no history". We ask for relatives only after the patient has a usable page, because that's where people drop off (29% in a similar app [93]), and we'll run a help line for older relatives. | Viha · A11 |
-| 5 | Is it HIPAA compliant? What about relatives' privacy? | There's no HIPAA certification [55]. Today the prototype holds synthetic data only. When practices pay, we become a business associate with BAAs, two-factor login and audit logs [35], and each relative controls and can delete their own branch. | Raj · A10 |
-| 6 | Is this a medical device? Are you giving medical advice? | Patients see facts, gaps and questions, never risk scores. Guideline criteria appear only on the care-team copy, addressed to the clinician, each citing its guideline and year, following FDA's January 2026 decision-support guidance [95]. The clinician decides. Whether a printed care-team page in the patient's hands changes that is a question we're taking to counsel, so the care-team copy goes to the practice by link or fax. | Raj · A10 |
-| 7 | Does it pull family history from MyChart? How does it get into Epic? | No. Portals aren't required to share family history, so a relative shares one condition from their own problem list with their own login [7][10]. Epic has no API to write family history, so the page goes in as a PDF first. | Raj · A10 |
-| 8 | Isn't the market tiny? | Independent cardiology alone, yes: about $3.8M a year in the US at $500 per cardiologist, and New York is a pilot, not a market [99]. It's the wedge; growth is larger groups, health-system clinics and primary care, where the Medicare wellness visit requires family history [104]. | Unser · A9 |
-| 9 | Why independent cardiology, not Weill Cornell, the ER or primary care? | Cardiology guidelines are written in our fields: which relative, what condition, what age [76][72]. The ER doctor we interviewed said family history matters there only for a few red flags, and pointed us to primary care as the bigger user (ID010, note). We agree; it's our expansion market. We start in cardiology because the guideline criteria need exactly the fields we capture, and one practice manager can say yes. Two in three hospital executives said selecting a digital tool takes six months or more (2022 survey [S46]). | Raj · A6 |
-| 10 | How many people did you talk to? Any cardiologists or practice managers? | 21 logged interviews from our September diagnosis research: 15 patients and 6 clinicians. One patient was a cardiology patient (ID007); five interviews touched family history. No cardiologist, practice manager or relative yet. That's the gap we're closing before our Milestone 4 review. | Raj · A8 |
+| 1 | Why would a practice pay when intake tools and lab family-tree tools are free? | Maybe it won't; that's our riskiest claim: a practice pays $500 per cardiologist a year despite free intake tools, and none of our 21 interviews was a practice manager. Free tools ask yes or no; we get which relative and what age, with sources, into the chart before visit one. We priced at FamGenix's $500 clinician license [111], not at saved time, which only breaks even (A3). The practice's score stays negative unless the pilot shows time saved or clinical value; if managers won't pay, we switch buyers (lipid or cardiogenetics clinics, or primary care). | Unser · slide 7, A3, A11 |
+| 2 | How is this different from FamGenix, My Family Health Portrait or MyChart's check-in? | We found no product that does all four: relatives answer for themselves, every fact has a status and a source, one fact can come from a relative's own portal (a test server today), and the clinician gets a cardiology page. FamGenix comes closest: relatives can partly share in its app [S31]; we haven't tested it hands-on yet. MyChart's check-in is the patient alone, opening up to 7 days before the visit [S4]. My Family Health Portrait does none of the four; its original CDC host has been offline since April 2026 [S7]. | Viha · A7 |
+| 3 | Isn't self-reported family history unreliable? | Often, yes: self-report caught about 58 of 100 heart attacks in parents and siblings (sensitivity 57.6% [87]). That's why every fact shows who said it and a status in words, relatives answer for themselves, and the clinician decides what matters. | Viha · A0, A8 |
+| 4 | What if relatives don't answer, or grandparents can't use a phone? | The tree still works: a gap shows as Unknown or Not asked yet, never "no history". Relatives are our least-tested step: 29% dropped at the invite step in a similar app [93], and we haven't interviewed a relative yet. The pilot measures it: at least 25% of patients should get a relative's answer. In MeTree, 26% of users needed help, most of them over 60 [90], so the pilot has a help line. | Viha · slide 4, A5, A11 |
+| 5 | Is it HIPAA compliant? What about relatives' privacy? | There's no HIPAA certification, and we claim none [55]. Today the prototype holds synthetic data only, and links carry their data after the #, which browsers never send to a server. When a practice pays, we become a HIPAA business associate: signed BAAs with practices and vendors, two-step login, an access log and a breach plan [35][36][43]. Each relative can answer or decline today; correcting or deleting a sent answer comes with the pilot. | Raj · A10 |
+| 6 | Is this a medical device? Are you giving medical advice? | Patients see facts, gaps and questions, never risk scores. Guideline criteria appear only on the care-team copy, addressed to the clinician, each citing its guideline and year: under FDA's January 2026 guidance, any recommendation shown to patients is a device [95]. The care-team copy goes to the practice by read-only link or check-in QR, not through the patient's printer. The clinician decides. | Raj · slide 6, A10 |
+| 7 | Does it pull family history from MyChart? How does it get into Epic? | No. Portals don't have to share family history, so a relative shares one condition from their own problem list, read-only, with their own login [7][10]. Today that runs on the public SMART Health IT test server, not Epic's. Epic can't write family history from apps into the chart, so the page goes in as a PDF. | Raj · slide 8 |
+| 8 | Isn't the market tiny? | Independent cardiology alone, yes: 7,699 US independent cardiologists, about $3.8M a year at $500 [99], and New York is a pilot, not our market. It's the wedge; growth is larger groups, then genetics and lipid clinics, then primary care (slide 9). Markets beyond independent cardiology are not yet sized, so we don't quote a number for them. | Unser · A9 |
+| 9 | Shouldn't this be for any doctor? | (About 20 s; the words in slide 9's notes.) "Eventually, yes. The tree shouldn't care which doctor reads it; only the questions and the clinician's criteria change. But a wedge needs one buyer who can say yes. Cardiology needs more detail than primary care: which relative, which side, what age, while Medicare's wellness visit requires, at minimum, only parents, siblings and children. And we haven't spoken to a single practice manager yet. If cardiology managers don't name a budget owner, primary care is our next call list." Evidence: [76][77][72]; the wellness visit rule [104]. If pushed on market size, use row 8 and don't quote a primary-care number. The decision rule behind it (A6 notes): if fewer than 3 of 5 cardiology practice managers name a budget owner by Oct 23, we run the same five calls with primary care practice managers before choosing the pilot. | Raj · slide 9, A6 |
+| 10 | Why independent cardiology, not Weill Cornell, the ER or primary care? | Cardiology guidelines need which relative, which side and what age, out to grandparents, aunts and uncles [76][77][72], and one practice manager can say yes. The ER doctor we interviewed sees more value in primary care (ID010, notes); it's on our path and our fallback buyer. Hospital clinics buy slowly: two in three hospital executives said selecting a digital tool takes six months or more (2022 survey [S46]). | Raj · A6 |
+| 11 | How many people did you talk to? Any cardiologists or practice managers? | 21 logged interviews: 15 patients, an internist, a nurse, 2 physician assistants, an ER doctor and a genetics counselor. One patient (ID007) was a cardiology patient. No practice manager, cardiologist or relative yet; the 5 manager calls due Oct 23 start to close that gap. | Raj · A8, A11 |
+| 12 | What did you take from 23andMe? | The core difference stays: on 23andMe's family health tree you type in relatives' conditions yourself, and only you see them. In Stemma, relatives can answer for themselves, share one condition from their own portal, and every fact keeps who said it. What we took: four editing patterns from their help article, shipped together with two clinical fixes from the same audit. All six are live on stemmahealth.vercel.app since Oct 12, on synthetic data. From 23andMe: undo after "Remove from tree", and the grandparent slots can't be removed; change an added relative's relationship without losing their answers; "Add a relative to {name}" from any person; and an ask-first note with "Send {name} a link instead", which turns their advice to get a living relative's permission into a button. From our audit: a "sudden or unexpected" switch on a death that feeds the sudden-death rule, and Marfan or bicuspid valve listed as "also noted", not as a guideline item. None of this is on the slides. | Viha · slide 3, A7 |
 
-Two more if there's time: **"Does it save the practice time?"** Unproven; a 2026 trial found no difference in counseling time with a pre-visit tool [S9], so we'll measure staff minutes in the pilot instead of claiming it, and time savings don't set our price (Unser). **"Who built it, and can you maintain it?"** Be direct: the code was written with an AI coding assistant (the git history shows it), the team member who owns the code explains the architecture, and the logic tests pass (code owner).
+Three more if there's time: **"Does it save the practice time?"** Unproven: a 2026 trial found no shorter counseling time with a pre-visit tool [S9]. At $500 a year, saved staff time only breaks even (A3), so we don't claim it; the pilot measures staff minutes (Unser). **"When does the link go out?"** With the new-patient paperwork when the visit is booked (average cardiology wait 33 days [S2]); how far ahead is up to each practice (Viha). **"Who built it, and can you maintain it?"** Be direct: the code was written with an AI coding assistant (the git history shows it), the team member who owns the code explains the architecture, and the logic tests pass (code owner).
 
 ---
 
 ## Open items for the team (facts only you can confirm)
 
-1. **Interview count.** The earlier "What we heard" slide (`slides/build-what-we-heard.cjs`, `.pptx`, `.png` in the repo) still says 30; Team Hub logs 21 (ID001–ID020 and D021). Log the other 9 with IDs and notes before Oct 16, or change that slide to 21 and keep it out of the backup and the Milestone 4 PDF until then. The script above says 21.
-2. **Practice-manager calls.** Has any practice shown interest? Team Hub records none, and Milestone 1 promised at least 3 owner or manager interviews. Results of any calls before Oct 16 go on slide 6 (template lines provided). Never say "booked" unless booked. The ask is a non-binding letter of intent until we have a company, a BAA template and insurance.
-3. **Any cardiologist** who has seen the one-pager? Run the clinician scan test (VCA test 2) with at least 2 cardiologists or cardiology PAs before Oct 16 and put the result on slide 6 and A8.
+1. **Interview count.** The earlier "What we heard" slide (`slides/build-what-we-heard.cjs`, `.pptx`, `.png` in the repo) still says 30; Team Hub logs 21 (ID001–ID020 and D021), and the deck says 21 everywhere (A8's notes: "Use 21; never 30"). Log the other 9 with IDs and notes, or change that slide to 21, before it goes into any PDF.
+2. **Practice-manager calls.** Team Hub records none, and Milestone 1 promised at least 3 owner or manager interviews. If any happen before 5 pm Oct 16, update slide 7's tile 3 and riskiest-claim line with the template in slide 7's notes ("We asked [N] practice managers; [M] named a budget owner and [K] would sign a letter of intent") and A8's Gap box. Never say "booked" unless booked. The ask is a non-binding letter of intent until we have a company, a BAA template and insurance. Decision rule (A6 notes): if fewer than 3 of 5 name a budget owner by Oct 23, run the same five calls with primary care practice managers.
+3. **Any cardiologist** who has seen the care-team page? Run the clinician scan test (VCA test 2) with at least 2 cardiologists or cardiology PAs before Oct 16 and put the result on slide 7 and in A8's Gap box.
 4. **Target-user interviews.** Only ID007 is a cardiology patient. Interview 5 adults who had a first cardiology visit in the past year: what the form asked, whether they were sent to ask relatives, whether they'd answer a practice link. Log them as ID022 onward.
 5. **Grading criteria.** The four criteria (Analysis, Mockup, Central business logic, Execution and participation) are in `maker-day-2-rubric.md`, transcribed from the course site.
-6. **Speaker split.** Default: Raj 1, 2, 8; Viha 3–5; Unser 6–7. If the code owner should present slide 7, swap Raj and Unser on slides 7 and 8. Decide by Oct 12. Name the code owner for Q&A, who can explain the architecture and the AI-assisted build without notes.
-7. **Demo family after the redesign.** Scripts use Alex, Mom, Dad, Uncle Dev (atrial fibrillation at 34: condition from his portal record, age from his answer), Grandma Rosa (very high cholesterol about 35), Grandpa Ray (unknown), Grandma June (declined to share), Grandpa Luis (not asked yet), and the redesign's status words (Known, Reports disagree, Unknown, Declined to share, Not asked yet). Update scripts if the redesign changes names, ages or labels.
-8. **Product fixes before the screenshots (redesign). Done Oct 7, 2026:** (a), (b) and (c) are in the production prototype, no cascade-screening line remains, and slides 3–5 and A12 were captured after the fixes. What was asked: (a) **Care-team copy:** today printing produces the care-team copy and the patient can preview it (`SummaryPage.tsx`). Make the patient's Print button print the patient's copy, remove the patient-side care-team preview, and send the care-team copy only by the read-only link or QR the practice opens (or fax). If that can't ship, ask counsel before showing a patient carrying the care-team page, and keep slide 5's wording ("the one the practice files"). (b) **Grandma Rosa's label** (`src/lib/clinical.ts`, `BASIS.fh` and the `explicit && (first || second)` rule): for second-degree relatives use "Simon Broome criteria (first- or second-degree adult relative with total cholesterol > 290 mg/dL; level not reported)"; use Dutch Lipid Clinic only for first-degree relatives; drop the cascade-screening line for adults. (c) **Invite text** (`PersonPanel.tsx`): no health information ("heart history", the visit specialty) and no "It takes about 2 minutes" (unmeasured). Suggested: "Hi, it's {patientName}. I'm putting together our family health history and would love your help. Here's a private link; you can answer, skip, or say no: {url}". (d) **Screenshot cutoff:** if the redesign is not on production by end of day Oct 13, capture slides 3–5 and A12 from the current production build that day and update the scripts to match its labels (item 7).
-9. **The intake-form crop.** OK to show a named institution's public form with credit? If not, rebuild a neutral grid captioned "Example intake grid" and keep [S5] in the footnote. Before Oct 16, download posted new-patient forms from 5 independent NYC cardiology groups on the [S27] list, report what they ask (for example "k of 5 ask age, 0 of 5 ask side"), use one of them for the slide 2 crop if it fits, and reword the first business-logic clause if they differ. Ask each practice manager for their own form and EHR check-in.
-10. **Presenting setup.** From the uploaded PDF on a course machine, or your own laptop? Clicker available? Upload the PDF by noon on Oct 16 and open it on another device to check fonts and crops.
-11. **Screenshots.** Capture from the production URL (no dev badge), reset the demo family first, keep the synthetic-data banner in at least one shot per slide, put them in plain gray frames, and save uncropped versions for the Milestone 4 PDF (the six screens listed in `vca.md`, "Mockup screens").
-12. **FamGenix hands-on** (free tier, one synthetic cardiac family) before Oct 16, so the comparison isn't from its marketing pages and app-store listing.
-13. **Company and counsel.** A practice will expect a company, not three students, to sign the BAA and send the invoice (NY LLC publication rules [S53]). Agree who forms it and when (proposed Nov 15), and book a Cornell law clinic for the BAA template, privacy policy and the care-team page question.
+6. **Speaker split (final in the deck notes).** Raj 1, 2, 9; Viha 3–6; Unser 7–8. Name the code owner for Q&A, who can explain the architecture and the AI-assisted build without notes.
+7. **Demo family (fixed).** Alex is the patient. Mom's side: Mom, Grandma Rosa (very high cholesterol around 35, reported by Mom), Grandpa Luis (Not asked yet). Dad's side: Dad (Reports disagree: Mom says heart attack at 60, Uncle Dev says angina at about 58), Grandpa Ray (Unknown), Grandma June (Chose not to share), Uncle Dev (atrial fibrillation at 34: condition from his portal record, age from his answer). The care-team screenshots on slide 6 and A12 show the app's clinical label "Declined to share"; A12's footer says it means Chose not to share. After Oct 16, align the app's clinical labels with the five status words and rename the app's portal label "MyChart (SMART sandbox)" to "Patient portal (SMART sandbox)", since the test server is not Epic's.
+8. **Product fixes.** Done Oct 7, 2026, before the screenshots: the patient's Print button prints the patient's copy and the care-team copy reaches the practice only by read-only link or QR; a second-degree relative's reported high cholesterol is labeled with Simon Broome criteria (Dutch Lipid Clinic only for first-degree relatives), with no cascade-screening line for adults; the invite text carries no health information and no time claim. Done Oct 12, 2026, live on production: the six tree changes in Q&A 12. None of them changes a status word, the demo family or a deck screenshot, and the deck doesn't present them.
+9. **Intake forms.** Slide 2 recreates the yes/no grid from Weill Cornell's 2016 cardiology form [S5] and credits it in the footer. Before Oct 16, download posted new-patient forms from 5 independent NYC cardiology groups on the [S27] list, report what they ask (for example "k of 5 ask age, 0 of 5 ask side"), and reword the "intake forms take it from memory" clause if they differ. Ask each practice manager for their own form and EHR check-in.
+10. **Presenting setup.** From the uploaded PDF on a course machine, or your own laptop? Clicker available? Upload the PDF by noon on Oct 16 and open it on another device to check fonts and crops: slide 3's arrow labels and price bar, slide 7's tiles, slide 9's wedge box and QR code, A0's first card, A1's cost box and A4's Year 1 box.
+11. **Screenshots.** Slides 4–6 and A12 use production captures of Oct 7 (`public/pitch/`). Keep uncropped versions for the Milestone 4 PDF (the six screens in `value-creation-analysis.md`, "Mockup screens").
+12. **FamGenix hands-on** (free tier, one synthetic cardiac family) before Oct 16, so the comparison isn't from its marketing pages and app-store listing. If it happens, replace A7's "not yet tested hands-on" with what we found.
+13. **Company and counsel.** A practice will expect a company, not three students, to sign the BAA and send the invoice (NY LLC publication rules [S53]). Agree who forms it and when (proposed Nov 15, as on A11), and book a Cornell law clinic for the BAA template, the privacy policy and the care-team page question.
 14. **Label the genetics counselor D021** (not ID021) and keep her first name off slides. She has not agreed to review anything; don't list her as a reviewer.
 15. **Name and trademark.** "Stemma" is fine as a class-project name, but there is a pending US trademark application for **STEMMAMD** (Stemma Inc, filed Aug 25, 2026, classes 9 and 38, patient medical-information software), close to our name and our field. Ask counsel (item 13) for a clearance search before incorporating, registering a domain or filing under the name, and keep a fallback name ready. The plain word STEMMA is also a live US registration (Teradata US, Inc., Serial 90801129, class 42, data-catalog software): a different field, but the clearance search should cover it.
+16. **The website behind the slide 9 QR code.** Checked Oct 12: the home page, /for-practices, /how-it-works and /pilot show the deck's price ($1,000 for a 12-week pilot, credited to year one, then $500 per cardiologist a year, with $99 a month as a price we also test), and the "Why cardiology?" FAQ is live. Check again before exporting the PDF on Oct 16.
+17. **The VCA and the Miro board.** `value-creation-analysis.md` now uses slide 9's words (both business-logic sentences, the wedge, the vision), the riskiest claim from slides 7 and A3, and the deck's price. The Miro board still needs the same words before Oct 23 (slide 9's notes).
 
 ---
 
@@ -356,24 +762,25 @@ Two more if there's time: **"Does it save the practice time?"** Unproven; a 2026
 
 | Topic | Memos | Choice |
 | --- | --- | --- |
-| Deck look | R1 said build in the website's visual language; R2–R6 and the user said the deck is separate | **Deck keeps the Maker Day 1 theme**; only the screenshots on slides 3–5 and A12 come from the site. No deck-colored legend next to a screenshot and no website thumbnail on slide 8 |
-| Lead price | Research and R3: $99–149/cardiologist/month; R2 and R5: $500/yr | **$500/yr after a $1,000 pilot; $99/mo tested.** $500/yr is the only public per-clinician anchor [111]; staff-time savings are unproven [S9], so they don't set the price |
-| "People will buy it because…" | Earlier draft: "intake forms ask yes or no… gets relatives' own answers"; reviewers: name the buyer, match the form, drop the untested clause | **"…cardiology practices need which relative, what condition and what age, their intake forms take it from memory, and a link they send gets those details, each with its source, into the chart before visit one."** Same words on slide, script and board |
-| "We can make it because…" | R3: "three paying practices cover that cost"; earlier draft: "the core loop already runs" | Dropped R3's (true only at $149/mo). Now "the patient side already runs", since the pilot backend is not built, plus "about ten two-cardiologist practices cover with founders unpaid" |
-| Relative on slide 4 | R6: Grandpa Luis | **Uncle Dev**: in the demo data he is the one with a portal fact, he is also the source of the conflicting report about Dad, and his early atrial fibrillation mirrors ID007's uncle |
-| Slide 2 numbers | R6: "4 in 10 heart attacks missed" + 11%; R1: CDC 15.2% | **1 in 7 (15.2%, 2024 data) and 11% (UK, 1998–2008)** on the slide; 57.6% held for Q&A 3 |
-| What the form shows | R1: one blank box, no grandparents/aunts/uncles | Opened the form [S5]: after the yes/no grid it asks for type and age of onset on free-text lines, and about sudden death. Slide says what holds: a yes/no grid plus a few lines for details, no side of family, no "not sure". It is a 2016 health-system form |
-| Slide 6 tile 2 | Earlier draft "64% → 89%" read as a rise | **57% of invited finished** [92], with the setting on the label |
+| Deck look | R1 said build in the website's visual language; R2–R6 and the user said the deck is separate | **The deck keeps the Team 709 theme.** Only the screenshots on slides 4–6 and A12 and the slide 9 QR code come from the site. No deck-colored legend next to a screenshot |
+| Price | Research and R3: $99–149 per cardiologist a month; R2 and R5: $500 a year | **$1,000 for a 12-week pilot, credited to year one, then $500 per cardiologist a year; $99 a month is a higher price we test on the same card.** $500 a year is the only public per-clinician anchor [111], and saved staff time only breaks even at that price [S9], so it doesn't set the price. A4 also models $149 a month, our first guess |
+| "People will buy it because…" | Earlier drafts: "intake forms ask yes or no…", then "cardiology practices need which relative, what condition and what age…"; reviewers: name the buyer and the price, match the form | **"…cardiology guidelines need which relative and what age, intake forms take it from memory, and for $500 per cardiologist a year a practice-sent link puts those details, sourced, in the chart before visit one."** Same words on slide 9, in the script, in the VCA and on the board |
+| "We can make it because…" | R3: "three paying practices cover that cost" (true only at $149 a month); an earlier draft: "about ten two-cardiologist practices" | **"…which 17–21 paying cardiologists cover, founders unpaid."** Slide 8 gives the same number as 9–11 groups of two |
+| How it works | The earlier deck had no overview, so a reader of the PDF couldn't tell who sends what to whom | **New slide 3 ("How Stemma works")** with the four steps, the 23andMe comparison and the price, plus **A0** for the terms and markers |
+| Relative on slide 5 | R6: Grandpa Luis; an earlier draft: Uncle Dev | **Grandpa Luis**, because the real test-server record (atrial fibrillation since 2016, age 69) fits him. The footer says the record belongs to a made-up test patient, that Luis is still Not asked yet in the demo tree, and that Uncle Dev's atrial fibrillation came in this way |
+| Slide 2 numbers | R6: "4 in 10 heart attacks missed" + 11%; R1: CDC 15.2% | **1 in 7 (15.2%) and 11% (UK records)** on the slide; 57.6% in A0, A8 and Q&A 3 |
+| What the form shows | R1: one blank box, no grandparents, aunts or uncles | We opened the form [S5]: a yes/no grid per relative, then free-text lines for type and age of onset, and a question about sudden death. The slide recreates the grid, and its caption says a "Y" can't show if it came before 55 |
+| Slide 7 tiles | An earlier "64% → 89%" read as a rise; MeTree's 99.8% | **16.1% vs 0.2%** (Toronto trial [S10]) and **57% of invited finished** [92], both labeled "not ours"; 99.8% moved to A8 |
 | "Staff retype it" (R6 slide 2) | Rests on D021, a cancer genetics program | Replaced with "a quick question in the room" [117] |
-| Pilot terms | R6: 1–3 groups, $500–1,000, 8–12 weeks; R5: $1,000, 12 weeks | **$1,000 for 12 weeks**, fallback $500 for 8 weeks; a letter of intent first |
-| Phreesia free period | Research: through Dec 31, 2026; R4: spring 2027 | Page says both; we say "free through at least 2026" |
+| Pilot terms | R6: 1–3 groups, $500–1,000, 8–12 weeks; R5: $1,000, 12 weeks | **$1,000 for 12 weeks, credited to year one; then $500 per cardiologist a year.** A non-binding letter of intent first. No second pilot price |
+| Scope: any physician or cardiology | Raj (Oct 12): "should be for any physician"; the memos: one specialty | **Vision: any doctor who needs a family history, one specialty at a time; wedge: 3 independent NYC cardiology groups.** A wedge needs one buyer who can say yes, and only cardiology's questions and criteria are built. Never "built for any physician" |
+| Phreesia free period | Research: through Dec 31, 2026; R4: spring 2027 | The page says both; we say "free through at least 2026" |
 
 ---
 
 ## Sources used in this file
 
 **From `../research.md`** (fact-checked research, Oct 2, 2026; same numbers):
-
 - [7] Epic, FamilyMemberHistory.Search (R4): https://fhir.epic.com/Specifications/Api?id=10159
 - [8] Epic, Condition.Search (Problems) R4: https://fhir.epic.com/Specifications/Api?id=953
 - [10] Epic API catalog: https://fhir.epic.com/Specifications/Selections
@@ -385,8 +792,6 @@ Two more if there's time: **"Does it save the practice time?"** Unproven; a 2026
 - [61] Vercel pricing: https://vercel.com/pricing
 - [64] Neon pricing: https://neon.com/pricing
 - [72] ACC, 2024 HCM guideline ten points: https://www.acc.org/Latest-in-Cardiology/ten-points-to-remember/2024/05/06/15/12/2024-hypertrophic-cardiomyopathy-gl
-- [74] ACC, 2026 dyslipidemia guideline overview: https://www.acc.org/latest-in-cardiology/articles/2026/07/01/01/prioritizing-health
-- [75] ACC, "No Child Left Behind" (2026 pediatric lipid recommendations): https://www.acc.org/Latest-in-Cardiology/Articles/2026/05/19/15/49/No-Child-Left-Behind
 - [76] ACC, "Power of the Pedigree" (2018 premature ASCVD definition): https://www.acc.org/latest-in-cardiology/articles/2021/01/05/13/15/power-of-the-pedigree
 - [77] Family Heart Foundation, FH diagnostic criteria: https://familyheart.org/diagnosing-familial-hypercholesterolemia/clinical-diagnostic-criteria-for-healthcare-providers
 - [79] 2023 ACC/AHA/ACCP/HRS AF guideline: https://pmc.ncbi.nlm.nih.gov/articles/PMC11095842/
@@ -398,7 +803,6 @@ Two more if there's time: **"Does it save the practice time?"** Unproven; a 2026
 - [92] Nazareth et al., Obstet Gynecol 2021: https://europepmc.org/article/PMC/PMC8594498
 - [93] ItRunsInMyFamily, Health Informatics J 2024: https://europepmc.org/article/PMC/PMC11391477
 - [95] FDA, Clinical Decision Support Software guidance (Jan 2026): https://www.fda.gov/media/109618/download
-- [97] My Family Health Portrait (NCI copy) and commit history: https://cbiit.github.io/FHH/html/index.html ; https://github.com/CBIIT/FHH/commits/master
 - [99] CMS Doctors and Clinicians national file (modified 2026-08-18; team analysis via the API): https://data.cms.gov/provider-data/dataset/mj5m-pzi6
 - [103] CMS, 2026 RVU file (October release): https://www.cms.gov/files/zip/rvu26d.zip
 - [104] 42 CFR 410.15 (Annual Wellness Visit): https://www.ecfr.gov/api/versioner/v1/full/2026-09-01/title-42.xml?part=410&section=410.15
@@ -420,15 +824,13 @@ Two more if there's time: **"Does it save the practice time?"** Unproven; a 2026
 - [S7] CDC, "PHGKB Application Offline" (My Family Health Portrait's original host; offline since April 13, 2026), last reviewed Sept 9, 2026. https://phgkb.cdc.gov/FHH/html/index.html
 - [S9] Orlando LA et al. "Streamlining Inherited Cancer Identification via an EMR-Integrated Risk Assessment Platform: A Nonrandomized Clinical Trial." JAMA Network Open, 2026. PMID 42054024. https://europepmc.org/article/MED/42054024
 - [S10] Carroll JC et al. "An Innovative Strategy for Collecting Family Health History: An Effectiveness-Implementation Trial in Primary Care Clinics." Annals of Family Medicine, 2025. PMID 40983547. https://europepmc.org/article/MED/40983547
-- [S17] CMS, Medicare Physician & Other Practitioners by Provider and Service, 2024 data year (data.cms.gov). Team analysis Oct 6, 2026: cardiology, codes 99203–99205, office setting, 13,087 cardiologists; median 51 new-patient visits a year. https://data.cms.gov/provider-summary-by-type-of-service/medicare-physician-other-practitioners/medicare-physician-other-practitioners-by-provider-and-service
-- [S18] Neon, Plans documentation (smallest compute 0.25 CU; HIPAA listed as an additional charge), opened Oct 6, 2026. https://neon.com/docs/introduction/plans
+- [S12] Choi E et al. "Implementation and Evaluation of a Social Networking Service-Based Mobile Patient-Generated Health Data System With Direct Electronic Medical Record Integration." JMIR Medical Informatics, 2026. PMID 42335468. https://europepmc.org/article/MED/42335468
 - [S19] Amazon Web Services, Amazon SES pricing ($0.10 per 1,000 emails), opened Oct 6, 2026. https://aws.amazon.com/ses/pricing/
 - [S21] Insureon, "Cyber insurance cost" (small businesses $129/month average; IT businesses $179/month), updated Apr 24, 2026. https://www.insureon.com/business-insurance/cyber-liability/cost (re-checked Oct 6, 2026)
 - [S22] Insureon, "SaaS business insurance cost" (tech E&O $126/month), updated Jun 24, 2026. https://insureon.com/technology-business-insurance/saas-companies/cost (re-checked Oct 6, 2026)
 - [S23] US Bureau of Labor Statistics, Occupational Outlook Handbook, Software Developers (median annual wage $135,980, May 2025). https://www.bls.gov/ooh/computer-and-information-technology/software-developers.htm (re-checked Oct 6, 2026)
 - [S25] AccountableHQ (secondary), "Google Workspace HIPAA cost," found Oct 6, 2026 ($7/$14/$22 per user per month; not confirmed on Google's page). https://www.accountablehq.com/post/google-workspace-hipaa-cost-pricing-baa-requirements-and-plan-options
 - [S27] Team analysis of the CMS Doctors and Clinicians national file [99], pulled Oct 2 and re-run Oct 6, 2026: 7,699 of 29,847 cardiologists in organizations of 100 or fewer (a proxy for independent; it includes some hospital practices); 2,152 such organizations with a median of 2 cardiologists; NYC 285–320 independent cardiologists (research.md's Oct 2 figure was 280–320), 122 small organizations (83 with one cardiologist), 39 organizations with 2+ independent cardiologists (144 cardiologists; median 2 per group; the mean of 3.7 is pulled up by two groups with 28 and 13), 22 where cardiologists are at least half the clinicians. The 39 include hospital-linked organizations (for example Maimonides Cardiology FPP, TBHC Medical Services PC of The Brooklyn Hospital Center, Icahn School of Medicine at Mount Sinai, and the Hospital for Special Surgery's legal entity); about 19–20 cardiology-focused groups remain after removing them (to confirm by phone). https://data.cms.gov/provider-data/dataset/mj5m-pzi6
-- [S28] Live prototype checks, Oct 6, 2026: routes /, /tree, /summary, /invite, /view, /research, /how-it-works return HTTP 200; 10 of 10 logic tests pass; SMART launcher responds; CSP and Referrer-Policy headers present. Now at https://stemmahealth.vercel.app (checked at the earlier address, https://family-health-tree-raj-s-projects12.vercel.app, which still works)
 - [S29] Phreesia, Form 10-K for fiscal 2026 (about 180 million patient visits; direct sales; sales cycles of three to twelve months; integrates with most major EMR and PM systems). https://www.sec.gov/Archives/edgar/data/1412408/000141240826000079/phr-20260131.htm
 - [S31] FamGenix Family Health History, Apple App Store listing (seller FamHis, Inc; "Invite and share data with other family members"; version 4.0.0, Feb 11, 2025; 15 ratings), opened Oct 6, 2026. https://apps.apple.com/us/app/famgenix-family-health-history/id1483520084
 - [S32] Zocdoc, "Pay-per-booking fees explained," The Paper Gown, Dec 17, 2025. https://thepapergown.zocdoc.com/facts/pay-per-booking-fees-explained/
@@ -445,4 +847,8 @@ Two more if there's time: **"Does it save the practice time?"** Unproven; a 2026
 - [S53] New York Department of State, "Certificate of Publication for Domestic Limited Liability Company" ($50 filing fee; publish in two newspapers within 120 days of formation, LLC Law §206), opened Oct 6, 2026. https://dos.ny.gov/certificate-publication-domestic-limited-liability-company-0
 - [S54] Nazareth S et al. "Hereditary Cancer Risk Using a Genetic Chatbot Before Routine Care Visits." Obstet Gynecol 2021 (full text: link sent "typically 5 days before an upcoming appointment"; reminders at 72 and 24 hours; funded by Ambry, Invitae and Progenity). Same study as research [92]; full text re-read Oct 6, 2026. https://europepmc.org/article/PMC/PMC8594498
 
-**Other evidence:** Team Hub export (interview logs ID001–ID020 and D021; Milestone 1 track decision; advisor notes of Sept 9, 2026); `docs/mvp-spec.md`; prototype code (`src/lib/demo.ts`, `src/lib/clinical.ts`).
+**Named in the deck without a marker** (slide 3's footer and A7's footer):
+
+- 23andMe Customer Care, "How to Build and Edit your 23andMe Family Tree", updated Oct 11, 2026 (opened Oct 12, 2026 for the tree audit): https://support.23andme.org/hc/en-150/articles/42963469462167-How-to-Build-and-Edit-your-23andMe-Family-Tree
+
+**Other evidence:** Team Hub export (interview logs ID001–ID020 and D021; Milestone 1 track decision; advisor notes of Sept 9, 2026); `docs/mvp-spec.md`; prototype code (`src/lib/demo.ts`, `src/lib/clinical.ts`, `src/lib/store.ts`, `src/components/PersonPanel.tsx`, `src/components/person/EditPerson.tsx`); the live site, checked Oct 12, 2026.

@@ -1,11 +1,11 @@
 # Value Creation Analysis: Stemma, the family health tree
 
 Team 709 · Section 7 · TECH 5900 Product Studio · Milestone 4 (oral review Oct 12–23, PDF due Oct 23, 2026)
-Raj Kashikar · Viha Srinivas · Unser Jaffry · Draft of Oct 6, 2026 (revised after review; renamed Stemma on Oct 7)
+Raj Kashikar · Viha Srinivas · Unser Jaffry · Draft of Oct 6, 2026 (revised after review; renamed Stemma on Oct 7; aligned with the final Maker Day 2 deck on Oct 12)
 
-**How to read this.** `[n]` is a numbered source in `docs/research.md`. `[S#]` is a source opened for the pitch work (Oct 6, 2026), and `[N#]` one opened on Oct 12, 2026 for the "any doctor" question. All three lists, with URLs, are at the end. Interview IDs (ID002, ID006, ID007, ID010, D021) match the Team Hub "Interview Logs". "(note)" means the note-taker's wording; words in quotation marks are only those the Team Hub notes put in quotation marks. **Assumption** marks our own estimate, with its math. Tags follow the course: **N** = new, **O** = old, **N/O** = some of each.
+**How to read this.** `[n]` is a numbered source in `docs/research.md`. `[S#]` is a source opened for the pitch work (Oct 6, 2026), and `[N#]` one opened on Oct 12, 2026 for the "any doctor" question or the 23andMe tree audit. All three lists, with URLs, are at the end. Interview IDs (ID002, ID006, ID007, ID010, D021) match the Team Hub "Interview Logs" (anonymized on the site's /research/interviews tab). Where this file quotes the Maker Day 2 deck (Google Slides `1JGhz-94qJGlWLe-9ZmBesYhjJp6ZIuggMYgFx6BK6kM`, final Oct 12), it uses the slide's words exactly; slide numbers are the deck's (9 main slides, backup A0–A12). "(note)" means the note-taker's wording; words in quotation marks are only those the Team Hub notes put in quotation marks. **Assumption** marks our own estimate, with its math. Tags follow the course: **N** = new, **O** = old, **N/O** = some of each.
 
-**The product in one line.** With Stemma, a patient builds a three-generation family health tree before a first cardiology visit. Relatives fill in their own branches from a text link (and can share one fact from their own patient portal). Every answer keeps its source and status (known, conflicting, unknown, declined). The patient reviews a one-page summary, and the practice gets a care-team copy the clinician can act on. Free for patients; cardiology practices pay. Live prototype, synthetic data only: https://stemmahealth.vercel.app
+**The product in one line.** With Stemma, a patient builds a three-generation family health tree before a first cardiology visit. Relatives can answer for themselves from a text link, on their phone, with no account; they can decline, or share one condition from their own patient portal (a public test server today). Every fact keeps who said it and a status in words: Known · Reports disagree · Unknown · Chose not to share · Not asked yet. The patient reviews a one-page summary, and the practice opens its own care-team copy by link or QR. Free for patients; practices pay, cardiology first: $1,000 for a 12-week pilot, credited to year one, then $500 per cardiologist a year. Live prototype, synthetic data only: https://stemmahealth.vercel.app
 
 ---
 
@@ -14,13 +14,14 @@ Raj Kashikar · Viha Srinivas · Unser Jaffry · Draft of Oct 6, 2026 (revised a
 | | |
 | --- | --- |
 | **Step 4 verdict: Will people buy it?** | **Use: yes, if the practice sends the link. Buy: not yet shown.** Patients gain the most against what they use today, and clinic-sent pre-visit tools get finished (57% of 95,166 invited finished one [92]). No practice manager, cardiologist or relative is among our 21 logged interviews, so payment and clinician value are unproven. |
-| **Step 5 verdict: Can we make it?** | **Yes at pilot scale, from about January 2027; not yet a business that pays salaries.** The patient-to-clinician flow runs today on synthetic data; the pilot backend is next. Running it under BAAs costs about $689–834 a month. At $500 per cardiologist per year, 17–21 paying cardiologists cover that; one salary (wage only) needs about 290, roughly every independent cardiologist in NYC. Founder support time (1–2 hours per practice a month) is unpaid and not in that cost. |
-| **People will buy it because…** | cardiology practices need which relative, what condition and what age, their intake forms take it from memory, and a link they send gets those details, each with its source, into the chart before visit one. |
-| **We can make it because…** | the patient side already runs on public standards, a PDF reaches any chart, and a pilot on vendors that sign BAAs costs under $850 a month, which about ten two-cardiologist practices cover with founders unpaid. |
-| **Configuration most likely to succeed** | Independent NYC cardiology groups (2–10 cardiologists) pay; their adult new patients use it free; relatives answer by link; the care-team page reaches the practice by read-only link or fax, as a PDF; a $1,000 12-week founding pilot credited to year one, then $500 per cardiologist per year. |
-| **Wedge** | 3 independent NYC cardiology groups (2–10 cardiologists); all adult new patients (one link in the new-patient paperwork), sharpest for palpitations, fainting, chest pain or high cholesterol. Success: at least 40% of invited new patients whose first visit falls in pilot weeks 2–12 have a patient-reviewed summary in the chart before that visit (read at weeks 6 and 12). |
-| **Vision** | Any doctor who needs a family history, one specialty pack at a time: NYC cardiology → larger groups → genetics and lipid clinics → primary care wellness visits [104]. |
-| **Riskiest claim and its test** | A practice manager will pay. Test by Oct 23: 5 practice-manager conversations with a one-page price card. Pass = 3 of 5 name the budget owner and accept $500/yr in principle, and 1 signs a non-binding letter of intent naming a target start month. The paid letter follows once we have a company, a BAA template and insurance. |
+| **Step 5 verdict: Can we make it?** | **Yes at pilot scale, from about January 2027; not yet a business that pays salaries.** The patient-to-clinician flow runs today on synthetic data; the pilot backend is next. Running it under BAAs costs about $689–834 a month. At $500 per cardiologist per year, 17–21 paying cardiologists cover that (9–11 groups of two); one developer's wage on top needs about 290, roughly every independent cardiologist in NYC. Founder support time (1–2 hours per practice a month) is unpaid and not in that cost. |
+| **People will buy it because…** | cardiology guidelines need which relative and what age, intake forms take it from memory, and for $500 per cardiologist a year a practice-sent link puts those details, sourced, in the chart before visit one. (slide 9, word for word) |
+| **We can make it because…** | the patient side already runs on open health standards, a PDF reaches any chart, and a pilot on vendors that sign HIPAA contracts costs under $850 a month, which 17–21 paying cardiologists cover, founders unpaid. (slide 9, word for word) |
+| **Configuration most likely to succeed** | Independent NYC cardiology groups (2–10 cardiologists) pay; their adult new patients use it free; relatives answer by link; the practice opens the care-team page by read-only link or check-in QR and files it as a PDF; a $1,000 12-week founding pilot credited to year one, then $500 per cardiologist per year. |
+| **Wedge** | 3 independent NYC cardiology groups. Why cardiology first: its guidelines count grandparents, aunts and uncles, by side and age. Goal: 4 in 10 invited new patients have a reviewed page in the chart before visit one. (slide 9) In detail: groups of 2–10 cardiologists; all adult new patients (one link in the new-patient paperwork), sharpest for palpitations, fainting, chest pain or high cholesterol. The goal is measured on invited new patients whose first visit falls in pilot weeks 2–12, with a patient-reviewed summary in the chart before that visit (read at weeks 6 and 12; A11). |
+| **Vision** | Any doctor who needs a family history, one specialty at a time: the rest of NYC's ~20 cardiology groups → larger groups → genetics and lipid clinics → primary care wellness visits. US independent cardiology alone: 7,699 cardiologists, $3.8M a year at $500. Markets beyond it are not yet sized. (slide 9) [99][104] Never "built for any physician": only cardiology's questions and criteria are built. |
+| **Price** | $1,000 for a 12-week pilot, credited to year one, then $500 per cardiologist a year; free to patients (slide 3). $99 a month is a higher price we test on the same card; Step 5.3 also models $149 a month, our first guess, which is not on the card. |
+| **Riskiest claim and its test** | A practice pays $500 per cardiologist a year despite free intake tools. (slide 7; A3 shortens it to "a practice pays $500 per cardiologist a year"). 0 of 21 interviews were practice managers. Test by Oct 23: 5 practice-manager conversations with a one-page price card. Pass = 3 of 5 name the budget owner and accept $500/yr in principle, and 1 signs a non-binding letter of intent naming a target start month. The paid letter follows once we have a company, a BAA template and insurance. |
 
 ---
 
@@ -59,7 +60,7 @@ Every Post-it has a rank (order of preference inside its sub-group; ranks restar
 | 1 | Who, what, what age, before the cardiology visit | N/O | ID007 recommends prompting for condition, relative, approximate age before specialist visits (note) |
 | 2 | Guided questions with examples; side of family built in | O | ID006 (note); MeTree lineage 100% vs 28.4% in charts [84]; Progeny and MeTree already guide |
 | 3 | Relatives answer for themselves by link, no account | N/O | No-account links are old (Calendly, DocuSign [S34][S36]); for relatives' health facts, new |
-| 4 | Every fact marked known, conflicting, unknown or declined | N | No competitor documents per-fact status [research §4.5]; FHIR has it per relative only [17] |
+| 4 | Every fact: Known, Reports disagree, Unknown, Chose not to share or Not asked yet | N | No competitor documents per-fact status [research §4.5]; FHIR has it per relative only [17] |
 | 5 | Every fact shows who said it, and when | N/O | Audit trails are old (DocuSign certificate [S37]); per-fact source in family history is new |
 | 6 | One condition shared from a relative's own portal | N/O | Patient-access APIs are old [1]; a relative sharing into someone else's tree is new, untested |
 | 7 | Patients see facts, gaps, questions; never risk scores | N/O | FDA CDS guidance [95]; tailored risk messages lowered cholesterol screening, OR 0.34 [94] |
@@ -114,9 +115,9 @@ Every Post-it has a rank (order of preference inside its sub-group; ranks restar
 | # | Post-it (≤ 10 words) | Tag | Why / evidence |
 | ---: | --- | :---: | --- |
 | | **From practices (in order)** | | |
-| 1 | $1,000 founding pilot, 12 weeks, credited to year one | O | Top of research range $500–1,000 [research §5]; fallback $500 for 8 weeks |
+| 1 | $1,000 founding pilot, 12 weeks, credited to year one | O | Top of research range $500–1,000 [research §5]; the only pilot price we offer |
 | 2 | Then $500 per cardiologist per year | O | FamGenix Individual license anchor [111]; staff-time savings unproven [S9], so they don't set the price |
-| 3 | Tested on same card: $99 per cardiologist per month | O | Low end of the original hypothesis [research §4.3] |
+| 3 | Tested on same card: a higher $99 per cardiologist per month | O | Low end of the original hypothesis [research §4.3]; $149 is modeled only (Step 5.3) |
 | 4 | Per completed summary, volume tiers (after legal review) | O | Volume-linked pricing needs counsel [research §4.2] |
 | 5 | Later: enterprise license for large groups, health systems | O | One contract, many cardiologists [102] |
 | 6 | Later: primary care wellness-visit module | O | AWV requires family history [104] |
@@ -267,7 +268,7 @@ We need to run seven operations. Who already runs them (Y yes, P partly, N no, ?
 | **All** | **2** | **17** | **69** | **88** |
 
 **Where the new sits.**
-- **N (2):** per-fact status on every answer (Value Propositions, patient 4) and the data model behind it (Key Resource 1). We found no competitor that documents per-fact known/conflicting/unknown/declined [research §4.5]; FHIR has these states only for a whole relative [17].
+- **N (2):** per-fact status on every answer (Value Propositions, patient 4) and the data model behind it (Key Resource 1). We found no competitor that documents a per-fact status (Known, Reports disagree, Unknown, Chose not to share, Not asked yet) [research §4.5]; FHIR has these states only for a whole relative [17].
 - **N/O (17), the main ones:** relatives answering for themselves (genealogy and FamGenix let relatives share [S38][S39][S31]; sourced answers per relative in a pre-visit flow are new); a relative sharing one portal fact into someone else's tree (patient-access APIs are old [1]); guideline criteria on the clinician's copy only (rule flags are old in cancer genetics [110]); the patient-sends-relatives channel (no-account links are old [S34][S36]); per-relative consent and the "reviewed by clinician" lock.
 - **O (69):** every channel to the practice, every revenue stream and every cost line copies models that already work (Phreesia, IntakeQ, FamGenix, Zocdoc's buyer).
 
@@ -281,10 +282,10 @@ We need to run seven operations. Who already runs them (Y yes, P partly, N no, ?
 
 | Who | Next best option today | What they gain with us | What it costs them | Net |
 | --- | --- | --- | --- | --- |
-| **Patient** (free) | Memory, a call to Mom, a yes/no family-history grid with a few lines for details | Guided questions by side of family; relatives answer for themselves; one page to review and bring; easy to update (ID007) | About half an hour on average (MeTree 27.1 min [90]; a shorter clinic-sent chatbot 15.4 min [92]); asking family; privacy worry | **+** when the practice asks |
-| **Relative** (free) | A phone call from the patient | Answer once, for yourself; "not sure" and "prefer not to say" are real answers; see who reads it; decline; optional portal fact | A few minutes; trusting a health link; grief and family burden after a sudden death [S14]; GINA doesn't cover life, disability or long-term-care insurance [51] | **0**, unproven: a favor to family (no relative interviewed) |
-| **Clinician** (reader) | Asking in the visit; the EHR box | One page: who, what, what age, how sure, with guideline criteria for review. ID010: a flagged, scannable summary would be more realistic (note). D021 (cancer genetics) doubts patients can build pedigrees and expects low engagement; she favored a guided flow that builds the pedigree, which is what we built (note). No cardiologist has seen the page | One more document; self-report is imperfect (57.6% sensitivity for parents' and siblings' heart attacks [87]); alert fatigue (76.4% of MeTree completers got a recommendation [118]) | **+?** if it scans in under a minute with at most two specific alerts (no cardiologist asked yet) |
-| **Practice** (pays) | Its EHR check-in or current form [S52][S5]; Phreesia intake free through at least 2026 [112]; free lab tools [107]; FamGenix Individual $500/yr [111] | More family history reaches the chart (new family history documented within 30 days of the visit for 16.1% vs 0.2%, with an emailed questionnaire plus EHR upload, in Canadian primary care [S10]); guideline-relevant findings surfaced (28.5% of completers met counseling criteria in a 2026 cancer trial [S9]); fewer "go ask your family" loops | A new fee against free substitutes; a workflow change (one link, file one page); a BAA and security review; vendor risk; no billing code pays for it (96160 pays $3.01 [103]) and history-taking no longer sets the visit level [105] | **? not proven** |
+| **Patient** (free) | Memory, a call to Mom, a yes/no family-history grid with a few lines for details | Guided questions by side of family; relatives answer for themselves; one page to review and bring; easy to update (ID007) | About half an hour on average (MeTree 27.1 min [90]; a shorter clinic-sent chatbot 15.4 min [92]); asking family; privacy worry | **+2**: gains if the practice asks |
+| **Relative** (free) | A phone call from the patient | Answer once, for yourself; "not sure" and "prefer not to say" are real answers; see who reads it; decline; optional portal fact | A few minutes; trusting a health link; grief and family burden after a sudden death [S14]; GINA doesn't cover life, disability or long-term-care insurance [51] | **0**: even; relatives untested (a favor to family; no relative interviewed) |
+| **Clinician** (reader) | Asking in the visit; the EHR box | One page: who, what, what age, how sure, with guideline criteria for review. ID010: a flagged, scannable summary would be more realistic (note). D021 (cancer genetics) doubts patients can build pedigrees and expects low engagement; she favored a guided flow that builds the pedigree, which is what we built (note). No cardiologist has seen the page | One more document; self-report is imperfect (57.6% sensitivity for parents' and siblings' heart attacks [87]); alert fatigue (76.4% of MeTree completers got a recommendation [118]) | **+3**: gains if read in < 1 min, with at most two specific alerts (no cardiologist asked yet) |
+| **Practice** (pays) | Its EHR check-in or current form [S52][S5]; Phreesia intake free through at least 2026 [112]; free lab tools [107]; FamGenix Individual $500/yr [111] | More family history reaches the chart (new family history documented within 30 days of the visit for 16.1% vs 0.2%, with an emailed questionnaire plus EHR upload, in Canadian primary care [S10]); guideline-relevant findings surfaced (28.5% of completers met counseling criteria in a 2026 cancer trial [S9]); fewer "go ask your family" loops | A new fee against free substitutes; a workflow change (one link, file one page); a BAA and security review; vendor risk; no billing code pays for it (96160 pays $3.01 [103]) and history-taking no longer sets the visit level [105] | **−2** plus unmeasured staff time: worse unless a pilot shows time saved or clinical value |
 
 ### 4.2 Scored version (team judgment, +2 to −2 against each stakeholder's next best option)
 
@@ -297,7 +298,7 @@ We need to run seven operations. Who already runs them (Y yes, P partly, N no, ?
 | Switching cost | 0 | 0 | −1 (new document) | −1 (workflow change) |
 | Sum, unweighted | 0 | −1 | +1 (with < 1 min scan) | −3 + unmeasured time |
 | **Sum, quality counted double** | **+2** | **0** | **+3** (with < 1 min scan) | **−2 + unmeasured time** |
-| **Net** | **+** when the practice asks | **0**, unproven | **+?** until a cardiologist scans it | **? not proven**: negative unless the pilot shows staff time saved or clinical value |
+| **Net (slide 7's words)** | Gains if the practice asks | Even; relatives untested | Gains if read in < 1 min (untested until a cardiologist scans it) | Worse unless a pilot shows time saved or clinical value |
 
 **Why quality counts double.** Better information at the visit is the only reason anyone uses the product; the other four rows are what it costs to get it. Unweighted, the patient only breaks even, which is why the practice's ask matters so much (57% of invited patients finished when clinics sent the link [92]; 15.2% of adults collect family history on their own [S1]).
 
@@ -325,7 +326,7 @@ We need to run seven operations. Who already runs them (Y yes, P partly, N no, ?
 
 ### 4.4 What is still unproven (ranked)
 
-1. A practice will pay (no buyer interviews, letters or pilots).
+1. A practice pays $500 per cardiologist a year despite free intake tools (no buyer interviews, letters or pilots).
 2. Staff time is saved (contested [S9]).
 3. Patients finish before the visit when a US cardiology practice sends the link (benchmarks: 7.8% enrolled when offered as a consented research study [91]; 48.9% of new cardiology patients answered a no-login link in Korea [S12]; 57% of invited finished a short clinic-sent chatbot [92]).
 4. Relatives respond (29% invite drop-off elsewhere [93]).
@@ -342,7 +343,7 @@ We need to run seven operations. Who already runs them (Y yes, P partly, N no, ?
 | # | Test | Pass mark | When |
 | --- | --- | --- | --- |
 | 1 | Price card ($500/yr and $99/mo) to 5 independent NYC practice managers. Ask: "Show us your new-patient form and your EHR check-in. Does either ask which side, which relative, what age?"; minutes spent on family history; new patients per cardiologist per month, by payer; which EHR; who approves a purchase | 3 of 5 name the budget owner and accept $500/yr in principle, and 1 signs a non-binding letter of intent naming a target start month. The paid letter follows once we have a company, a BAA template and insurance | Start now; report by Oct 23 |
-| 2 | Clinician scan test: synthetic one-pager to 5 clinicians, at least 2 cardiologists or cardiology PAs | Scan < 1 min; ≥ 4 of 5 rate it useful; act on ≥ 1 alert | Before Oct 16; result goes on slide 6 |
+| 2 | Clinician scan test: synthetic one-pager to 5 clinicians, at least 2 cardiologists or cardiology PAs | Scan < 1 min; ≥ 4 of 5 rate it useful; act on ≥ 1 alert | Before Oct 16; result goes on slide 7 and in A8's Gap box |
 | 3 | Patient timing: 5 moderated sessions with a fictional family | Median ≤ 15 min; no wrong-side errors | Before Oct 23 |
 | 4 | Relative fake door: participants send a no-health-data invite to a page that collects nothing | ≥ 25% opened within 72 hours | Before Oct 23 |
 | 5 | FamGenix hands-on: build one synthetic cardiac family in its free tier | A written list of what we do that it doesn't | Before Oct 16 |
@@ -355,16 +356,22 @@ We need to run seven operations. Who already runs them (Y yes, P partly, N no, ?
 
 ### 5.1 Technical feasibility
 
-**Built and live (checked Oct 6, 2026, synthetic data only [S28]):**
+**Built and live (checked Oct 6, 2026, synthetic data only [S28]; the six tree changes at the end shipped Oct 12, 2026 and are live on stemmahealth.vercel.app):**
 
 | Capability | Status |
 | --- | --- |
 | Three-generation tree, side of family fixed by layout, guided cardiac questions | Built |
-| Statuses derived from reports (known / conflicting / unknown / declined); each fact keeps who said it and when | Built; 10 of 10 logic tests pass |
+| Statuses derived from reports (Known / Reports disagree / Unknown / Chose not to share / Not asked yet); each fact keeps who said it and when | Built; 10 of 10 logic tests pass |
 | Relative invite and reply by link, no account; replies accepted only from invited relatives | Built (today the relative's answers come back as a reply link the relative texts to the patient; nothing is stored on our servers) |
 | "Connect MyChart": real SMART on FHIR standalone launch (OAuth 2 + PKCE), read-only Patient and Condition scopes, against the public SMART Health IT sandbox; relative ticks one condition, labeled "on problem list since <year>" | Built (sandbox) [18] |
 | Patient view with no alerts; care-team document with guideline criteria, "also noted" and "to clarify" tiers, each citing guideline and year | Built. The two fixes from open item 8 are live (Oct 7, 2026): Print gives the patient's own copy and the patient never sees the care-team copy, and a second-degree relative's reported high cholesterol is labeled with Simon Broome criteria (Dutch Lipid Clinic counts first-degree relatives only) |
 | Print/PDF, read-only link and QR; FHIR R4 FamilyMemberHistory export | Built (export not yet run through the HL7 validator) |
+| Tree editing: "Remove from tree" can be undone right after, and you, your parents and your four grandparents keep fixed slots that can't be removed, so a missing ancestor stays a visible gap | Built Oct 12, 2026; live (borrowed from 23andMe's family-tree help article [N14]) |
+| Change an added relative's relationship (a brother or sister, or an aunt or uncle on either side) without losing their answers | Built Oct 12, 2026; live (from [N14]) |
+| "Add a relative to {name}" from any person's panel | Built Oct 12, 2026; live (from [N14]) |
+| Ask first: before the patient types about a living relative, a note says the relative can answer for themselves, with "Send {name} a link instead" | Built Oct 12, 2026; live (turns [N14]'s advice to get a living relative's permission into a button) |
+| "It was sudden or unexpected" switch on a death: a sudden death before 40 goes to "For clinician review" under the existing sudden-death rule [78], otherwise to "also noted" | Built Oct 12, 2026; live (from our own audit; before this, a death marked sudden in free text never reached the clinician) |
+| Marfan syndrome or bicuspid aortic valve in a relative is listed as "also noted", not as a guideline item (not in the verified guideline text, research §3.1) | Built Oct 12, 2026; live (from our own audit) |
 
 **What's hard, and the workaround:**
 
@@ -387,7 +394,7 @@ We need to run seven operations. Who already runs them (Y yes, P partly, N no, ?
 | Patient uses it alone | Not HIPAA; FTC Health Breach Notification Rule (60-day notice) and state laws (WA, CA, CT, NV; NY pending) [33][36][41][44] | Consent-first design; breach runbook; no pixels |
 | **Practice pays and summaries reach its chart** | **We become a HIPAA business associate** [35]; NY breach notice within 30 days [43] | BAA with each practice and each vendor; Security Rule risk analysis; vendor-BAA register; MFA; audit log; breach plan |
 
-- **Consent:** each relative owns their branch, can decline, correct or delete; a decline wins over others' secondhand reports; adults 18+ only [research §2.4].
+- **Consent:** each relative can answer or decline today; correcting or deleting a sent answer comes with the pilot (A10). A decline wins over others' secondhand reports, and only the relative themself can choose not to share; adults 18+ only [research §2.4].
 - **Clinical safety line:** patients see facts, gaps and questions; guideline criteria appear only on the care-team copy, addressed to the clinician, cited and versioned, as options not orders (FDA CDS guidance, Jan 2026 [95]). Since Oct 7, 2026 the patient sees and prints only their own copy; the care-team copy reaches the practice by read-only link or check-in QR (fax in the pilot), so it never passes through the patient's hands. Whether a care-team page carried by the patient would change the FDA analysis stays a question for counsel before any patient-upload channel (research §3.5 rule 1, open question 5).
 - **Wording we use:** "Prototype uses synthetic data only." "Built to operate as a HIPAA business associate." Never "HIPAA compliant" or "certified" [55][39].
 - **Onboarding one practice:** pilot letter + BAA → security questionnaire → which EHR, pick PDF channel → practice adds our link to new-patient paperwork → staff accounts with MFA → baseline staff minutes → weekly check-in.
@@ -432,7 +439,7 @@ We need to run seven operations. Who already runs them (Y yes, P partly, N no, ?
 | Founding pilot | $1,000 flat for 12 weeks, credited to year one | n/a | n/a |
 | **A (lead)** | **$500 per cardiologist per year** | $41.67 | $83 |
 | B (tested on the same card) | $99 per cardiologist per month | $99 | $198 |
-| C (original hypothesis, high end) | $149 per cardiologist per month | $149 | $298 |
+| C (higher; our first guess, modeled only, not on the price card) | $149 per cardiologist per month | $149 | $298 |
 
 **Break-even** (operating cost ÷ revenue; rounded up):
 
@@ -440,7 +447,7 @@ We need to run seven operations. Who already runs them (Y yes, P partly, N no, ?
 | --- | ---: | ---: | ---: |
 | Paying cardiologists to cover $689–834 a month | **17–21** | 7–9 | 5–6 |
 | Same, in 2-cardiologist practices | **9–11** | 4–5 | 3 |
-| Plus one salary (BLS median wage for a software developer, $135,980/yr = $11,332/mo, before payroll taxes and benefits [S23]) | ~290 cardiologists (~146 practices) | ~123 (~62) | ~82 (~41) |
+| Plus one developer's wage (BLS median wage for a software developer, $135,980/yr = $11,332/mo, before payroll taxes and benefits [S23]) | ~290 cardiologists (~146 practices) | ~123 (~62) | ~82 (~41) |
 | Plus three salaries | ~836 cardiologists | ~352 | ~234 |
 
 Why 2 cardiologists per practice: in the CMS clinician file, organizations of 100 or fewer clinicians that include an independent cardiologist have a median of 2 cardiologists (team analysis [S27]). NYC's 39 groups with 2 or more independent cardiologists hold 144 cardiologists: median 2 per group; the mean of 3.7 is pulled up by two hospital-linked groups (28 and 13 cardiologists), and the other 37 average 2.8 [S27].
@@ -455,36 +462,37 @@ Why 2 cardiologists per practice: in the CMS clinician file, organizations of 10
 
 **Three 12-week pilots** bring $3,000 against about $1,900–2,300 of BAA-stack cost for those 12 weeks (2.76 months × $689–834), so the pilot pays for itself; the year does not. Worst-case cash need for year 1 is about $6,500, with founders unpaid.
 
-**Market check.** US independent cardiology (7,699 cardiologists in organizations of 100 or fewer clinicians, a proxy that includes some hospital practices [99]) is worth **$3.8M a year at $500**, or $9.1–13.8M at $99–149 a month [research §4.4]. NYC's 285–320 independent cardiologists (re-run Oct 6 [S27]) are worth $142–160k a year at $500. NYC is a pilot market, independent cardiology is a wedge, and growth has to come from larger groups, health-system clinics and primary care.
+**Market check.** US independent cardiology (7,699 cardiologists in organizations of 100 or fewer clinicians, a proxy that includes some hospital practices [99]) is worth **$3.8M a year at $500**, or $9.1–13.8M at the higher prices in the break-even table ($99–149 a month) [research §4.4]. NYC's 285–320 independent cardiologists (re-run Oct 6 [S27]) are worth $142–160k a year at $500: a pilot market, not a business. Independent cardiology is the wedge; growth adds specialties, one at a time: the rest of NYC's ~20 cardiology groups, larger groups, genetics and lipid clinics, then primary care wellness visits (slide 9, A9). Markets beyond independent cardiology are not yet sized.
 
-**Financial verdict:** cheap to run, small to earn. Cash break-even needs 17–21 paying cardiologists at our lead price (about ten 2-cardiologist groups), and one salary (wage only) needs about every independent cardiologist in NYC. At $500 a year a small practice pays for its own support time and little more, so support has to fall under 1 hour a month per practice (practice staff answer first-line questions; in-app help) or the price has to rise. The pilot measures support minutes and founder sales hours per signed practice.
+**Financial verdict:** cheap to run, small to earn. Cash break-even needs 17–21 paying cardiologists at our price (9–11 groups of two), and one developer's wage on top needs about 290, about every independent cardiologist in NYC. At $500 a year a small practice pays for its own support time and little more, so support has to fall under 1 hour a month per practice (practice staff answer first-line questions; in-app help) or the price has to rise. The pilot measures support minutes and founder sales hours per signed practice.
 
 ### 5.4 Step 5 verdict
 
-**Yes at pilot scale (1–3 practices, from about January 2027); not yet a business that pays salaries.** Technology: yes, with the pilot backend still to build. Operations: yes, once we form a company and take on business-associate duties before any real data. Financials: the pilot covers its own cost; a business needs larger groups, health systems or primary care. **The main risk is price, not technology.**
+**Yes at pilot scale (1–3 practices, from about January 2027); not yet a business that pays salaries.** Technology: yes, with the pilot backend still to build. Operations: yes, once we form a company and take on business-associate duties before any real data. Financials: three pilots cover their own cost; a business needs more specialties, one at a time (slide 9, A9). **The main risk is price, not technology.**
 
 ---
 
 ## Central business logic
 
-> **People will buy it because** cardiology practices need which relative, what condition and what age, their intake forms take it from memory, and a link they send gets those details, each with its source, into the chart before visit one.
+> **People will buy it because** cardiology guidelines need which relative and what age, intake forms take it from memory, and for $500 per cardiologist a year a practice-sent link puts those details, sourced, in the chart before visit one.
 >
-> **We can make it because** the patient side already runs on public standards, a PDF reaches any chart, and a pilot on vendors that sign BAAs costs under $850 a month, which about ten two-cardiologist practices cover with founders unpaid.
+> **We can make it because** the patient side already runs on open health standards, a PDF reaches any chart, and a pilot on vendors that sign HIPAA contracts costs under $850 a month, which 17–21 paying cardiologists cover, founders unpaid.
 
-The same two sentences appear on the slide 8 cards and in Raj's script, word for word. "Take it from memory" means: the form asks yes or no per relative, then leaves a few lines for details, with no side of family and no room for "not sure" [S5].
+The same two sentences appear on the slide 9 cards and in Raj's script, word for word. "Take it from memory" means: the form asks yes or no per relative, then leaves a few lines for details, with no side of family and no room for "not sure" [S5].
 
 | Clause | Evidence | Status |
 | --- | --- | --- |
-| "cardiology practices need which relative, what condition and what age" | Premature heart disease counts in a parent or sibling, men < 55, women < 65 [76][74]; sudden-death, cardiomyopathy and aortic rules depend on degree and age [78][80][81]; three-generation history is the HCM standard [72] | Shown (guideline text) |
-| "their intake forms take it from memory" | [S5] asks "Heart Disease?" per relative, then free-text type and age of onset; no side of family, no "not sure"; charts still name relative and age in about 11% of positive entries [89]. EHR check-ins can show family-history questions too [S52] | Shown for one health-system form (2016 version); independent practices' forms and EHR check-ins not yet collected (test 7) |
-| "a link they send gets those details" | 64.2% engaged and 57% of invited finished when clinics sent a link with reminders [92]; 7.8% when the invite came as a research study needing consent [91]. Relatives' own answers are untested: 29% invite drop-off in a similar app [93] | Shown elsewhere for patients; not yet in a US cardiology practice. Relatives: **untested** (pilot target ≥ 25% of patients get one relative's answer) |
-| "each with its source" | Every fact stores who said it and when; built and tested [S28] | Built (synthetic data) |
-| "into the chart before visit one" | 33-day average cardiology wait [S2]; eCheck-In opens 7 days before [S4]; more family history reached charts with a questionnaire plus EHR upload [S10]; ID007 (note) | Timing shown; filing at one practice still to test |
-| "the patient side already runs on public standards" | SMART on FHIR launch, FHIR export, live routes, tests [S28] | Shown (synthetic data); the pilot backend is not built yet (Step 5.1) |
+| "cardiology guidelines need which relative and what age" | Premature heart disease counts in a parent or sibling, men < 55, women < 65 [76][74]; sudden-death, cardiomyopathy and aortic rules depend on degree and age [78][80][81]; three-generation history is the HCM standard [72] | Shown (guideline text) |
+| "intake forms take it from memory" | [S5] asks "Heart Disease?" per relative, then free-text type and age of onset; no side of family, no "not sure"; charts still name relative and age in about 11% of positive entries [89]. EHR check-ins can show family-history questions too [S52] | Shown for one health-system form (2016 version); independent practices' forms and EHR check-ins not yet collected (test 7) |
+| "for $500 per cardiologist a year" | The one public per-clinician price for a family-tree tool: FamGenix, $500 a year [111]. Saved staff time only breaks even at that price (Step 4.3) | Price anchor shown; payment **untested** (0 of 21 interviews were practice managers; test 1) |
+| "a practice-sent link puts those details" | 64.2% engaged and 57% of invited finished when clinics sent a link with reminders [92]; 7.8% when the invite came as a research study needing consent [91]. Relatives' own answers are untested: 29% invite drop-off in a similar app [93] | Shown elsewhere for patients; not yet in a US cardiology practice. Relatives: **untested** (pilot target ≥ 25% of patients get one relative's answer) |
+| "sourced" | Every fact stores who said it and when; built and tested [S28] | Built (synthetic data) |
+| "in the chart before visit one" | 33-day average cardiology wait [S2]; eCheck-In opens up to 7 days before [S4]; more family history reached charts with a questionnaire plus EHR upload [S10]; ID007 (note) | Timing shown; filing at one practice still to test |
+| "the patient side already runs on open health standards" | SMART on FHIR launch, FHIR export, live routes, tests [S28] | Shown (synthetic data); the pilot backend is not built yet (Step 5.1) |
 | "a PDF reaches any chart" | PDF works with every practice, by link, fax or upload; staff may still re-key [research §1.7] | Shown in principle; test at one practice |
-| "under $850 a month, which about ten two-cardiologist practices cover with founders unpaid" | $689–834 (Step 5.3); 9–11 two-cardiologist practices at $500 per cardiologist per year | Shown from price pages; insurance is an estimate; founder support time not counted |
+| "a pilot on vendors that sign HIPAA contracts costs under $850 a month, which 17–21 paying cardiologists cover, founders unpaid" | $689–834 a month under BAAs (Step 5.3); 17–21 paying cardiologists at $500 per cardiologist per year (9–11 groups of two) | Shown from price pages; insurance is an estimate; founder support time not counted |
 
-Say aloud after the two sentences: "Payment is our next test."
+After the two sentences Raj says: "We start with three New York cardiology groups, then add other specialties one at a time. Our ask: introductions to New York cardiology practice managers."
 
 ---
 
@@ -494,7 +502,7 @@ Say aloud after the two sentences: "Payment is our next test."
 | --- | --- | --- |
 | Customer segments | **Payer:** independent NYC cardiology groups with 2–10 cardiologists (manager budgets, owner signs). **Users:** their adult new patients, sharpest for palpitations, fainting, chest pain, high cholesterol or a relative's heart event. **Contributors:** adult relatives | Large independent and PE groups; solo cardiologists; health-system cardiogenetics and lipid clinics; primary care (AWV); consumers directly (free side door) |
 | Value propositions | **Clinician:** one page with who, what, what age, source and status for every fact, plus guideline criteria for review. **Practice:** more family history in the chart before visit one. **Patient:** walk in prepared. **Relative:** answer once, for yourself; decline any time | Relatives who may need screening, flagged for the clinician (never priced on); staff time saved (measure, don't claim) |
-| Channels | **Practice sends the link with new-patient paperwork; patient texts relatives from own phone; the care-team page reaches the practice as a PDF by read-only link or fax; founder-led sales** | Patient upload (after counsel); SMART Health Link QR (pilot); EHR app (product stage) |
+| Channels | **Practice sends the link with new-patient paperwork; patient texts relatives from own phone; the practice opens the care-team page by read-only link or check-in QR and files it as a PDF; founder-led sales** | Patient upload (after counsel); SMART Health Link QR (pilot); EHR app (product stage) |
 | Customer relationships | **Founder-led setup, week-6 and week-12 reports, help line; each relative consents to their own branch** | Self-serve onboarding once the playbook is written |
 | Revenue streams | **$1,000 12-week founding pilot, credited to year one; then $500 per cardiologist per year; free for patients and relatives** | $99 per cardiologist per month (tested); per completed summary; never per referral or new patient |
 | Key resources | **Prototype; per-fact data model; versioned rule table signed by a cardiologist; a company that can sign BAAs; BAA and privacy documents** | Production Epic app (USCDI-only); pilot outcome data |
@@ -502,7 +510,7 @@ Say aloud after the two sentences: "Payment is our next test."
 | Key partners | **1–3 pilot groups; a cardiologist reviewer; BAA vendors (Vercel Pro, Neon, SES); a law clinic** | AWS-only stack to drop the $350 add-on; fax vendor with a BAA |
 | Cost structure | **$689–834 a month once real data flows; founders unpaid; per-practice cash ≈ 0, but 1–2 founder hours of support per practice a month** | Cost-down after the pilot: AWS move, Neon scale-to-zero, bundled insurance |
 
-**Why these choices fit together.** Practice-sent links fix completion, the weakest step for tools patients find alone (64% engaged when clinics sent a link with reminders [92]; 15.2% of adults collect family history on their own [S1]). A practice payer fixes the "nobody pays" problem of going direct to consumers. A PDF means no integration project, so the sale stays small-practice length (45-day average for SMB digital health, a16z survey [S45]). Flat per-cardiologist pricing stays clear of referral-linked pricing [research §4.2]. Keeping guideline criteria on the care-team copy only is designed to keep the patient side outside FDA device rules [95]; whether a patient-carried care-team page changes that is an open question for counsel (research §3.5), which is why the care-team page goes to the practice by link or fax. **The weak joint is the same in every box: no practice has said it will pay.**
+**Why these choices fit together.** Practice-sent links fix completion, the weakest step for tools patients find alone (64% engaged when clinics sent a link with reminders [92]; 15.2% of adults collect family history on their own [S1]). A practice payer fixes the "nobody pays" problem of going direct to consumers. A PDF means no integration project, so the sale stays small-practice length (45-day average for SMB digital health, a16z survey [S45]). Flat per-cardiologist pricing stays clear of referral-linked pricing [research §4.2]. Keeping guideline criteria on the care-team copy only is designed to keep the patient side outside FDA device rules [95]; whether a patient-carried care-team page changes that is an open question for counsel (research §3.5), which is why the care-team page goes to the practice by link or QR. **The weak joint is the same in every box: no practice has said it will pay.**
 
 ---
 
@@ -528,7 +536,7 @@ Reasons in short: (a) criteria hinge on relative and age [76][72][78], 285–320
 - **Who:** 3 independent NYC cardiology groups, 2–10 cardiologists, cardiology at least half the clinicians, a manager with a software budget, about 20+ adult new patients a month, an EHR that accepts a PDF, willing to sign a BAA. Mix: different EHRs, at least one outside Manhattan, at least one with a prevention or lipid focus.
 - **Pool:** 39 NYC organizations with 2+ independent cardiologists; 22 are cardiology-focused, and about 19–20 remain once hospital-linked groups are removed (team analysis of the CMS file [S27]; check each by phone).
 - **Why not solo practices first:** too few new patients for a 12-week pilot to read a completion rate (at ~21 a month per cardiologist, assumption, a 3-cardiologist group sends ~60 invites a month; at 60 invites a 40% rate is known to about ±12 points).
-- **First offer ("founding practice pilot"):** one link added to new-patient paperwork; one page per patient before the visit; set-up in one call; baseline staff-minute count; help line; week-6 and week-12 reports. **$1,000 flat for 12 weeks, credited in full to year one; then $500 per cardiologist per year.** BAA first, no patient data before it. No auto-renew. Never priced per referral or new patient. Fallback: $500 for 8 weeks.
+- **First offer ("founding practice pilot"):** one link added to new-patient paperwork; one page per patient before the visit; set-up in one call; baseline staff-minute count; help line; week-6 and week-12 reports. **$1,000 flat for 12 weeks, credited in full to year one; then $500 per cardiologist per year.** BAA first, no patient data before it. No auto-renew. Never priced per referral or new patient.
 - **Users:** all adult new patients (one link in the new-patient paperwork; a practice can't easily filter by referral reason); value is sharpest for palpitations, fainting, chest pain and high cholesterol.
 - **Earliest start:** about January 2027, after we form a company, the BAA stack and insurance are live, counsel has reviewed the BAA template and privacy policy, a cardiologist has signed the rule table and the pilot backend runs (critical path in Step 5.2). Letters of intent can be signed now.
 - **Metric zero (by Oct 23):** 5 practice-manager conversations; 3 name the budget owner and accept $500/yr in principle; 1 signs a non-binding letter of intent naming a target start month.
@@ -544,6 +552,8 @@ Reasons in short: (a) criteria hinge on relative and age [76][72][78], 285–320
 | 3. Health-system specialty clinics | Cardiogenetics and lipid programs [S47][S48][S49] | Pilot outcome data; a clinician champion; a production Epic app [5] |
 | 4. Primary care | Practices running Medicare Annual Wellness Visits [104] | A general specialty pack (questions and summary; criteria only after a clinician signs); help flows for older users [90] |
 | Side door (any time) | Patients whose practice isn't a customer | None; free, prints a page |
+
+Each step reuses the tree, relative links and sources; a new specialty adds its own questions and clinician criteria, signed off by that specialty (only cardiology's are built, not yet signed off). Markets beyond independent cardiology are not yet sized (A9).
 
 ---
 
@@ -568,7 +578,7 @@ All six were captured from the production prototype on Oct 7, 2026, after the op
 
 | Topic | Options in the memos | Our choice and why |
 | --- | --- | --- |
-| Price | $99–149 per cardiologist per month (research §4.3, R3 lead case) vs $500 per year (R2 ROI, R5) | **$500 per cardiologist per year after a $1,000 pilot; $99/mo tested on the same card.** $500/yr is the only public per-clinician anchor [111]. Staff-time savings are unproven [S9], so they don't set the price; the pilot measures them |
+| Price | $99–149 per cardiologist per month (research §4.3, R3 lead case) vs $500 per year (R2 ROI, R5) | **$500 per cardiologist per year after a $1,000 12-week pilot credited to year one; $99/mo is a higher price we test on the same card; $149/mo is modeled only.** $500/yr is the only public per-clinician anchor [111]. Staff-time savings are unproven [S9], so they don't set the price; the pilot measures them |
 | Scope: any physician vs cardiology | Any physician (Raj, Oct 12) vs one specialty | **Vision = any doctor who needs a family history; wedge = cardiology; product = specialty packs.** A wedge needs one buyer who can say yes. Cardiology criteria turn on which relative and what age, out to second-degree relatives [76][77][72], while the wellness visit requires, at a minimum, only parents, siblings and children [N1], so a tree built for cardiology covers what simpler checklists need once it adds children (the prototype has none; `docs/mvp-spec.md` §6 leaves children out of the prototype, P2). It is not the most detailed: the BRCA risk assessment also asks about cousins [N2], so cancer genetics needs more relatives than the tree holds today. None of our 21 interviews was a practice manager or a cardiologist, and each new specialty needs its own questions, criteria and clinician sign-off. Until the packs ship we never say "built for any physician" |
 | "We can make it because…" | R3: "…three paying practices cover that cost" | Dropped; true only at $149/mo. R5's sentence holds at any price |
 | Delivery order | R4: SMART Health Link before fax; earlier draft: patient upload first | **Read-only link or QR the practice opens, then fax, then patient upload (after counsel), then SMART Health Link.** Keeps the care-team page, with its guideline criteria, addressed to the practice (research §3.5); SHL acceptance from a non-IAL2 app is untested |
@@ -720,7 +730,7 @@ All six were captured from the production prototype on Oct 7, 2026, after the op
 - [S53] New York Department of State, "Certificate of Publication for Domestic Limited Liability Company" ($50 filing fee; publish in two newspapers within 120 days of formation, LLC Law §206), opened Oct 6, 2026. https://dos.ny.gov/certificate-publication-domestic-limited-liability-company-0
 - [S54] Nazareth S et al. "Hereditary Cancer Risk Using a Genetic Chatbot Before Routine Care Visits." Obstet Gynecol 2021 (full text: link sent "typically 5 days before an upcoming appointment"; reminders at 72 and 24 hours; funded by Ambry, Invitae and Progenity). Same study as research [92]; full text re-read Oct 6, 2026. https://europepmc.org/article/PMC/PMC8594498
 
-**Opened Oct 12, 2026** (for "Shouldn't this be for any doctor?"):
+**Opened Oct 12, 2026** (for "Shouldn't this be for any doctor?" and, [N14], the 23andMe tree audit):
 
 - [N1] 42 CFR 410.15, Annual Wellness Visit (eCFR, as of Oct 8, 2026): definitions of "medical and family history" and "health risk assessment" (no more than 20 minutes). https://www.ecfr.gov/api/versioner/v1/full/2026-10-08/title-42.xml?part=410&section=410.15
 - [N2] USPSTF, BRCA-Related Cancer: Risk Assessment, Genetic Counseling, and Genetic Testing (Aug 20, 2019; grade B; page says "This topic is being updated"). https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/brca-related-cancer-risk-assessment-genetic-counseling-and-genetic-testing
@@ -735,5 +745,6 @@ All six were captured from the production prototype on Oct 7, 2026, after the op
 - [N11] CancerIQ home page ("Trusted by 275+ clinics nationwide"), opened Oct 12, 2026. https://www.canceriq.com/
 - [N12] Progeny home page ("800+ genetics institutions"), opened Oct 12, 2026. https://progenygenetics.com/
 - [N13] Ambry Genetics, CARE program 2026 MedTech Breakthrough Award (same page as [109]). https://www.ambrygen.com/company/press-release/161/ambry-genetics-care-program-wins-2026-medtech-breakthrough-award
+- [N14] 23andMe Customer Care, "How to Build and Edit your 23andMe Family Tree" (updated Oct 11, 2026; cited on the deck's slide 3 and A7). https://support.23andme.org/hc/en-150/articles/42963469462167-How-to-Build-and-Edit-your-23andMe-Family-Tree
 
 **Other evidence:** Team Hub export (interview logs ID001–ID020 and D021; Milestone 1 track decision; advisor notes of Sept 9, 2026); `docs/mvp-spec.md`; prototype code (`src/lib/demo.ts`, `src/lib/clinical.ts`).
