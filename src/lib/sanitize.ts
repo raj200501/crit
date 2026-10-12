@@ -80,6 +80,7 @@ function cleanPerson(v: unknown): Person | null {
     deceased: v.deceased === true ? true : undefined,
     ageAtDeath: typeof v.ageAtDeath === "number" && v.ageAtDeath >= 0 && v.ageAtDeath < 130 ? v.ageAtDeath : undefined,
     causeOfDeath: str(v.causeOfDeath, 120),
+    suddenDeath: v.deceased === true && v.suddenDeath === true ? true : undefined,
   };
 }
 

@@ -8,6 +8,7 @@ import { toFhirBundle } from "../src/lib/fhir";
 import { shareableTree } from "../src/lib/redact";
 import { cleanTree } from "../src/lib/sanitize";
 import { askAbout } from "../src/lib/share";
+import { familyRows } from "../src/components/summary/model";
 import { viewPerson, viewTree } from "../src/lib/status";
 import type { FamilyTree, Person, Report } from "../src/lib/types";
 
@@ -128,6 +129,73 @@ test("the aortic card's examples no longer name Marfan syndrome", () => {
   const aortic = HEART_CHOICES.find((c) => c.id === "aortic")!;
   assert.ok(!/marfan/i.test(aortic.examples));
   assert.match(aortic.examples, /aneurysm/);
+});
+
+test("a death marked sudden or unexpected feeds the sudden-death rule: guideline before 40, else also noted", () => {
+  const died = (age: number | undefined, sudden = true): FamilyTree => {
+    const t = blankTree("Alex");
+    t.people = t.people.map((p) => (p.id === "dad" ? { ...p, deceased: true, ageAtDeath: age, suddenDeath: sudden || undefined } : p));
+    return t;
+  };
+  const at38 = reviewItems(died(38), viewTree(died(38))).filter((f) => f.personId === "dad" && f.tier !== "clarify");
+  assert.deepEqual(
+    at38.map((f) => [f.tier, f.title, f.basis]),
+    [["guideline", "Sudden death or cardiac arrest before 40", BASIS.sudden]],
+  );
+  assert.equal(at38[0].detail, "Father (father's side): died suddenly or unexpectedly, age 38, reported by Alex.");
+  assert.deepEqual(titles(died(62)), []);
+  assert.deepEqual(titles(died(62), "noted"), ["Sudden death or cardiac arrest"]);
+  assert.match(reviewItems(died(undefined), viewTree(died(undefined))).find((f) => f.tier === "noted")!.detail, /age not known.*Ask age, circumstances and autopsy\./);
+  // not marked sudden: no item; the switch and a report saying the same thing give one item, not two
+  assert.deepEqual(titles(died(38, false)), []);
+  const both = died(38);
+  both.reports = [rep("dad", { condition: "Sudden unexplained death", ageAtOnset: 38, reportedBy: "Mom" })];
+  assert.deepEqual(titles(both), ["Sudden death or cardiac arrest before 40"]);
+});
+
+test("the demo family's review list is unchanged by the sudden-death switch", () => {
+  const t = demoTree();
+  assert.deepEqual(
+    reviewItems(t, viewTree(t)).map((f) => `${f.tier}: ${f.title}`),
+    [
+      "guideline: Very high cholesterol in a grandparent, aunt or uncle",
+      "noted: Irregular heartbeat",
+      "clarify: Reports disagree: Dad",
+      "clarify: Dad (deceased): age and cause of death not recorded",
+      "clarify: Grandpa Ray: unknown",
+      "clarify: Grandma June: declined to share",
+      "clarify: Grandpa Luis: unknown",
+    ],
+  );
+  assert.ok(!t.people.some((p) => p.suddenDeath));
+});
+
+test("sudden death is sanitized, kept on the care-team copy, and shown in the family row and the FHIR note", () => {
+  const t = demoTree();
+  t.people = t.people.map((p) =>
+    p.id === "dad" ? { ...p, ageAtDeath: 38, causeOfDeath: "Collapsed while jogging", suddenDeath: true } : p.id === "mom" ? { ...p, suddenDeath: true } : p,
+  );
+  const clean = cleanTree(JSON.parse(JSON.stringify(t)))!;
+  assert.equal(clean.people.find((p) => p.id === "dad")!.suddenDeath, true);
+  assert.equal(clean.people.find((p) => p.id === "mom")!.suddenDeath, undefined, "only someone who passed away can have died suddenly");
+  const forged = cleanTree({ ...JSON.parse(JSON.stringify(t)), people: t.people.map((p) => (p.id === "dad" ? { ...p, suddenDeath: "yes" } : p)) })!;
+  assert.equal(forged.people.find((p) => p.id === "dad")!.suddenDeath, undefined);
+
+  // the practice link carries age, cause and "sudden", so the care team gets the same rule
+  const shared = shareableTree(clean);
+  const dad = shared.people.find((p) => p.id === "dad")!;
+  assert.deepEqual([dad.ageAtDeath, dad.causeOfDeath, dad.suddenDeath], [38, "Collapsed while jogging", true]);
+  assert.equal(shared.people.find((p) => p.id === "mom")!.suddenDeath, undefined);
+  assert.ok(titles(shared).includes("Sudden death or cardiac arrest before 40"));
+  assert.ok(!titles(shareableTree(demoTree())).some((x) => x.startsWith("Sudden")));
+
+  const row = familyRows(shared, viewTree(shared)).find((r) => r.personId === "dad" && r.first)!;
+  assert.match(row.comments, /^Deceased at 38, Collapsed while jogging, sudden or unexpected\./);
+  const fmh = toFhirBundle(shared).entry.find((e) => (e.resource as { id: string }).id === "fmh-dad")!.resource as { note?: { text: string }[] };
+  assert.equal(fmh.note?.[0].text, "Cause of death (reported): Collapsed while jogging; sudden or unexpected");
+  const noCause = { ...shared, people: shared.people.map((p) => (p.id === "dad" ? { ...p, causeOfDeath: undefined } : p)) };
+  const fmh2 = toFhirBundle(noCause).entry.find((e) => (e.resource as { id: string }).id === "fmh-dad")!.resource as { note?: { text: string }[] };
+  assert.equal(fmh2.note?.[0].text, "Death reported as sudden or unexpected");
 });
 
 test("every guideline item cites its basis", () => {

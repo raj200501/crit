@@ -134,11 +134,11 @@ export function reviewItems(tree: FamilyTree, views: PersonView[]): Flag[] {
     const second = SECOND_DEGREE.includes(p.relation);
     const side = sideOf(p.relation);
     const add = (tier: Tier, title: string, detail: string, basis?: string) => items.push({ personId: p.id, tier, title, detail, basis });
+    const who = `${p.label}${side ? ` (${side})` : ""}`;
 
     for (const r of v.conditions) {
       const name = normalizeCondition(r.condition);
       const age = r.ageAtOnset;
-      const who = `${p.label}${side ? ` (${side})` : ""}`;
       const ageText = age != null ? `${r.approximate ? "about " : ""}age ${age}` : "age not known";
       const src = r.source === "record" ? "from a portal record" : r.source === "self" ? "self-reported" : `reported by ${r.reportedBy}`;
       const line = `${who}: ${r.condition}, ${ageText}, ${src}.`;
@@ -186,6 +186,15 @@ export function reviewItems(tree: FamilyTree, views: PersonView[]): Flag[] {
       } else if (has(name, "faint", "syncope", "passed out")) {
         if (age != null && age < 40) add("noted", "Unexplained fainting at a young age", line, BASIS.none);
       }
+    }
+
+    // A death the patient marked "sudden or unexpected" (Edit details), under the same rule as a reported sudden death.
+    // A report that already says so gives the same title, and the de-duplication below keeps one.
+    if (p.deceased && p.suddenDeath) {
+      const a = p.ageAtDeath;
+      const l = `${who}: died suddenly or unexpectedly, ${a != null ? `age ${a}` : "age not known"}, reported by ${tree.patientName}.`;
+      if (a != null && a < 40) add("guideline", "Sudden death or cardiac arrest before 40", l, BASIS.sudden);
+      else add("noted", "Sudden death or cardiac arrest", `${l} Ask age, circumstances and autopsy.`, BASIS.sudden);
     }
 
     // --- To clarify ---

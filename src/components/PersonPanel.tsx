@@ -162,6 +162,7 @@ export default function PersonPanel({ view, tree, onClose, focusOnOpen, initialM
               </svg>
               Passed away{p.ageAtDeath != null ? ` at ${p.ageAtDeath}` : ""}
               {p.causeOfDeath ? ` · ${p.causeOfDeath}` : ""}
+              {p.suddenDeath ? " · sudden or unexpected" : ""}
             </p>
           ) : null}
           {!isSelf ? (

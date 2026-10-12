@@ -29,6 +29,7 @@ export function EditPerson({
   const [deceased, setDeceased] = useState(!!p.deceased || !!focusField);
   const [ageAtDeath, setAgeAtDeath] = useState(p.ageAtDeath != null ? String(p.ageAtDeath) : "");
   const [cause, setCause] = useState(p.causeOfDeath ?? "");
+  const [sudden, setSudden] = useState(!!p.suddenDeath);
   // you, your parents and your grandparents are fixed slots: a missing ancestor stays a visible gap
   const removable = !FIXED_RELATIONS.includes(p.relation);
   const ageRef = useRef<HTMLInputElement>(null);
@@ -52,6 +53,7 @@ export function EditPerson({
           deceased: deceased || undefined,
           ageAtDeath: deceased && Number.isFinite(age) && age >= 0 && age < 130 ? age : undefined,
           causeOfDeath: deceased ? cause.trim() || undefined : undefined,
+          suddenDeath: deceased && sudden ? true : undefined,
         });
         onDone();
       }}
@@ -82,15 +84,16 @@ export function EditPerson({
                 className="max-w-32"
               />
             </Field>
-            <Field label="Cause, if known" htmlFor={`${id}-cause`} hint="Was it sudden or unexpected? Say so in the cause; it matters to the cardiologist.">
+            <Field label="Cause, if known" htmlFor={`${id}-cause`} hint="e.g. heart attack, cancer, accident. Was it sudden? Use the switch below.">
               <Input
                 ref={causeRef}
                 id={`${id}-cause`}
-                placeholder="e.g. heart attack, sudden, cancer"
+                placeholder="In your own words"
                 value={cause}
                 onChange={(e) => setCause(e.target.value.slice(0, 80))}
               />
             </Field>
+            <Switch checked={sudden} onChange={setSudden} label="It was sudden or unexpected" />
           </div>
         ) : null}
       </div>

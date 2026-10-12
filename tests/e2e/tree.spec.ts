@@ -237,6 +237,28 @@ test.describe("tree", () => {
     await expect(panel.getByRole("textbox", { name: "Cause, if known" })).toBeVisible();
   });
 
+  test("a death marked 'sudden or unexpected' shows in the panel and reaches the care team's review list", async ({ page }) => {
+    await page.getByRole("button", { name: /^Dad:/ }).click();
+    const panel = page.locator('section[aria-label="Dad details"]');
+    await panel.getByRole("button", { name: "Add how he died" }).click();
+    // the gap link still lands on the cause field; the switch sits after it
+    await expect(panel.getByRole("textbox", { name: "Cause, if known" })).toBeFocused();
+    const sudden = panel.getByRole("switch", { name: "It was sudden or unexpected" });
+    await expect(sudden).toHaveAttribute("aria-checked", "false");
+    await panel.getByRole("textbox", { name: "Age at death" }).fill("38");
+    await sudden.click();
+    await expect(sudden).toHaveAttribute("aria-checked", "true");
+    await panel.getByRole("button", { name: "Save" }).click();
+    await expect(panel).toContainText("Passed away at 38 · sudden or unexpected");
+
+    await gotoApp(page, "/practice?patient=self");
+    const doc = page.getByRole("article", { name: "Pre-visit family history summary" });
+    await expect(doc.getByRole("heading", { name: /For clinician review/ })).toBeVisible();
+    await expect(doc).toContainText("Sudden death or cardiac arrest before 40");
+    await expect(doc).toContainText("Dad (father's side): died suddenly or unexpectedly, age 38, reported by Alex.");
+    await expect(doc).toContainText("Deceased at 38, sudden or unexpected");
+  });
+
   test("keyboard: one tab stop on the canvas, arrows move between relatives, Enter opens", async ({ page }) => {
     const nodes = page.locator('[role="group"][aria-label="Family health tree"] button[data-person-id]');
     await expect(nodes.and(page.locator('[tabindex="0"]'))).toHaveCount(1);

@@ -74,6 +74,8 @@ export interface Person {
   deceased?: boolean;
   ageAtDeath?: number;
   causeOfDeath?: string;
+  /** The death was sudden or unexpected (only with deceased). Feeds the sudden-death rule on the care-team copy. */
+  suddenDeath?: boolean;
 }
 
 export interface Invite {

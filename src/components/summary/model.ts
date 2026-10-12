@@ -232,7 +232,7 @@ export function familyRows(tree: FamilyTree, views: PersonView[]): FamilyRow[] {
       }
     }
     if (p.deceased) {
-      const died = `Deceased${p.ageAtDeath != null ? ` at ${p.ageAtDeath}` : ""}${p.causeOfDeath ? `, ${p.causeOfDeath}` : ""}`;
+      const died = `Deceased${p.ageAtDeath != null ? ` at ${p.ageAtDeath}` : ""}${p.causeOfDeath ? `, ${p.causeOfDeath}` : ""}${p.suddenDeath ? ", sudden or unexpected" : ""}`;
       rows[0] = { ...rows[0], comments: [died, rows[0].comments].filter(Boolean).join(". ") };
     }
     rows.forEach((r, i) => out.push({ ...base, ...r, first: i === 0, span: rows.length }));

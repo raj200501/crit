@@ -64,8 +64,11 @@ export function toFhirBundle(tree: FamilyTree) {
           ],
         };
       }
-      if (p.causeOfDeath) {
-        resource.note = [{ text: `Cause of death (reported): ${p.causeOfDeath}` }];
+      if (p.causeOfDeath || p.suddenDeath) {
+        const sudden = p.suddenDeath ? "sudden or unexpected" : "";
+        resource.note = [
+          { text: p.causeOfDeath ? `Cause of death (reported): ${p.causeOfDeath}${sudden ? `; ${sudden}` : ""}` : `Death reported as ${sudden}` },
+        ];
       }
       // v.conditions already leaves out secondhand reports about someone who declined.
       const conditions = v.conditions;

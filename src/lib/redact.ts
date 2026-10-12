@@ -32,7 +32,17 @@ export function shareableTree(tree: FamilyTree): FamilyTree {
     id: tree.id,
     patientName: tree.patientName,
     visit: tree.visit,
-    people: tree.people.map(({ id, relation, label, sex, deceased }) => ({ id, relation, label, sex, deceased })),
+    // Age and cause of death, and whether it was sudden, are what the care team's sudden-death rule and gap lines read.
+    people: tree.people.map(({ id, relation, label, sex, deceased, ageAtDeath, causeOfDeath, suddenDeath }) => ({
+      id,
+      relation,
+      label,
+      sex,
+      deceased,
+      ageAtDeath: deceased ? ageAtDeath : undefined,
+      causeOfDeath: deceased ? causeOfDeath : undefined,
+      suddenDeath: deceased && suddenDeath ? true : undefined,
+    })),
     reports,
     invites: [],
     reviewedAt: tree.reviewedAt,
