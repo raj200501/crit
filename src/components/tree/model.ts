@@ -1,4 +1,5 @@
 // Presentation-only derivations for the /tree workspace (DESIGN §12.1–12.3). Reads src/lib, never writes it.
+import { noneLabel } from "@/lib/packs";
 import type { PersonView } from "@/lib/status";
 import type { FamilyTree, Person, Relation, Report } from "@/lib/types";
 import { STATUS_LABEL, type UiStatus } from "@/components/ui/status";
@@ -19,8 +20,9 @@ export function nodeStatus(v: PersonView, pending?: boolean): NodeStatus {
   return v.status;
 }
 
-/** NSGC "affected": a heart condition was reported (never for someone who declined). */
-export const hasFinding = (v: PersonView) => v.cardiac && v.status !== "declined";
+/** NSGC "affected": a condition the visit's questions count was reported (heart conditions for cardiology). Never for
+ *  someone who declined. */
+export const hasFinding = (v: PersonView) => v.finding && v.status !== "declined";
 
 /**
  * The status word on a node and in the list view (DESIGN §12.2, AMENDMENTS A3): the app's own labels, never the clinical
@@ -119,7 +121,7 @@ export function formatVisitDate(iso: string) {
 
 /** "Heart attack · age 60" (the receipt's fact line). */
 export function factLine(r: Report): string {
-  if (r.kind === "no-history") return "No heart history";
+  if (r.kind === "no-history") return noneLabel(r);
   if (r.kind === "declined") return "Chose not to share";
   if (r.kind === "dont-know") return "Doesn’t know";
   const name = r.condition ?? "Condition";

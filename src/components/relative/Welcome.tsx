@@ -1,6 +1,6 @@
 import { ChevronDown, Hand, ShieldCheck, Users } from "lucide-react";
 import { useId } from "react";
-import { HEART_CHOICES } from "@/lib/clinical";
+import { CARDIOLOGY, type SpecialtyPack } from "@/lib/packs";
 import { Button } from "../ui/Button";
 import { CheckboxCard } from "../ui/CheckboxCard";
 import { Eyebrow } from "../ui/Eyebrow";
@@ -14,6 +14,8 @@ export interface WelcomeProps {
   asker: string;
   /** "cardiology visit" (from the invite), if the asker set a visit. */
   visit?: string;
+  /** The invite's question set (cardiology for every link without one). */
+  pack?: SpecialtyPack;
   /** How many other relatives the invitee is asked about. */
   others: number;
   adult: boolean;
@@ -23,7 +25,7 @@ export interface WelcomeProps {
 }
 
 /** The letter: who asked, why, who sees it, the questions; then 18+ and Start in the sticky bar. No time estimate (AMENDMENTS A2). */
-export function Welcome({ me, asker, visit, others, adult, onAdult, onStart, onDecline }: WelcomeProps) {
+export function Welcome({ me, asker, visit, pack = CARDIOLOGY, others, adult, onAdult, onStart, onDecline }: WelcomeProps) {
   const hintId = useId();
   const about = others === 0 ? "about you" : others === 1 ? "about you and one relative" : "about you and a few relatives";
   const rows = [
@@ -50,7 +52,7 @@ export function Welcome({ me, asker, visit, others, adult, onAdult, onStart, onD
           </div>
           <StepTitle className="mt-5">{asker} asked for your help.</StepTitle>
           <p className="mt-3 text-fg-2">
-            {asker} is getting ready for {visit ? withArticle(visit) : "a doctor’s visit"} and is asking about the family&rsquo;s heart health. A few
+            {asker} is getting ready for {visit ? withArticle(visit) : "a doctor’s visit"} and is asking about {pack.words.topic}. A few
             questions {about}. Skip anything.
           </p>
         </section>
@@ -76,7 +78,7 @@ export function Welcome({ me, asker, visit, others, adult, onAdult, onStart, onD
           <div className="border-t border-line px-4 pt-3 pb-4 text-ui text-fg-2">
             <p>For you, and for anyone else {asker} asks about: has anyone had&hellip;</p>
             <ul className="mt-2.5 grid gap-1.5">
-              {[...HEART_CHOICES.map((c) => c.label), "Something else heart-related"].map((label) => (
+              {[...pack.choices.map((c) => c.label), pack.other.title].map((label) => (
                 <li key={label} className="flex items-baseline gap-2.5">
                   <span aria-hidden className="relative -top-0.5 size-1.5 shrink-0 rotate-45 rounded-[1px] bg-evergreen-600" />
                   {label}

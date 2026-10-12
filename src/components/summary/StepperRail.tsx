@@ -24,6 +24,8 @@ export interface StepperRailProps {
   copied: boolean;
   onCopy: () => void;
   onDownload: () => void;
+  /** Step "What your care team gets", from the visit's question set (default: cardiology's). */
+  careTeamCopy?: string;
   className?: string;
 }
 
@@ -45,7 +47,7 @@ export function StepperRail(props: StepperRailProps) {
       {steps.map((s, i) => (
         <Step key={s} n={all.indexOf(s) + 1} done={done[s]} current={current === s} last={i === steps.length - 1} title={TITLES[s]} id={`${idPrefix}-${s}`}>
           {s === "review" ? <ReviewBody {...props} /> : null}
-          {s === "care" ? <p className="text-small text-fg-2">{CARE_TEAM_COPY}</p> : null}
+          {s === "care" ? <p className="text-small text-fg-2">{props.careTeamCopy ?? CARE_TEAM_COPY}</p> : null}
           {s === "bring" ? <BringBody {...props} hintId={hintId} /> : null}
           {s === "share" ? <ShareBody {...props} hintId={hintId} /> : null}
         </Step>

@@ -20,12 +20,15 @@ export function EditPerson({
   onDone,
   onRemoved,
   focusField,
+  sexHint = "Used only for age cutoffs on the summary (e.g. early heart disease).",
 }: {
   view: PersonView;
   onDone: () => void;
   onRemoved: () => void;
   /** Opened from a "Still unknown" gap: focus that field. */
   focusField?: "age" | "cause";
+  /** The hint under Sex: the visit's question set says what sex is used for. */
+  sexHint?: string;
 }) {
   const p = view.person;
   const id = useId();
@@ -81,7 +84,7 @@ export function EditPerson({
           </Select>
         </Field>
       ) : null}
-      <Field label="Sex" htmlFor={`${id}-sex`} hint="Used only for age cutoffs on the summary (e.g. early heart disease).">
+      <Field label="Sex" htmlFor={`${id}-sex`} hint={sexHint}>
         <Select id={`${id}-sex`} value={sex} onChange={(e) => setSex(e.target.value as typeof sex)}>
           <option value="unknown">Not set</option>
           <option value="female">Female</option>

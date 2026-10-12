@@ -2,7 +2,7 @@
 
 import { Info, Plus } from "lucide-react";
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
-import { HEART_CHOICES, type Choice } from "@/lib/clinical";
+import { CARDIOLOGY, groupedChoices, type SpecialtyPack } from "@/lib/packs";
 import type { ReportKind } from "@/lib/types";
 import { Button } from "./ui/Button";
 import { cn } from "./ui/cn";
@@ -35,35 +35,12 @@ interface Props {
   /** Render the actions in a StickyActionBar (the relative's phone flow sets this). */
   stickyActions?: boolean;
   className?: string;
+  /** The visit's question set (cardiology unless the tree's visit type says otherwise). */
+  pack?: SpecialtyPack;
 }
 
 type Pick = { age: string; approx: boolean };
 type Alt = "none" | "dont-know" | "declined";
-
-// Presentation-only grouping of the existing HEART_CHOICES ids (DESIGN §12.4). Unknown ids fall into "Other".
-const GROUPS: { title: string; ids: string[] }[] = [
-  { title: "Arteries & cholesterol", ids: ["mi", "fh", "stroke"] },
-  { title: "Rhythm", ids: ["arrhythmia", "inherited-rhythm", "faint"] },
-  { title: "Sudden events", ids: ["arrest", "sudden"] },
-  { title: "Heart muscle & aorta", ids: ["cardiomyopathy", "aortic"] },
-];
-
-function groupedChoices(): { title: string; choices: Choice[] }[] {
-  const byId = new Map(HEART_CHOICES.map((c) => [c.id, c]));
-  const used = new Set<string>();
-  const groups = GROUPS.map((g) => ({
-    title: g.title,
-    choices: g.ids.flatMap((id) => {
-      const c = byId.get(id);
-      if (!c) return [];
-      used.add(id);
-      return [c];
-    }),
-  })).filter((g) => g.choices.length);
-  const rest = HEART_CHOICES.filter((c) => !used.has(c.id));
-  return rest.length ? [...groups, { title: "Other", choices: rest }] : groups;
-}
-const GROUPED = groupedChoices();
 
 const digits = (s: string) => s.replace(/\D/g, "").slice(0, 3);
 
@@ -104,7 +81,7 @@ function AgeRow({
 }
 
 /**
- * The guided heart-history question (DESIGN §12.4): grouped checkbox cards with plain words and examples, an age row
+ * The guided family-history question (DESIGN §12.4): grouped checkbox cards with plain words and examples, an age row
  * revealed inside each ticked card, "Other answers" as real radios, an optional note. Logic is unchanged.
  */
 export default function AnswerForm({
@@ -118,8 +95,10 @@ export default function AnswerForm({
   variant = "panel",
   stickyActions,
   className,
+  pack = CARDIOLOGY,
 }: Props) {
   const id = useId();
+  const grouped = groupedChoices(pack);
   const page = variant === "page";
   const [picked, setPicked] = useState<Record<string, Pick>>({});
   const [other, setOther] = useState({ on: false, text: "", age: "", approx: false });
@@ -172,7 +151,7 @@ export default function AnswerForm({
       setError("Pick at least one, or choose “None of these” or “I don’t know”.");
       return;
     }
-    const answers: Answer[] = HEART_CHOICES.filter((c) => picked[c.id]).map((c) => ({
+    const answers: Answer[] = pack.choices.filter((c) => picked[c.id]).map((c) => ({
       kind: "condition",
       condition: c.condition,
       ageAtOnset: parseAge(picked[c.id].age),
@@ -213,7 +192,7 @@ export default function AnswerForm({
         <legend className={cn("mb-1 font-strong text-fg", page ? "text-[1.5rem] leading-tight tracking-[-0.018em]" : "text-title")}>{q}</legend>
         <p className={cn("text-fg-3", page ? "text-body" : "text-small")}>Tick anything that fits, even if you&rsquo;re not sure of the details.</p>
 
-        {GROUPED.map((g) => (
+        {grouped.map((g) => (
           <fieldset key={g.title} className="flex min-w-0 flex-col gap-2">
             <legend className="mb-2 font-mono text-eyebrow font-medium text-fg-3 uppercase">{g.title}</legend>
             <div className={cn("grid gap-2", !page && "@min-[40rem]:grid-cols-2")}>
@@ -248,14 +227,14 @@ export default function AnswerForm({
               setError(null);
               setOther((o) => ({ ...o, on }));
             }}
-            title="Something else heart-related"
-            description="In your own words, like Marfan syndrome or a bicuspid valve"
+            title={pack.other.title}
+            description={pack.other.description}
           >
             {other.on ? (
               <div className="flex flex-col gap-3">
                 <Input
                   aria-label="Describe the condition"
-                  placeholder="e.g. heart murmur, valve surgery"
+                  placeholder={pack.other.placeholder}
                   value={other.text}
                   onChange={(e) => setOther((o) => ({ ...o, text: e.target.value.slice(0, 80) }))}
                 />
@@ -299,7 +278,7 @@ export default function AnswerForm({
               rows={2}
               value={note}
               onChange={(e) => setNote(e.target.value.slice(0, 280))}
-              placeholder="e.g. “He had chest pain in his late 50s, I think it was angina.”"
+              placeholder={pack.notePlaceholder}
             />
           </div>
         ) : (

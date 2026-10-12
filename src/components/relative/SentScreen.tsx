@@ -16,10 +16,12 @@ export interface SentScreenProps {
   sameBrowser: boolean;
   /** Where "Open {asker}'s tree" goes. */
   treeHref: string;
+  /** Who reads the summary, for the invite's question set ("their cardiologist", "their doctor"). */
+  clinician?: string;
 }
 
 /** Sent: a check that draws in (600 ms; static under reduced motion), what happens next, and the way back to the asker. */
-export function SentScreen({ asker, me, link, sameBrowser, treeHref }: SentScreenProps) {
+export function SentScreen({ asker, me, link, sameBrowser, treeHref, clinician = "their cardiologist" }: SentScreenProps) {
   const [copied, setCopied] = useState(false);
   const message = useMemo(() => `Done! Here are my answers for your family health tree: ${link}`, [link]);
 
@@ -39,7 +41,7 @@ export function SentScreen({ asker, me, link, sameBrowser, treeHref }: SentScree
 
   const next = [
     `${asker} sees your answers in their tree.`,
-    `If ${asker} shares a summary with their cardiologist, your answers are on it with your name.`,
+    `If ${asker} shares a summary with ${clinician}, your answers are on it with your name.`,
     `Want something removed? Tell ${asker}.`,
   ];
 

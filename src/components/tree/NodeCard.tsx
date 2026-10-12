@@ -31,7 +31,7 @@ export interface NodeCardProps {
 }
 
 /**
- * One relative on the canvas: 188 × 82, a pedigree glyph (ring = certainty, fill = heart condition reported, slash =
+ * One relative on the canvas: 188 × 82, a pedigree glyph (ring = certainty, fill = a condition the visit's questions count, slash =
  * passed away, square = portal record), the name, the status word and the headline. The e2e contract lives here:
  * one <button> per person, data-person-id, aria-pressed and the `{label}: {status}. {headline}` name (DESIGN §12.2).
  */

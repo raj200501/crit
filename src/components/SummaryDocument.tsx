@@ -1,12 +1,13 @@
 // The one-page pre-visit summary (DESIGN §12.8a/b, AMENDMENTS A1). Two readers, one sheet:
 // - patient: facts with sources, what's still to confirm, questions to ask. No criteria, no review band.
-// - clinician: the "For clinician review" band (guideline criteria with their basis), gaps and conflicts, the pedigree
-//   and the relative table in Epic order. Only ever rendered on /view and /practice (and the marketing embeds).
+// - clinician: the "For clinician review" band (the visit's guideline criteria with their basis; cardiology only), gaps
+//   and conflicts, the pedigree and the relative table in Epic order. Only ever rendered on /view and /practice (and the marketing embeds).
 // Server-renderable: the only client code is the provenance popover island. Print rules live in the CSS module and
 // keep each copy on one Letter page.
 import { Flag as FlagIcon } from "lucide-react";
 import { createElement, useId, type HTMLAttributes, type ReactNode } from "react";
-import { CRITERIA_FOOTNOTE, reviewItems, stillToConfirm, type Flag } from "@/lib/clinical";
+import { stillToConfirm, type Flag } from "@/lib/clinical";
+import { noneLabel, nonePhrase, packFor, type SpecialtyPack } from "@/lib/packs";
 import { formatCondition, viewTree, type PersonView } from "@/lib/status";
 import type { FamilyTree, Report } from "@/lib/types";
 import { HONESTY, PATIENT_QUESTIONS } from "@/content/site";
@@ -71,6 +72,7 @@ export default function SummaryDocument({
   className,
 }: SummaryDocumentProps) {
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
+  const pack = packFor(tree);
   const views = viewTree(tree);
   const relatives = documentOrder(views);
   const clinician = audience === "clinician";
@@ -83,7 +85,7 @@ export default function SummaryDocument({
     `${generations(tree.people)} generations`,
     `${relatives.length} relative${relatives.length === 1 ? "" : "s"}`,
   ].filter(Boolean) as string[];
-  const ctx: Ctx = { tree, audience, provenance, hl: headingLevel };
+  const ctx: Ctx = { tree, audience, provenance, hl: headingLevel, pack };
 
   return (
     <article
@@ -96,7 +98,8 @@ export default function SummaryDocument({
       <header className={cn(styles.head, "grid grid-cols-1 gap-x-6 sm:grid-cols-[minmax(0,1fr)_auto]")}>
         <div className="min-w-0">
           <p className={cn(styles.eyebrow, "font-mono text-eyebrow font-medium text-ink-3 uppercase")}>
-            Pre-visit family heart history <span aria-hidden>·</span> {clinician ? "For the care team" : "Your copy"}
+            {`${pack.words.docEyebrow} `}
+            <span aria-hidden>·</span> {clinician ? "For the care team" : "Your copy"}
           </p>
           <Heading level={headingLevel} className={cn(styles.title, "mt-3 font-display text-[2.5rem] leading-[1.02] font-book tracking-[-0.02em] text-ink sm:text-[2.75rem]")}>
             {title}
@@ -132,7 +135,7 @@ export default function SummaryDocument({
             : "Patient-reported family history to support the conversation with your care team. It shows what your family said, with sources, and doesn’t diagnose anyone. "}
           “Portal record” items came from the relative’s own patient portal, shared with their consent; a record date can be when a problem was
           listed, not when it was diagnosed.
-          {clinician ? ` Criteria: ${CRITERIA_FOOTNOTE}.` : ""}
+          {clinician ? pack.careTeam.footer : ""}
         </p>
         <p className="font-mono text-eyebrow text-ink-3 uppercase">
           Stemma · student prototype by Team 709 · prepared{" "}
@@ -147,7 +150,7 @@ export default function SummaryDocument({
 }
 
 /** hl = the title heading level; section headings are hl + 1, their sub-headings hl + 2. */
-type Ctx = { tree: FamilyTree; audience: Audience; provenance: boolean; hl: number };
+type Ctx = { tree: FamilyTree; audience: Audience; provenance: boolean; hl: number; pack: SpecialtyPack };
 
 /**
  * Pointing at (or focusing into) a person's row lights their symbol in the pedigree: CSS :has(), no JS, so it works in the
@@ -195,11 +198,11 @@ function PedigreeFigure({ views, ctx, uid }: { views: PersonView[]; ctx: Ctx; ui
               "data-[more=both]:[mask-image:linear-gradient(to_right,transparent,#000_56px,#000_calc(100%-56px),transparent)]",
             )}
           >
-            <Pedigree views={views} className={cn(styles.pedSvg, "mx-auto max-h-(--ped-max-h) min-w-(--ped-min-w)")} />
+            <Pedigree views={views} findingNote={ctx.pack.words.pedigreeNote} className={cn(styles.pedSvg, "mx-auto max-h-(--ped-max-h) min-w-(--ped-min-w)")} />
           </SideScroll>
         </div>
         <figcaption className={cn(styles.legend, "border-t border-line pt-3")}>
-          <StatusLegend compact items={LEGEND} context={ctx.audience === "clinician" ? "clinical" : "patient"} />
+          <StatusLegend compact items={LEGEND} context={ctx.audience === "clinician" ? "clinical" : "patient"} findingLabel={ctx.pack.words.findingLegend} />
           <p className={cn(styles.pedHint, "mt-2 text-caption text-ink-3 md:hidden")}>Scroll sideways to see both sides of the family.</p>
         </figcaption>
       </div>
@@ -293,7 +296,7 @@ function PatientBody({ ctx, views, relatives, uid }: { ctx: Ctx; views: PersonVi
           <ul className="mt-3 flex flex-col gap-2 text-small">
             {own.map((r) => (
               <li key={r.id} className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <span className="text-ink">{r.kind === "condition" ? formatCondition(r) : "No heart history"}</span>
+                <span className="text-ink">{r.kind === "condition" ? formatCondition(r) : noneLabel(r)}</span>
                 <Source r={r} ctx={ctx} subject="You" />
               </li>
             ))}
@@ -353,7 +356,7 @@ function KnownRow({ v, ctx }: { v: PersonView; ctx: Ctx }) {
           <div key={r.id} className="flex min-w-0 flex-col gap-1">
             {/* a div, not a p: the provenance popover renders a <div popover>, which a <p> can't contain */}
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-small text-ink">
-              <span>{r.kind === "condition" ? formatCondition(r) : "No heart history"}</span>
+              <span>{r.kind === "condition" ? formatCondition(r) : noneLabel(r)}</span>
               <Source r={r} ctx={ctx} subject={`${p.label} · ${relationName(p)}`} />
             </div>
             {r.note ? <q className={cn(styles.note, "text-caption text-ink-2 italic")}>{r.note}</q> : null}
@@ -371,7 +374,7 @@ function KnownRow({ v, ctx }: { v: PersonView; ctx: Ctx }) {
 function toConfirm(v: PersonView): ReactNode {
   if (v.status === "conflicting") {
     const said = [...v.conditions, ...v.reports.filter((r) => r.kind === "no-history")].map(
-      (r) => `${r.reportedBy} says ${r.kind === "no-history" ? "no heart history" : formatCondition(r).toLowerCase().replace(", about age ", " at about ").replace(", age ", " at ")}`,
+      (r) => `${r.reportedBy} says ${r.kind === "no-history" ? nonePhrase(r) : formatCondition(r).toLowerCase().replace(", about age ", " at about ").replace(", age ", " at ")}`,
     );
     return `Reports disagree. ${said.join("; ")}. Both are kept until someone can say which.`;
   }
@@ -395,7 +398,8 @@ function toConfirm(v: PersonView): ReactNode {
 // Care-team copy (D4 §5.2 order): For clinician review → gaps and conflicts → pedigree → the relative table.
 
 function ClinicianBody({ ctx, views, uid }: { ctx: Ctx; views: PersonView[]; uid: string }) {
-  const items = reviewItems(ctx.tree, views);
+  const care = ctx.pack.careTeam;
+  const items = ctx.pack.reviewItems(ctx.tree, views);
   const guideline = items.filter((i) => i.tier === "guideline");
   const noted = items.filter((i) => i.tier === "noted");
   const clarify = items.filter((i) => i.tier === "clarify");
@@ -410,10 +414,7 @@ function ClinicianBody({ ctx, views, uid }: { ctx: Ctx; views: PersonView[]; uid
           <FlagIcon aria-hidden className="size-4" strokeWidth={2.25} />
           For clinician review <span className="font-mono text-eyebrow font-medium text-ink-2">({guideline.length})</span>
         </Heading>
-        <p className={cn(styles.reviewNote, "mt-1 text-caption text-ink-2")}>
-          Family-history criteria named in cardiology guidelines, matched to what was reported. For the clinician to interpret; not a diagnosis or a
-          risk score.
-        </p>
+        <p className={cn(styles.reviewNote, "mt-1 text-caption text-ink-2")}>{care.reviewNote}</p>
         {shown.length ? (
           <ol className="mt-3 flex flex-col">
             {shown.map((f, i) => (
@@ -430,9 +431,7 @@ function ClinicianBody({ ctx, views, uid }: { ctx: Ctx; views: PersonView[]; uid
             ))}
           </ol>
         ) : (
-          <p className="mt-3 border-t border-ink/12 pt-3 text-small text-ink-2">
-            No guideline family-history criteria matched what was reported. Gaps below may still matter.
-          </p>
+          <p className="mt-3 border-t border-ink/12 pt-3 text-small text-ink-2">{care.noneMatched}</p>
         )}
         {more.length ? (
           <p className="mt-1 text-small text-ink-2">
@@ -442,7 +441,7 @@ function ClinicianBody({ ctx, views, uid }: { ctx: Ctx; views: PersonView[]; uid
         {noted.length ? (
           <div className={cn(styles.noted, "mt-2 border-t border-ink/12 pt-3")}>
             <Heading level={ctx.hl + 2} className="font-mono text-eyebrow font-medium text-ink-3 uppercase">
-              Also noted · no guideline criterion
+              {care.notedHeading}
             </Heading>
             <ul className="mt-1.5 flex flex-col gap-1 text-small text-ink-2">
               {noted.map((f) => (

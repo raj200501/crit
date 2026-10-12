@@ -1,4 +1,8 @@
+import { capitalize, formatCondition, isCardiac, normalizeCondition } from "./conditions";
+import { noneLabel, nonePhrase, packFor } from "./packs";
 import type { FamilyTree, Person, Report, Status } from "./types";
+
+export { formatCondition, isCardiac, normalizeCondition } from "./conditions";
 
 export interface PersonView {
   person: Person;
@@ -10,83 +14,26 @@ export interface PersonView {
   reports: Report[];
   /** At least one condition came from a portal record. */
   verified: boolean;
-  /** Any report mentions a heart condition. */
+  /** Any report mentions a heart condition (isCardiac, whatever the visit). The landing and hero demo read it. */
   cardiac: boolean;
+  /** Any report is a finding for this tree's question set (fills the pedigree symbol). For cardiology it equals `cardiac`. */
+  finding: boolean;
   /** Every condition report that should reach the summary and red flags (all of them, except
    *  secondhand reports about someone who declined). */
   conditions: Report[];
-}
-
-const SYNONYMS: Record<string, string> = {
-  afib: "atrial fibrillation",
-  "a-fib": "atrial fibrillation",
-  "a fib": "atrial fibrillation",
-  "irregular heartbeat": "arrhythmia",
-  "heart attack": "heart attack",
-  mi: "heart attack",
-  "myocardial infarction": "heart attack",
-  "high cholesterol": "high cholesterol",
-  hcm: "hypertrophic cardiomyopathy",
-};
-
-export function normalizeCondition(name: string | undefined): string {
-  const n = (name ?? "").trim().toLowerCase().replace(/\s+/g, " ");
-  return SYNONYMS[n] ?? n;
-}
-
-const CARDIAC_TERMS = [
-  "heart",
-  "cardi",
-  "arrhythm",
-  "fibrillation",
-  "afib",
-  "angina",
-  "coronary",
-  "bypass",
-  "stent",
-  "qt",
-  "brugada",
-  "sudden",
-  "unexplained death",
-  "died suddenly",
-  "cardiac arrest",
-  "aort",
-  "marfan",
-  "faint",
-  "syncope",
-  "cholesterol",
-  "aneurysm",
-  "pacemaker",
-  "defibrillator",
-  "valve",
-  "stroke",
-];
-
-export function isCardiac(condition: string | undefined): boolean {
-  const c = (condition ?? "").toLowerCase();
-  return CARDIAC_TERMS.some((t) => c.includes(t));
 }
 
 function byTime(a: Report, b: Report) {
   return a.reportedAt.localeCompare(b.reportedAt);
 }
 
-export function formatCondition(r: Report): string {
-  const name = r.condition ?? "Condition";
-  if (r.ageAtOnset == null) return name;
-  return `${name}, ${r.approximate ? "about " : ""}age ${r.ageAtOnset}`;
-}
-
-function capitalize(s: string) {
-  return s ? s[0].toUpperCase() + s.slice(1) : s;
-}
-
 const FIRSTHAND = new Set(["self", "record"]);
 
 /** Derive what the tree should say about one person from everything reported about them. */
 export function viewPerson(tree: FamilyTree, person: Person): PersonView {
+  const pack = packFor(tree);
   const reports = tree.reports.filter((r) => r.personId === person.id).sort(byTime);
-  const base = { person, reports, verified: false, cardiac: false, conditions: [] as Report[] };
+  const base = { person, reports, verified: false, cardiac: false, finding: false, conditions: [] as Report[] };
 
   if (person.relation === "self") {
     return { ...base, status: "known", headline: tree.visit ? `${tree.visit.specialty} visit` : "You" };
@@ -104,6 +51,7 @@ export function viewPerson(tree: FamilyTree, person: Person): PersonView {
       headline: "Declined to share",
       conditions: mine,
       cardiac: mine.some((r) => isCardiac(r.condition)),
+      finding: mine.some((r) => pack.isFinding(r.condition)),
       reason: mine.length ? "Declined; you added what you know" : undefined,
     };
   }
@@ -111,8 +59,9 @@ export function viewPerson(tree: FamilyTree, person: Person): PersonView {
   const conditions = reports.filter((r) => r.kind === "condition");
   const noHistory = reports.filter((r) => r.kind === "no-history");
   const cardiac = conditions.some((r) => isCardiac(r.condition));
+  const finding = conditions.some((r) => pack.isFinding(r.condition));
   const records = conditions.filter((r) => r.source === "record");
-  const withAll = { ...base, cardiac, conditions, verified: records.length > 0 };
+  const withAll = { ...base, cardiac, finding, conditions, verified: records.length > 0 };
 
   if (conditions.length === 0 && noHistory.length === 0) {
     const askedAround = reports.some((r) => r.kind === "dont-know");
@@ -124,9 +73,9 @@ export function viewPerson(tree: FamilyTree, person: Person): PersonView {
   const firsthandAnswers = reports.filter((r) => FIRSTHAND.has(r.source) && (r.kind === "condition" || r.kind === "no-history"));
   const latestFirst = firsthandAnswers[firsthandAnswers.length - 1];
 
-  // "No heart history" vs a reported condition. A firsthand "none" contradicts anyone's condition;
+  // A "none" vs a reported condition. A firsthand "none" contradicts anyone's condition;
   // a secondhand "none" only contradicts other secondhand reports (a record or the person outranks it).
-  if (latestFirst?.kind === "no-history" && conditions.length) reasons.push(`${latestFirst.reportedBy} says no heart history`);
+  if (latestFirst?.kind === "no-history" && conditions.length) reasons.push(`${latestFirst.reportedBy} says ${nonePhrase(latestFirst)}`);
   if (!latestFirst) {
     const noneBy = new Set(noHistory.map((r) => r.reportedBy));
     if (conditions.some((r) => !noneBy.has(r.reportedBy)) && noHistory.length) reasons.push("no history vs. a reported condition");
@@ -174,7 +123,8 @@ export function viewPerson(tree: FamilyTree, person: Person): PersonView {
       reason: reporters.size > 1 ? `${reporters.size} relatives agree` : `Reported by ${lead.reportedBy}`,
     };
   }
-  return { ...withAll, status: "known", headline: "No heart history", reason: `Reported by ${noHistory[noHistory.length - 1].reportedBy}` };
+  const lastNone = noHistory[noHistory.length - 1];
+  return { ...withAll, status: "known", headline: noneLabel(lastNone), reason: `Reported by ${lastNone.reportedBy}` };
 }
 
 export function viewTree(tree: FamilyTree): PersonView[] {

@@ -1,0 +1,15 @@
+{
+  "Heart attack or coronary artery disease": "MI/CAD",
+  "Arrhythmia": "arrhythmia",
+  "Survived cardiac arrest or has an ICD": "SCA/ICD",
+  "Sudden unexplained death": "SUD",
+  "Cardiomyopathy": "CM",
+  "Inherited rhythm condition (long QT, Brugada, CPVT)": "inh. rhythm",
+  "Unexplained fainting": "syncope",
+  "Very high cholesterol": "v. high chol.",
+  "Aortic aneurysm or dissection": "aortic",
+  "Stroke or TIA": "stroke/TIA",
+  "Atrial fibrillation": "AF",
+  "Heart attack": "MI",
+  "Angina": "angina"
+}

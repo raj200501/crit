@@ -1,6 +1,7 @@
 // Presentation-only derivations for the pre-visit summary, the care-team view and the practice demo (DESIGN §12.8).
 // Reads src/lib, never writes it. Server-safe (no hooks), so SummaryDocument can render as a Server Component.
 import { FIRST_DEGREE, SECOND_DEGREE } from "@/lib/clinical";
+import { noneAbbr, noneLabel } from "@/lib/packs";
 import { formatCondition, normalizeCondition, type PersonView } from "@/lib/status";
 import type { FamilyTree, Person, Report } from "@/lib/types";
 import type { SourceKind } from "@/components/ui/SourceChip";
@@ -21,8 +22,9 @@ export function nodeStatus(v: PersonView): NodeStatus {
   return v.status;
 }
 
-/** NSGC "affected": a heart condition was reported (never drawn for someone who declined). */
-export const hasFinding = (v: PersonView) => v.cardiac && v.status !== "declined";
+/** NSGC "affected": a condition the visit's questions count was reported (heart conditions for cardiology). Never drawn
+ *  for someone who declined. */
+export const hasFinding = (v: PersonView) => v.finding && v.status !== "declined";
 
 /** Epic-style relation names (FAMILY_HX RELATION_C), using the recorded sex where it narrows the word. */
 export function relationName(p: Person): string {
@@ -51,11 +53,11 @@ export function relationName(p: Person): string {
   }
 }
 
-/** First-degree first, heart-related first, then disagreement → known → unknown → declined (the document's reading order). */
+/** First-degree first, findings first (heart-related for cardiology), then disagreement → known → unknown → declined (the document's reading order). */
 export function documentOrder(views: PersonView[]): PersonView[] {
   const rank = (v: PersonView) => {
     const degree = FIRST_DEGREE.includes(v.person.relation) ? 0 : SECOND_DEGREE.includes(v.person.relation) ? 1 : 2;
-    const heart = v.cardiac ? 0 : 1;
+    const heart = v.finding ? 0 : 1;
     const status = { conflicting: 0, known: 1, unknown: 2, declined: 3 }[v.status];
     return degree * 100 + heart * 10 + status;
   };
@@ -166,7 +168,7 @@ export function annotations(v: PersonView): string[] {
       if (parts.length > 2) lines[lines.length - 1] += ` +${parts.length - 2}`;
     }
   } else if (v.status === "known" && v.reports.some((r) => r.kind === "no-history")) {
-    lines.push("no heart hx");
+    lines.push(noneAbbr(v.reports.filter((r) => r.kind === "no-history").at(-1)!));
   }
   if (v.person.deceased) lines.push(`d. ${v.person.ageAtDeath ?? "?"}`);
   return lines;
@@ -223,7 +225,7 @@ export function familyRows(tree: FamilyTree, views: PersonView[]): FamilyRow[] {
       });
       for (const r of none) {
         rows.push({
-          problem: "No heart history",
+          problem: noneLabel(r),
           age: "—",
           source: sourceText(r, tree.patientName),
           comments: !v.conditions.length || v.status !== "conflicting" ? "" : "Contradicts a reported condition",
@@ -245,7 +247,7 @@ export interface ProvEntry {
   id: string;
   kind: SourceKind;
   who: string;
-  /** What they said: "Heart attack, age 60", "No heart history", "Declined to share", "Doesn't know". */
+  /** What they said: "Heart attack, age 60", "No heart history" (or the visit's own "none"), "Declined to share", "Doesn't know". */
   what: string;
   when?: string;
   note?: string;
@@ -261,7 +263,7 @@ export function provenance(reports: Report[], audience: Audience, patientName: s
       r.kind === "condition"
         ? formatCondition(r)
         : r.kind === "no-history"
-          ? "No heart history"
+          ? noneLabel(r)
           : r.kind === "declined"
             ? "Chose not to share"
             : "Doesn’t know",

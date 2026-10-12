@@ -3,6 +3,7 @@
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { stillToConfirm } from "@/lib/clinical";
+import { packFor } from "@/lib/packs";
 import { getTree, useTree } from "@/lib/store";
 import { viewTree } from "@/lib/status";
 import PersonPanel from "./PersonPanel";
@@ -206,7 +207,7 @@ export default function TreeWorkspace() {
         </Button>
       </div>
 
-      <LegendFilter className="mt-3 lg:mt-5" counts={counts} value={highlight} onChange={setHighlight} />
+      <LegendFilter className="mt-3 lg:mt-5" counts={counts} value={highlight} onChange={setHighlight} findingLabel={packFor(tree).words.findingFilter} />
 
       <div className="mt-3 grid min-h-0 flex-1 gap-5 lg:mt-4 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px]">
         <section aria-label="Tree" className="relative flex min-h-0 min-w-0 flex-col gap-3">

@@ -47,7 +47,7 @@ function describeState(v: PersonView) {
 
 function State({ view, muted }: { view: PersonView; muted?: boolean }) {
   const status = uiStatus(view);
-  const finding = view.cardiac && view.status !== "declined";
+  const finding = view.finding && view.status !== "declined";
   return (
     <div aria-hidden className="flex min-w-0 flex-col gap-2">
       <div className="flex min-w-0 flex-wrap items-center gap-2">

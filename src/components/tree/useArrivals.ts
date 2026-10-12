@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { noneLabel } from "@/lib/packs";
 import { getTree } from "@/lib/store";
 import { formatCondition } from "@/lib/status";
 import type { FamilyTree, Report } from "@/lib/types";
@@ -52,7 +53,7 @@ function bodyFor(r: Report, nameOf: (id: string) => string): string {
     r.kind === "condition"
       ? `${formatCondition(r)}${r.source === "record" ? ", from a portal record (demo)" : ""}`
       : r.kind === "no-history"
-        ? "No heart history"
+        ? noneLabel(r)
         : r.kind === "declined"
           ? "Chose not to share"
           : "Doesn’t know";

@@ -6,6 +6,7 @@
 import { ChevronLeft, Send } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { packJson } from "@/lib/compress";
+import { packFor } from "@/lib/packs";
 import { shareableTree } from "@/lib/redact";
 import { actions, useTree } from "@/lib/store";
 import SummaryDocument from "./SummaryDocument";
@@ -152,7 +153,7 @@ export default function SummaryPage() {
                 </p>
                 <h2 className="mt-1 font-display text-title font-book text-ink">Get it to your care team</h2>
               </div>
-              <StepperRail steps={["review", "care", "bring", "share"]} idPrefix="rail" className="px-6 pt-5 pb-6" {...stepProps} />
+              <StepperRail steps={["review", "care", "bring", "share"]} idPrefix="rail" className="px-6 pt-5 pb-6" careTeamCopy={packFor(tree).words.careTeam} {...stepProps} />
               {tree.sharedAt ? (
                 <p className="border-t border-line px-6 py-3 font-mono text-eyebrow text-ink-3 uppercase">
                   Link last made <span suppressHydrationWarning>{fmtStamp(tree.sharedAt, { time: true })}</span>
@@ -181,7 +182,7 @@ export default function SummaryPage() {
         <div className="pb-2">
           <p className="pr-12 font-mono text-eyebrow font-medium text-ink-3 uppercase">Before your visit{visitDate ? ` · ${visitDate}` : ""}</p>
           <h2 className="mt-1 mb-5 font-display text-title font-book text-ink">Get it to your care team</h2>
-          <StepperRail steps={["care", "bring", "share"]} idPrefix="sheet" {...stepProps} />
+          <StepperRail steps={["care", "bring", "share"]} idPrefix="sheet" careTeamCopy={packFor(tree).words.careTeam} {...stepProps} />
         </div>
       </Sheet>
 

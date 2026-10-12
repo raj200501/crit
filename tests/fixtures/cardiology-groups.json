@@ -1,0 +1,82 @@
+[
+  {
+    "title": "Arteries & cholesterol",
+    "choices": [
+      {
+        "id": "mi",
+        "label": "Heart attack or blocked arteries",
+        "examples": "stent, bypass surgery, angina (chest pain from the heart)",
+        "condition": "Heart attack or coronary artery disease"
+      },
+      {
+        "id": "fh",
+        "label": "Very high cholesterol",
+        "examples": "familial hypercholesterolemia, cholesterol treated from a young age",
+        "condition": "Very high cholesterol"
+      },
+      {
+        "id": "stroke",
+        "label": "Stroke",
+        "examples": "stroke or mini-stroke (TIA)",
+        "condition": "Stroke or TIA"
+      }
+    ]
+  },
+  {
+    "title": "Rhythm",
+    "choices": [
+      {
+        "id": "arrhythmia",
+        "label": "Irregular heartbeat",
+        "examples": "atrial fibrillation (AFib), arrhythmia, pacemaker",
+        "condition": "Arrhythmia"
+      },
+      {
+        "id": "inherited-rhythm",
+        "label": "A diagnosed inherited rhythm condition",
+        "examples": "long QT syndrome, Brugada syndrome, CPVT",
+        "condition": "Inherited rhythm condition (long QT, Brugada, CPVT)"
+      },
+      {
+        "id": "faint",
+        "label": "Unexplained fainting",
+        "examples": "passed out without warning, or while exercising",
+        "condition": "Unexplained fainting"
+      }
+    ]
+  },
+  {
+    "title": "Sudden events",
+    "choices": [
+      {
+        "id": "arrest",
+        "label": "Survived a cardiac arrest, or has an implanted defibrillator",
+        "examples": "heart stopped and was restarted with CPR or a shock, has an ICD",
+        "condition": "Survived cardiac arrest or has an ICD"
+      },
+      {
+        "id": "sudden",
+        "label": "Sudden or unexplained death",
+        "examples": "died suddenly or in their sleep, unexplained drowning or car crash, died after collapsing during exercise",
+        "condition": "Sudden unexplained death"
+      }
+    ]
+  },
+  {
+    "title": "Heart muscle & aorta",
+    "choices": [
+      {
+        "id": "cardiomyopathy",
+        "label": "Heart muscle disease",
+        "examples": "cardiomyopathy, thick or enlarged heart, heart failure at a young age",
+        "condition": "Cardiomyopathy"
+      },
+      {
+        "id": "aortic",
+        "label": "Aortic aneurysm or tear",
+        "examples": "aortic aneurysm, aortic dissection (a tear in the aorta)",
+        "condition": "Aortic aneurysm or dissection"
+      }
+    ]
+  }
+]

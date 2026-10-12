@@ -20,11 +20,21 @@ export interface StatusLegendProps {
   tone?: GlyphTone;
   /** The list's accessible name (e2e contract: "Legend"). */
   label?: string;
+  /** What a filled symbol means for the visit's questions (default: the cardiology wording). */
+  findingLabel?: string;
   className?: string;
 }
 
 /** Glyph + word for every mark the pedigree uses. Required next to any pedigree. */
-export function StatusLegend({ items = DEFAULT_ITEMS, compact, context = "patient", tone = "paper", label = "Legend", className }: StatusLegendProps) {
+export function StatusLegend({
+  items = DEFAULT_ITEMS,
+  compact,
+  context = "patient",
+  tone = "paper",
+  label = "Legend",
+  findingLabel = EXTRA_LABEL.finding,
+  className,
+}: StatusLegendProps) {
   const words = context === "clinical" ? STATUS_LABEL_CLINICAL : STATUS_LABEL;
   const size = compact ? 16 : 22;
   return (
@@ -42,7 +52,7 @@ export function StatusLegend({ items = DEFAULT_ITEMS, compact, context = "patien
           ) : (
             <PedigreeGlyph shape="circle" status={item} size={size} tone={tone} />
           );
-        const text = item in EXTRA_LABEL ? EXTRA_LABEL[item as keyof typeof EXTRA_LABEL] : words[item as UiStatus];
+        const text = item === "finding" ? findingLabel : item in EXTRA_LABEL ? EXTRA_LABEL[item as keyof typeof EXTRA_LABEL] : words[item as UiStatus];
         return (
           <li key={item} className="inline-flex items-center gap-1.5 whitespace-nowrap">
             {glyph}

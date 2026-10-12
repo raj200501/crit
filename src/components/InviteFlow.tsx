@@ -5,6 +5,7 @@ import { addTransitionType, startTransition, useLayoutEffect, useMemo, useRef, u
 import { decodePayload, replyUrl, type InvitePayload, type ReplyPayload } from "@/lib/share";
 import { useHash } from "@/lib/useHash";
 import { clearPortalResult, peekPortalResult, SANDBOX_LABEL, startMyChartConnect, type PortalResult } from "@/lib/smart";
+import { CARDIOLOGY } from "@/lib/packs";
 import { actions, deviceId, getTree, hasSavedTree } from "@/lib/store";
 import AnswerForm, { type Answer } from "./AnswerForm";
 import { CheckAnswers } from "./relative/CheckAnswers";
@@ -130,6 +131,7 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
     if (target?.hasAttribute("data-step-focus")) target.scrollIntoView({ block: "center" });
   }, [step]);
 
+  const pack = CARDIOLOGY;
   const me = payload.l;
   const asker = payload.n;
   const now = () => new Date().toISOString();
@@ -217,6 +219,7 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
         me={me}
         asker={asker}
         visit={payload.s}
+        pack={pack}
         others={payload.a.length}
         adult={adult}
         onAdult={setAdult}
@@ -255,7 +258,7 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
           <h2 id="answer-yourself" className="text-title font-strong text-fg">
             Or answer yourself
           </h2>
-          <AnswerForm variant="page" stickyActions subject="you" self allowDecline submitLabel="Next" onSubmit={addSelf} />
+          <AnswerForm variant="page" stickyActions subject="you" self allowDecline submitLabel="Next" pack={pack} onSubmit={addSelf} />
         </section>
       </StepLayout>
     );
@@ -264,6 +267,7 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
       <RecordPicker
         portal={portal}
         asker={asker}
+        pack={pack}
         onShare={(picked) => {
           const recs: Draft[] = picked.map((c) => ({
             ...base,
@@ -314,7 +318,7 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
           </Button>
         }
       >
-        <OthersList people={payload.a} done={done} drafts={drafts} onAnswer={addAbout} initialOpen={changing} formVariant="page" />
+        <OthersList people={payload.a} done={done} drafts={drafts} onAnswer={addAbout} initialOpen={changing} formVariant="page" pack={pack} />
       </StepLayout>
     );
   } else if (step === "review") {
@@ -371,7 +375,16 @@ function InviteSession({ payload }: { payload: InvitePayload }) {
       </StepLayout>
     );
   } else if (step === "sent") {
-    screen = <SentScreen asker={asker} me={me} link={replyLink} sameBrowser={sameBrowser} treeHref={`/tree?person=${encodeURIComponent(payload.p)}`} />;
+    screen = (
+      <SentScreen
+        asker={asker}
+        me={me}
+        link={replyLink}
+        sameBrowser={sameBrowser}
+        treeHref={`/tree?person=${encodeURIComponent(payload.p)}`}
+        clinician={pack.words.clinician}
+      />
+    );
   }
 
   return (

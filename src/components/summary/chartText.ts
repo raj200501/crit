@@ -1,6 +1,6 @@
 // "Copy as chart text" (DESIGN §12.8b): plain text a medical assistant can paste into the chart, one line per row,
 // in the order Epic's family-history table uses. Built read-only from viewTree; nothing here changes the tree.
-import { CRITERIA_FOOTNOTE } from "@/lib/clinical";
+import { packFor } from "@/lib/packs";
 import { viewTree } from "@/lib/status";
 import type { FamilyTree } from "@/lib/types";
 import { familyRows, fmtDay } from "./model";
@@ -21,7 +21,7 @@ export function chartText(tree: FamilyTree): string {
       [`${r.relation} (${r.name}${r.view.person.deceased ? ", deceased" : ""})`, r.problem, r.age, r.source, r.comments || "—"].map(cell).join(" | "),
     ),
     "",
-    `Patient-reported family history for clinician review. Not a diagnosis or a risk score. Criteria versions: ${CRITERIA_FOOTNOTE}.`,
+    packFor(tree).careTeam.chartLine,
   ];
   return lines.join("\n");
 }

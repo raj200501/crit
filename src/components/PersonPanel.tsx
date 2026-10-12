@@ -2,6 +2,7 @@
 
 import { Link2, PenLine, Plus, Send, X } from "lucide-react";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { packFor } from "@/lib/packs";
 import { actions } from "@/lib/store";
 import type { PersonView } from "@/lib/status";
 import type { FamilyTree, Report } from "@/lib/types";
@@ -213,6 +214,7 @@ export default function PersonPanel({ view, tree, onClose, focusOnOpen, initialM
                 allowDecline={false}
                 compact
                 submitLabel="Add to tree"
+                pack={packFor(tree)}
                 onSubmit={save}
                 onCancel={() => go("view")}
               />
@@ -220,7 +222,7 @@ export default function PersonPanel({ view, tree, onClose, focusOnOpen, initialM
           ) : mode === "invite" ? (
             <InviteBox tree={tree} view={view} onDone={() => go("view")} />
           ) : mode === "edit" ? (
-            <EditPerson view={view} focusField={editField} onDone={() => go("view")} onRemoved={onClose} />
+            <EditPerson view={view} focusField={editField} sexHint={packFor(tree).words.sexHint} onDone={() => go("view")} onRemoved={onClose} />
           ) : (
             <Overview view={view} tree={tree} isSelf={isSelf} short={short} them={them} onGo={go} onAdded={onAdded} />
           )}
@@ -253,6 +255,7 @@ function Overview({
   const rest = voices ? view.reports.filter((r) => r.id !== voices[0].id && r.id !== voices[1].id) : view.reports;
   const remove = (id: string) => actions.removeReport(id);
   const removable = (r: Report) => canRemove(r);
+  const words = packFor(tree).words;
 
   const gaps: { label: string; aria: string; go: () => void }[] = [];
   if (!isSelf && p.deceased && p.ageAtDeath == null) gaps.push({ label: "age at death", aria: "Add age at death", go: () => onGo("edit", "age") });
@@ -260,14 +263,14 @@ function Overview({
     const how = `how ${pronoun(p)} died`;
     gaps.push({ label: how, aria: `Add ${how}`, go: () => onGo("edit", "cause") });
   }
-  if (!isSelf && view.status === "unknown") gaps.push({ label: "their heart history", aria: "Add their heart history", go: () => onGo("answer") });
+  if (!isSelf && view.status === "unknown") gaps.push({ label: words.gap, aria: `Add ${words.gap}`, go: () => onGo("answer") });
 
   return (
     <div className="flex flex-col gap-6">
       <section aria-labelledby={`know-${p.id}`} className="flex flex-col gap-4">
         <div>
           <h3 id={`know-${p.id}`} className="font-mono text-eyebrow font-medium text-fg-3 uppercase">
-            {isSelf ? "Your own heart history" : "What we know"}
+            {isSelf ? words.ownHeading : "What we know"}
           </h3>
           {isSelf ? <p className="mt-1 text-small text-fg-3">Shown on your summary under &ldquo;Your own history&rdquo;.</p> : null}
         </div>
@@ -277,7 +280,7 @@ function Overview({
         ) : !voices ? (
           <p className="rounded-md border border-dashed border-line-strong px-4 py-3.5 text-small text-fg-2">
             {isSelf
-              ? "Nothing yet. If you’ve had any heart condition yourself, add it here."
+              ? words.ownEmpty
               : notAsked(view)
                 ? `No one has answered about ${short} yet.`
                 : `Nothing confirmed about ${short} yet.`}

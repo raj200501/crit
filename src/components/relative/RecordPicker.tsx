@@ -1,5 +1,6 @@
 import { ChevronDown, Link2 } from "lucide-react";
 import { useId, useState } from "react";
+import { CARDIOLOGY, type SpecialtyPack } from "@/lib/packs";
 import { SANDBOX_LABEL, type PortalCondition, type PortalResult } from "@/lib/smart";
 import { Button } from "../ui/Button";
 import { cn } from "../ui/cn";
@@ -13,16 +14,20 @@ export interface RecordPickerProps {
   asker: string;
   onShare: (picked: PortalCondition[]) => void;
   onCancel: () => void;
+  /** The invite's question set: it decides which problem-list entries are suggested. */
+  pack?: SpecialtyPack;
 }
 
 /**
- * Pick what to share from the problem list, Apple-style: heart-related first, the rest behind a toggle, and **nothing
+ * Pick what to share from the problem list, Apple-style: what the visit's questions ask about first (heart-related for
+ * cardiology), the rest behind a toggle, and **nothing
  * pre-ticked** (DESIGN §12.9 R4). The share button counts live and names the asker. Same age parsing as before.
  */
-export function RecordPicker({ portal, asker, onShare, onCancel }: RecordPickerProps) {
+export function RecordPicker({ portal, asker, onShare, onCancel, pack = CARDIOLOGY }: RecordPickerProps) {
   const hintId = useId();
-  const heart = portal.conditions.filter((c) => c.cardiac);
-  const rest = portal.conditions.filter((c) => !c.cardiac);
+  // No re-sort: filter keeps the portal's order (heart-related first, then by name), so cardiology reads as before.
+  const heart = portal.conditions.filter((c) => pack.isSuggested(c.display));
+  const rest = portal.conditions.filter((c) => !pack.isSuggested(c.display));
   const [picked, setPicked] = useState<Set<string>>(() => new Set());
   const [showRest, setShowRest] = useState(false);
   const [ages, setAges] = useState<Record<string, string>>(() =>
@@ -115,12 +120,12 @@ export function RecordPicker({ portal, asker, onShare, onCancel }: RecordPickerP
           </p>
         </div>
         <div className="flex flex-col gap-2.5 p-3 sm:p-4">
-          <Eyebrow className="px-1">Suggested: heart-related</Eyebrow>
+          <Eyebrow className="px-1">{pack.words.suggested}</Eyebrow>
           {heart.length ? (
             heart.map(row)
           ) : (
             <p className="px-1 text-ui text-fg-2">
-              No heart-related conditions on this problem list. That doesn&rsquo;t mean none happened; you can answer yourself instead.
+              {pack.words.suggestedEmpty} That doesn&rsquo;t mean none happened; you can answer yourself instead.
             </p>
           )}
           {rest.length ? (

@@ -1,0 +1,51 @@
+[
+  {
+    "personId": "mgm",
+    "tier": "guideline",
+    "title": "Very high cholesterol in a grandparent, aunt or uncle",
+    "detail": "Grandma Rosa (mother's side): Very high cholesterol, about age 35, reported by Mom. Level not reported.",
+    "basis": "Simon Broome Register criteria, 1991 (first- or second-degree adult relative with total cholesterol above 290 mg/dL)"
+  },
+  {
+    "personId": "dev",
+    "tier": "noted",
+    "title": "Irregular heartbeat",
+    "detail": "Uncle Dev (father's side): Atrial fibrillation, age 34, from a portal record.",
+    "basis": "No verified family-history criterion"
+  },
+  {
+    "personId": "dad",
+    "tier": "clarify",
+    "title": "Reports disagree: Dad",
+    "detail": "Mom says heart attack at 60; Uncle Dev says angina, about 58.",
+    "basis": "__undefined__"
+  },
+  {
+    "personId": "dad",
+    "tier": "clarify",
+    "title": "Dad (deceased): age and cause of death not recorded",
+    "detail": "Ask how old they were and what happened.",
+    "basis": "__undefined__"
+  },
+  {
+    "personId": "pgf",
+    "tier": "clarify",
+    "title": "Grandpa Ray: unknown",
+    "detail": "No one knows yet.",
+    "basis": "__undefined__"
+  },
+  {
+    "personId": "pgm",
+    "tier": "clarify",
+    "title": "Grandma June: declined to share",
+    "detail": "Only what the patient knows firsthand is shown.",
+    "basis": "__undefined__"
+  },
+  {
+    "personId": "mgf",
+    "tier": "clarify",
+    "title": "Grandpa Luis: unknown",
+    "detail": "Not asked yet.",
+    "basis": "__undefined__"
+  }
+]

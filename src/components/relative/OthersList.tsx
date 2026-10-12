@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import { useState, type ReactNode } from "react";
+import type { SpecialtyPack } from "@/lib/packs";
 import AnswerForm, { type Answer } from "../AnswerForm";
 import { Button } from "../ui/Button";
 import { cn } from "../ui/cn";
@@ -15,10 +16,12 @@ export interface OthersListProps {
   initialOpen?: string | null;
   /** AnswerForm's variant (DESIGN §11.4): "page" in the relative's phone flow. */
   formVariant?: "panel" | "page";
+  /** The invite's question set. */
+  pack?: SpecialtyPack;
 }
 
 /** "Others you know": one card per relative with an h3 (DESIGN §12.9 R3), 48 px actions and the inline answer form. */
-export function OthersList({ people, done, drafts, onAnswer, initialOpen, formVariant }: OthersListProps) {
+export function OthersList({ people, done, drafts, onAnswer, initialOpen, formVariant, pack }: OthersListProps) {
   const [open, setOpen] = useState<string | null>(initialOpen ?? null);
   return (
     <ul className="flex flex-col gap-3">
@@ -38,6 +41,7 @@ export function OthersList({ people, done, drafts, onAnswer, initialOpen, formVa
               subject={o.l.split(" (")[0]}
               compact
               submitLabel="Save"
+              pack={pack}
               onSubmit={(a) => {
                 close();
                 onAnswer(o.id, a);

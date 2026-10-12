@@ -1,5 +1,5 @@
-// The mini pedigree on the summary (DESIGN §12.8a): NSGC symbols on layoutTree() coordinates. Filled = heart condition
-// reported, slash = deceased, arrow = the patient, square chip = portal record; ring = how sure we are. Server-safe.
+// The mini pedigree on the summary (DESIGN §12.8a): NSGC symbols on layoutTree() coordinates. Filled = a condition the
+// visit's questions count was reported (heart conditions for cardiology), slash = deceased, arrow = the patient, square chip = portal record; ring = how sure we are. Server-safe.
 import { layoutTree } from "@/lib/layout";
 import type { PersonView } from "@/lib/status";
 import type { Person, Relation } from "@/lib/types";
@@ -27,9 +27,11 @@ export interface PedigreeProps {
   className?: string;
   /** Accessible name of the figure's image. */
   label?: string;
+  /** Last sentence of the default accessible name: what a filled symbol means for this visit's questions. */
+  findingNote?: string;
 }
 
-export function Pedigree({ views, className, label }: PedigreeProps) {
+export function Pedigree({ views, className, label, findingNote = "Filled symbols mean a heart condition was reported." }: PedigreeProps) {
   const people = views.map((v) => v.person);
   if (!people.length) return null;
   const layout = layoutTree(people);
@@ -78,7 +80,7 @@ export function Pedigree({ views, className, label }: PedigreeProps) {
     <svg
       viewBox={`0 0 ${Math.round(width)} ${Math.round(height)}`}
       role="img"
-      aria-label={label ?? `Family pedigree, ${people.length} people across ${rowsPresent.length} generations. Filled symbols mean a heart condition was reported.`}
+      aria-label={label ?? `Family pedigree, ${people.length} people across ${rowsPresent.length} generations. ${findingNote}`}
       className={cn("block h-auto w-full overflow-visible", className)}
       // the legible screen size: notes (20 units) at ≥ 12 px and names (24 units) at ≥ 14 px; print ignores both
       style={{ "--ped-min-w": `${Math.round(width * MIN_SCALE)}px`, "--ped-max-h": `${Math.round(height * MAX_SCALE)}px` } as CSSProperties}

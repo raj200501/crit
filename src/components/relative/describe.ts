@@ -1,4 +1,5 @@
 // Presentation helpers for the relative's flow (/invite) and the patient's import screen (/reply). No logic lives here.
+import { noneLabel } from "@/lib/packs/none";
 import type { Report } from "@/lib/types";
 
 /** A report before it has an id: what the invite flow drafts and what a reply link carries. */
@@ -8,7 +9,7 @@ export type Draft = Omit<Report, "id">;
 export function describeAnswer(d: Draft): string {
   if (d.kind === "declined") return "Chose not to share";
   if (d.kind === "dont-know") return "Doesn’t know";
-  if (d.kind === "no-history") return "No heart history";
+  if (d.kind === "no-history") return noneLabel(d);
   return `${d.condition}${d.ageAtOnset != null ? `, ${d.approximate ? "about " : ""}age ${d.ageAtOnset}` : ""}`;
 }
 

@@ -1,5 +1,6 @@
 // Core data model. Every fact is a Report with a source, so the tree never
 // flattens disagreement: status is derived from reports, not stored.
+import type { PackId, VisitType } from "./packs/types";
 
 export type Sex = "female" | "male" | "unknown";
 
@@ -24,7 +25,7 @@ export type SourceKind = "patient" | "relative" | "self" | "record";
 export type ReportKind =
   /** A specific condition (with optional age at onset). */
   | "condition"
-  /** Reporter states there is no heart history. */
+  /** Reporter says none of the conditions they were asked about (the heart questions, unless `pack` says otherwise). */
   | "no-history"
   /** The person chose not to share. Only the person themself can decline. */
   | "declined"
@@ -63,6 +64,9 @@ export interface Report {
   /** ISO date-time */
   reportedAt: string;
   record?: RecordProvenance;
+  /** Only on "no-history": the question set the "none" answered. Set only when it isn't cardiology; missing means
+   *  cardiology, which is every report made before visit types. */
+  pack?: PackId;
 }
 
 export interface Person {
@@ -90,7 +94,14 @@ export interface Invite {
 export interface FamilyTree {
   id: string;
   patientName: string;
-  visit?: { specialty: string; date: string; practice?: string };
+  visit?: {
+    /** Display name: "Cardiology", "Primary care", or what the patient typed for another specialist. */
+    specialty: string;
+    date: string;
+    practice?: string;
+    /** Picks the question set. Missing on every tree saved before visit types: cardiology. */
+    type?: VisitType;
+  };
   people: Person[];
   reports: Report[];
   invites: Invite[];

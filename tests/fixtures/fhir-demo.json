@@ -1,0 +1,391 @@
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "timestamp": "TIMESTAMP",
+  "meta": {
+    "tag": [
+      {
+        "system": "urn:family-health-tree",
+        "code": "synthetic-demo",
+        "display": "Synthetic demo data"
+      }
+    ]
+  },
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:FULLURL",
+      "resource": {
+        "resourceType": "FamilyMemberHistory",
+        "id": "fmh-mom",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-familymemberhistory"
+          ]
+        },
+        "status": "completed",
+        "patient": {
+          "display": "Alex"
+        },
+        "date": "2026-09-29",
+        "name": "Mom",
+        "relationship": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+              "code": "MTH",
+              "display": "mother"
+            }
+          ],
+          "text": "mother"
+        },
+        "sex": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/administrative-gender",
+              "code": "female",
+              "display": "female"
+            }
+          ]
+        },
+        "note": [
+          {
+            "text": "Mom reported no heart history on 2026-09-27."
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:FULLURL",
+      "resource": {
+        "resourceType": "FamilyMemberHistory",
+        "id": "fmh-dad",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-familymemberhistory"
+          ]
+        },
+        "status": "partial",
+        "patient": {
+          "display": "Alex"
+        },
+        "date": "2026-09-29",
+        "name": "Dad",
+        "relationship": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+              "code": "FTH",
+              "display": "father"
+            }
+          ],
+          "text": "father"
+        },
+        "sex": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/administrative-gender",
+              "code": "male",
+              "display": "male"
+            }
+          ]
+        },
+        "deceasedBoolean": true,
+        "condition": [
+          {
+            "code": {
+              "text": "Heart attack"
+            },
+            "onsetAge": {
+              "value": 60,
+              "unit": "a",
+              "system": "http://unitsofmeasure.org",
+              "code": "a"
+            },
+            "note": [
+              {
+                "text": "Reported by Mom on 2026-09-27"
+              }
+            ]
+          },
+          {
+            "code": {
+              "text": "Angina"
+            },
+            "onsetAge": {
+              "value": 58,
+              "unit": "a",
+              "system": "http://unitsofmeasure.org",
+              "code": "a"
+            },
+            "note": [
+              {
+                "text": "Reported by Uncle Dev on 2026-09-28; age approximate: \"I think it was chest pain, not a full heart attack. He was around 58.\""
+              }
+            ]
+          }
+        ],
+        "note": [
+          {
+            "text": "Reports disagree (2 reports disagree). All reports kept."
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:FULLURL",
+      "resource": {
+        "resourceType": "FamilyMemberHistory",
+        "id": "fmh-dev",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-familymemberhistory"
+          ]
+        },
+        "status": "completed",
+        "patient": {
+          "display": "Alex"
+        },
+        "date": "2026-09-29",
+        "name": "Uncle Dev",
+        "relationship": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+              "code": "PUNCLE",
+              "display": "paternal uncle"
+            }
+          ],
+          "text": "paternal uncle"
+        },
+        "sex": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/administrative-gender",
+              "code": "male",
+              "display": "male"
+            }
+          ]
+        },
+        "condition": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "49436004",
+                  "display": "Atrial fibrillation"
+                }
+              ],
+              "text": "Atrial fibrillation"
+            },
+            "onsetAge": {
+              "value": 34,
+              "unit": "a",
+              "system": "http://unitsofmeasure.org",
+              "code": "a"
+            },
+            "note": [
+              {
+                "text": "Retrieved from MyChart (demo sandbox) (Condition/demo-afib-2009) on 2026-09-28"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:FULLURL",
+      "resource": {
+        "resourceType": "FamilyMemberHistory",
+        "id": "fmh-pgf",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-familymemberhistory"
+          ]
+        },
+        "status": "health-unknown",
+        "patient": {
+          "display": "Alex"
+        },
+        "date": "2026-09-29",
+        "name": "Grandpa Ray",
+        "relationship": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+              "code": "PGRFTH",
+              "display": "paternal grandfather"
+            }
+          ],
+          "text": "paternal grandfather"
+        },
+        "sex": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/administrative-gender",
+              "code": "male",
+              "display": "male"
+            }
+          ]
+        },
+        "deceasedBoolean": true,
+        "dataAbsentReason": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/history-absent-reason",
+              "code": "unable-to-obtain",
+              "display": "Unable To Obtain"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:FULLURL",
+      "resource": {
+        "resourceType": "FamilyMemberHistory",
+        "id": "fmh-pgm",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-familymemberhistory"
+          ]
+        },
+        "status": "health-unknown",
+        "patient": {
+          "display": "Alex"
+        },
+        "date": "2026-09-29",
+        "name": "Grandma June",
+        "relationship": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+              "code": "PGRMTH",
+              "display": "paternal grandmother"
+            }
+          ],
+          "text": "paternal grandmother"
+        },
+        "sex": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/administrative-gender",
+              "code": "female",
+              "display": "female"
+            }
+          ]
+        },
+        "dataAbsentReason": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/history-absent-reason",
+              "code": "withheld",
+              "display": "Information Withheld"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:FULLURL",
+      "resource": {
+        "resourceType": "FamilyMemberHistory",
+        "id": "fmh-mgf",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-familymemberhistory"
+          ]
+        },
+        "status": "health-unknown",
+        "patient": {
+          "display": "Alex"
+        },
+        "date": "2026-09-29",
+        "name": "Grandpa Luis",
+        "relationship": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+              "code": "MGRFTH",
+              "display": "maternal grandfather"
+            }
+          ],
+          "text": "maternal grandfather"
+        },
+        "sex": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/administrative-gender",
+              "code": "male",
+              "display": "male"
+            }
+          ]
+        },
+        "dataAbsentReason": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/history-absent-reason",
+              "code": "unable-to-obtain",
+              "display": "Unable To Obtain"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:FULLURL",
+      "resource": {
+        "resourceType": "FamilyMemberHistory",
+        "id": "fmh-mgm",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-familymemberhistory"
+          ]
+        },
+        "status": "completed",
+        "patient": {
+          "display": "Alex"
+        },
+        "date": "2026-09-29",
+        "name": "Grandma Rosa",
+        "relationship": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+              "code": "MGRMTH",
+              "display": "maternal grandmother"
+            }
+          ],
+          "text": "maternal grandmother"
+        },
+        "sex": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/administrative-gender",
+              "code": "female",
+              "display": "female"
+            }
+          ]
+        },
+        "condition": [
+          {
+            "code": {
+              "text": "Very high cholesterol"
+            },
+            "onsetAge": {
+              "value": 35,
+              "unit": "a",
+              "system": "http://unitsofmeasure.org",
+              "code": "a"
+            },
+            "note": [
+              {
+                "text": "Reported by Mom on 2026-09-27; age approximate: \"She was on cholesterol pills from her 30s. The doctor said it ran in her family.\""
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

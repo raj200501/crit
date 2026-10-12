@@ -7,19 +7,20 @@ import type { Highlight } from "./model";
 
 type Key = Exclude<Highlight, null>;
 
-const ITEMS: { key: Key; label: string }[] = [
+const STATUS_ITEMS: { key: Key; label: string }[] = [
   { key: "known", label: STATUS_LABEL.known },
   { key: "conflicting", label: STATUS_LABEL.conflicting },
   { key: "unknown", label: STATUS_LABEL.unknown },
   { key: "declined", label: STATUS_LABEL.declined },
   { key: "pending", label: STATUS_LABEL.pending },
-  { key: "finding", label: "Heart-related condition reported" },
 ];
 
 export interface LegendFilterProps {
   counts: Record<Key, number>;
   value: Highlight;
   onChange: (value: Highlight) => void;
+  /** What a filled symbol means for the visit's questions (default: the cardiology wording). */
+  findingLabel?: string;
   className?: string;
 }
 
@@ -27,7 +28,8 @@ export interface LegendFilterProps {
  * The legend is the filter (DESIGN §12.1): glyph + word + count, as toggle buttons. Pressing one dims every relative
  * who doesn't match; pressing it again clears. Still the `list "Legend"` of the e2e contract.
  */
-export function LegendFilter({ counts, value, onChange, className }: LegendFilterProps) {
+export function LegendFilter({ counts, value, onChange, findingLabel = "Heart-related condition reported", className }: LegendFilterProps) {
+  const items = [...STATUS_ITEMS, { key: "finding" as const, label: findingLabel }];
   return (
     <div className={cn("relative min-w-0", className)}>
       <p id="legend-hint" className="sr-only">
@@ -38,7 +40,7 @@ export function LegendFilter({ counts, value, onChange, className }: LegendFilte
         aria-describedby="legend-hint"
         className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:-mx-6 sm:px-6 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0 lg:pb-0"
       >
-        {ITEMS.map(({ key, label }) => {
+        {items.map(({ key, label }) => {
           const on = value === key;
           const tone = on ? "night" : "paper";
           return (

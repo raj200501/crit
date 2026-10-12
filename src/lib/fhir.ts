@@ -1,3 +1,4 @@
+import { noneFhir } from "./packs/none";
 import { viewTree } from "./status";
 import type { FamilyTree, Person, Relation } from "./types";
 
@@ -89,7 +90,7 @@ export function toFhirBundle(tree: FamilyTree) {
       if (v.status === "conflicting") notes.push({ text: `Reports disagree (${v.reason}). All reports kept.` });
       (v.status === "declined" ? [] : v.reports)
         .filter((r) => r.kind === "no-history")
-        .forEach((r) => notes.push({ text: `${r.reportedBy} reported no heart history on ${r.reportedAt.slice(0, 10)}.` }));
+        .forEach((r) => notes.push({ text: `${r.reportedBy} reported ${noneFhir(r)} on ${r.reportedAt.slice(0, 10)}.` }));
       if (notes.length) resource.note = [...((resource.note as { text: string }[] | undefined) ?? []), ...notes];
       return { fullUrl: `urn:uuid:${crypto.randomUUID()}`, resource: JSON.parse(JSON.stringify(resource)) };
     });

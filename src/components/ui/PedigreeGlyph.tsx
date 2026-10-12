@@ -9,7 +9,8 @@ export interface PedigreeGlyphProps {
   /** Map from Person.sex: female → circle, male → square, unknown → diamond. */
   shape: GlyphShape;
   status: GlyphStatus;
-  /** Heart condition reported: fills the core (NSGC "affected"). Pass `view.cardiac && view.status !== "declined"`. */
+  /** A condition the visit's questions count was reported: fills the core (NSGC "affected"). Pass
+   *  `view.finding && view.status !== "declined"` (heart conditions for cardiology). */
   finding?: boolean;
   deceased?: boolean;
   /** A portal record backs a fact: small filled square at the top right. */
@@ -101,7 +102,7 @@ function Shape({ shape, r = R, dx = 0, ...p }: { shape: GlyphShape; r?: number; 
 
 /**
  * One SVG grammar for nodes, panels, phone screens, the hero poster and the printed pedigree.
- * Ring = certainty, fill = heart condition reported, slash = deceased, square chip = portal record, arrow = the patient.
+ * Ring = certainty, fill = a condition reported (heart conditions for cardiology), slash = deceased, square chip = portal record, arrow = the patient.
  */
 export function PedigreeGlyph({
   shape,

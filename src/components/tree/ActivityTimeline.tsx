@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { nonePhrase } from "@/lib/packs";
 import { formatCondition, type PersonView } from "@/lib/status";
 import type { FamilyTree, Report } from "@/lib/types";
 import { Badge } from "@/components/ui/Badge";
@@ -30,11 +31,11 @@ function sentence(r: Report, nameOf: (id: string) => string): ReactNode {
   if (r.kind === "no-history")
     return aboutSelf ? (
       <>
-        <B>{who}</B> {who === "You" ? "have" : "has"} no heart history
+        <B>{who}</B> {who === "You" ? "have" : "has"} {nonePhrase(r)}
       </>
     ) : (
       <>
-        <B>{who}</B> says <B>{subject}</B> has no heart history
+        <B>{who}</B> says <B>{subject}</B> has {nonePhrase(r)}
       </>
     );
   if (r.source === "record")
