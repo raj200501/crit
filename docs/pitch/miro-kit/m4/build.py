@@ -821,11 +821,17 @@ def source_pages(spec, markers, srcs, start_no, total):
         if not t:
             entries.append((m, "(not in the VCA source list)", None))
             continue
-        mm = re.match(r"^(.*?):\s*(https?://\S+)\s*$", t)
-        name, url = (mm.group(1), mm.group(2)) if mm else (t, None)
+        um = re.search(r"https?://[^\s)\]]+", t)
+        url = um.group(0).rstrip(".,;") if um else None
+        name = re.sub(r"https?://[^\s)\]]+", "", t)
+        name = re.sub(r"\s*\([^)]*\)\s*$", "", name).strip(" :;,.")
+        name = re.sub(r"\s+", " ", name)
+        if len(name) > 95:
+            name = name[:95].rsplit(" ", 1)[0].rstrip(",;:") + "..."
         entries.append((m, name, url))
     pages, i, n = [], 0, 0
-    colw = (PW - 2 * PAD - 2 * GAP) / 3
+    NC = 4
+    colw = (PW - 2 * PAD - (NC - 1) * GAP) / NC
     while i < len(entries) or not pages:
         n += 1
         key = "sources" if n == 1 else f"sources{n}"
@@ -837,17 +843,19 @@ def source_pages(spec, markers, srcs, start_no, total):
         col, y = 0, y0
         while i < len(entries):
             m, name, url = entries[i]
-            body = f"<b>[{esc(m)}]</b> {esc(name)}"
             if url:
-                body += f'<br/><a href="{esc(url)}">{esc(url if len(url) < 70 else url[:67] + "...")}</a>'
-            h = text_h(body, 16, colw)[0]
+                dom = re.sub(r"^https?://(www\.)?", "", url).split("/")[0]
+                body = f'<b>[{esc(m)}]</b> <a href="{esc(url)}">{esc(name)}</a> <i>{esc(dom)}</i>'
+            else:
+                body = f"<b>[{esc(m)}]</b> {esc(name)}"
+            h = text_h(body, 17, colw)[0]
             if y + h > ymax:
                 col += 1
                 y = y0
-                if col == 3:
+                if col == NC:
                     break
-            p.text(body, PAD + col * (colw + GAP), y, colw, 16, BODY)
-            y += h + 14
+            p.text(body, PAD + col * (colw + GAP), y, colw, 17, BODY)
+            y += h + 12
             i += 1
         pages.append(p)
     return pages
@@ -913,7 +921,8 @@ def build(pages_json, outdir):
             caps = {c.get("screen"): c for c in sp.get("captions") or []}
             pages.append(mock_page(sp, "mockups", "Mockup screens (1 of 2)", ["tree", "relative", "portal"], caps, no, total))
             no += 1
-            pages.append(mock_page(sp, "mockups2", "Mockup screens (2 of 2)", ["patient", "care"], caps, no, total))
+            sp2 = dict(sp, headline="What the patient and the care team see.")
+            pages.append(mock_page(sp2, "mockups2", "Mockup screens (2 of 2)", ["patient", "care"], caps, no, total))
         else:
             pages.append(standard_page(sp, no, total))
     pages += source_pages(ssp, markers, srcs, no + 1, total)

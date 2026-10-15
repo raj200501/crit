@@ -1,0 +1,339 @@
+{
+ "opening": {
+  "who": "Raj",
+  "say": "We're Team 709, and this is Stemma. Before a first cardiology visit, a patient builds a family health tree, relatives answer for themselves, and the practice gets one page where every fact shows who said it. Everyone you'll see is a synthetic demo family. Viha, Unser and I will each take part of the five steps."
+ },
+ "run": [
+  {
+   "page": "At a glance",
+   "who": "Raj",
+   "point_at": "The four cards, left to right: Step 4 verdict, Step 5 verdict, Wedge, and the riskiest claim with its 'Untested' chip.",
+   "say": "Here is the whole review on one page. Will people buy it: use, yes, if the practice sends the link; buy, not yet shown. Can we make it: yes at pilot scale from about January 2027, not yet a business that pays salaries. We start with 3 independent New York cardiology groups, and our riskiest claim is that a practice pays 500 dollars per cardiologist a year.",
+   "minutes": 0.5,
+   "skip_if_short": false
+  },
+  {
+   "page": "Step 1 Business Model Canvas",
+   "who": "Viha",
+   "point_at": "The tag legend and red dots first, then Customer Segments (Who pays 1 to 3, Who uses 1), then Revenue Streams 1 and 2.",
+   "say": "Every Post-it shows its sub-group, its rank in order of preference and a tag for new or old, and a red dot marks an untested assumption. Practices pay, ranked: independent New York cardiology groups of 2 to 10 cardiologists first, then large independent and private-equity groups, later solo cardiologists; their adult new patients use it free, and relatives answer for their own branch. Revenue is a 1,000 dollar 12-week pilot credited to year one, then 500 dollars per cardiologist a year, and the red dots sit exactly where we lack evidence: who pays, the price and the pilot partners.",
+   "minutes": 0.9,
+   "skip_if_short": false
+  },
+  {
+   "page": "Step 2a Next best option",
+   "who": "Viha",
+   "point_at": "The table, Patient row first, then the Practice manager row.",
+   "say": "Today the patient relies on memory and a yes-or-no intake grid, and the clinician asks a quick question in the room; only about 11 percent of positive heart family-history entries in UK charts name both the relative and the age. The payer's next best option is cheap or free: its own EHR check-in, Phreesia intake free through at least 2026, free lab tools, or FamGenix at 500 dollars per clinician a year. That is why price is our riskiest assumption.",
+   "minutes": 0.6,
+   "skip_if_short": false
+  },
+  {
+   "page": "Step 2b Closest operations: Phreesia",
+   "who": "Viha",
+   "point_at": "The 'Phreesia does / We copy / Where we differ' table, then the three cards below it.",
+   "say": "Phreesia runs the operations that make this a business: it sells to practices, gets patients to finish before the visit, lands answers in the chart, and does it at about 180 million patient visits a year. We copy the practice-sent link, founder-led direct sales and a low-risk first period; we refuse life-sciences money on family data. What it doesn't do, family history specifically and relatives contributing, is our product.",
+   "minutes": 0.5,
+   "skip_if_short": false
+  },
+  {
+   "page": "Step 2c Other industries",
+   "who": "Unser",
+   "point_at": "The table rows: Calendly, DocuSign, Zocdoc, then Doximity as the counter-example.",
+   "say": "The free-user, business-pays model already works elsewhere. We copy Calendly's link that works with no account and DocuSign's record of who signed and when, and Zocdoc shows independent practices do pay for patient-facing tools. We refuse Zocdoc's per-new-patient fee because of kickback risk, and Doximity's pharma payer, because family history is genetic information.",
+   "minutes": 0.5,
+   "skip_if_short": false
+  },
+  {
+   "page": "Step 3 New vs old",
+   "who": "Viha",
+   "point_at": "The bars (2 new, 17 some of each, 69 old, of 88 Post-its), then the three cards under them.",
+   "say": "Of 88 Post-its, 2 are new, 17 are some of each, and 69 are old. The 2 new ones are the per-fact status and the data model behind it; we found no competitor that documents a status on every fact. What we sell is new and how we sell it is old, so the new parts need evidence, and the old parts mean the buyer already has cheap substitutes.",
+   "minutes": 0.5,
+   "skip_if_short": false
+  },
+  {
+   "page": "Step 4a Net benefit",
+   "who": "Unser",
+   "point_at": "The Net (score) column, top to bottom, ending on the Practice row's -2.",
+   "say": "We scored each person against their next best option, from plus 2 to minus 2 per factor, with quality of what reaches the visit counted double. The patient comes out plus 2 if the practice asks, the relative even at 0, and the clinician plus 3 only if the page reads in under a minute, which no cardiologist has tested. The practice, which pays, is minus 2 plus unmeasured staff time: worse off unless a pilot shows time saved or clinical value.",
+   "minutes": 0.75,
+   "skip_if_short": false
+  },
+  {
+   "page": "Step 4b Evidence and what is unproven",
+   "who": "Raj",
+   "point_at": "The four numbers across the top (57%, 48.9%, 16.1%, 0 of 21), then the 'Our 21 logged interviews' list.",
+   "say": "Clinic-sent tools get finished: 57 percent of 95,166 invited patients finished a clinic-sent chatbot, and 48.9 percent of new cardiology patients in Korea answered a no-login link. Those are other tools, not ours, and ours needs weeks and relatives, so we expect less. Our 21 logged interviews came from September diagnosis research: 15 patients, only one a cardiology patient, and 6 clinicians, with zero practice managers, cardiologists or relatives.",
+   "minutes": 0.5,
+   "skip_if_short": false
+  },
+  {
+   "page": "Step 4 Verdict",
+   "who": "Unser",
+   "point_at": "The verdict box, then row 1 of the cheapest-tests table.",
+   "say": "Our verdict: use, yes, if the practice sends the link; buy, not yet shown. Payment turns to yes when one practice manager commits to a price: a letter of intent now, a paid pilot once we can sign a BAA. The cheapest test comes first: a price card to 5 independent New York practice managers, reported by October 23.",
+   "minutes": 0.5,
+   "skip_if_short": false
+  },
+  {
+   "page": "Step 5a Technical",
+   "who": "Raj",
+   "point_at": "The 'Today, on synthetic data' column, then the 'Family history goes in as a PDF' card.",
+   "say": "The patient-to-clinician flow runs today on synthetic data: the tree with statuses in words, the relative's no-account link, one condition shared read-only from a public test portal, and the care-team page with cited criteria. Epic can't write family history from apps into the chart, so the page goes in as a PDF. Technical verdict: yes, nothing needs new technology, and next we build the pilot backend with secure logins, still on synthetic data.",
+   "minutes": 0.5,
+   "skip_if_short": false
+  },
+  {
+   "page": "Step 5b Operational",
+   "who": "Raj",
+   "point_at": "The 'We become a HIPAA business associate' card, then the critical-path table (Oct 23 to Jan 5).",
+   "say": "When a practice pays, we become a HIPAA business associate under signed BAAs with the practice and each vendor, with two-step login, an access log and a breach plan. Before any pilot we need a company, counsel's review, and a cardiologist to sign the rule table, so the earliest pilot is about January 2027. Operational verdict: yes for 1 to 3 practices, if those happen first.",
+   "minutes": 0.5,
+   "skip_if_short": false
+  },
+  {
+   "page": "Step 5c Financials",
+   "who": "Unser",
+   "point_at": "The four numbers ($689-834, $41.67, 17-21, about 290), then the 'Three 12-week pilots' and 'Year 1' rows.",
+   "say": "Once real patient data flows, running it costs about 689 to 834 dollars a month, with founders unpaid. At 500 dollars a year, 17 to 21 paying cardiologists cover that, 9 to 11 groups of two, and adding one developer's wage takes about 290, roughly every independent cardiologist in New York. Three 12-week pilots bring 3,000 dollars against about 1,900 to 2,300 dollars of cost, so pilots pay their way, but year one runs at a loss, about 6,500 dollars in the worst case.",
+   "minutes": 0.75,
+   "skip_if_short": false
+  },
+  {
+   "page": "Step 5 Verdict",
+   "who": "Unser",
+   "point_at": "The verdict box, then the 'What has to be true next' bullets.",
+   "say": "Our verdict: yes at pilot scale, 1 to 3 practices from about January 2027, but not yet a business that pays salaries. Support has to fall under one hour per practice a month, or the price has to rise. The main risk is price, not technology.",
+   "minutes": 0.5,
+   "skip_if_short": false
+  },
+  {
+   "page": "Central business logic",
+   "who": "Raj",
+   "point_at": "The two statements; read them as written.",
+   "say": "People will buy it because cardiology guidelines need which relative and what age, intake forms take it from memory, and for 500 dollars per cardiologist a year a practice-sent link puts those details, sourced, in the chart before visit one. We can make it because the patient side already runs on open health standards, a PDF reaches any chart, and a pilot on vendors that sign HIPAA contracts costs under 850 dollars a month, which 17 to 21 paying cardiologists cover, founders unpaid.",
+   "minutes": 0.6,
+   "skip_if_short": false
+  },
+  {
+   "page": "Configuration",
+   "who": "Viha",
+   "point_at": "The 'Chosen' column, top to bottom.",
+   "say": "The configuration most likely to succeed: independent New York cardiology groups of 2 to 10 cardiologists pay, their adult new patients use it free, and relatives answer by link. The practice opens the care-team page by read-only link or check-in QR and files it as a PDF, so there is no integration project. The pieces fit together, with one weak joint in every box: no practice has said it will pay.",
+   "minutes": 0.5,
+   "skip_if_short": false
+  },
+  {
+   "page": "Wedge vs vision",
+   "who": "Raj",
+   "point_at": "The scoring table (21 of 30 vs 19), then the 'Goal' bullet, then the four vision cards left to right.",
+   "say": "Independent New York cardiology groups score 21 of 30, ahead of primary care wellness visits at 19, because cardiology guidelines count grandparents, aunts and uncles, by side and age, and one practice manager can say yes. The wedge is 3 groups, with a goal that 4 in 10 invited new patients have a reviewed page in the chart before visit one. The vision is any doctor who needs a family history, one specialty at a time; patients can already use it for any visit with a general question set, but clinician criteria exist for cardiology only.",
+   "minutes": 0.75,
+   "skip_if_short": false
+  },
+  {
+   "page": "Riskiest claim and its test",
+   "who": "Unser",
+   "point_at": "The claim statement, then the four cards: who, how, pass mark, if it fails.",
+   "say": "Our riskiest claim: a practice pays 500 dollars per cardiologist a year despite free intake tools. The test, by October 23, is 5 conversations with independent New York practice managers using a one-page price card; it passes if 3 of 5 name the budget owner and accept 500 dollars a year in principle, and 1 signs a non-binding letter of intent. If fewer than 3 name a budget owner, we run the same five calls with primary care practice managers.",
+   "minutes": 0.6,
+   "skip_if_short": false
+  },
+  {
+   "page": "Mockup screens (2 pages)",
+   "who": "Viha",
+   "point_at": "Page 1: tree, relative invite, portal pick. Page 2: the patient's copy, then the care-team copy. If the coach wants it live, open stemmahealth.vercel.app/tree on the second laptop.",
+   "say": "These screens come from the live prototype, with a synthetic demo family. Alex builds the tree one side at a time and every person shows a status in words; Grandpa Luis opens a link with no account, can decline, or can share one condition from his own portal on a public test server. Alex's copy shows facts, gaps and questions, never risk scores, while the care-team copy the practice opens adds guideline criteria for clinician review and a source on every line.",
+   "minutes": 0.75,
+   "skip_if_short": false
+  },
+  {
+   "page": "Choices made and open items",
+   "who": "Unser",
+   "point_at": "The Price row of the choices table, then the 'Buyer evidence' open item.",
+   "say": "Where our research memos disagreed, we picked one answer: 500 dollars per cardiologist a year after the pilot, because it's the only public per-clinician anchor and saved time only breaks even at that price. The vision is any doctor; the wedge is cardiology. The biggest open item is buyer evidence, plus a cardiologist to review the rule table and a trademark check on the name.",
+   "minutes": 0.5,
+   "skip_if_short": true
+  }
+ ],
+ "close": {
+  "who": "Raj",
+  "say": "Our ask: introductions to New York cardiology practice managers. Before October 23, we hold 5 practice-manager conversations with our price card, aim for one non-binding letter of intent, and put the results on the board, whatever they are."
+ },
+ "drill": [
+  {
+   "q": "Who pays, and why would they?",
+   "who": "Unser",
+   "page": "Step 1 Business Model Canvas",
+   "a": "The practice pays, starting with independent New York cardiology groups of 2 to 10 cardiologists; we think the manager holds the budget and the owner signs, but that's untested. Why: free forms ask yes or no, and we put which relative and what age, with sources, in the chart before visit one. Patients and relatives never pay.",
+   "pushed": "No manager has told us yes yet; the price-card calls due October 23 are how we find out."
+  },
+  {
+   "q": "Your own table scores the paying practice at minus 2. Why would anyone buy?",
+   "who": "Unser",
+   "page": "Step 4a Net benefit",
+   "a": "Against its next best option the practice takes a new fee against free substitutes, a small workflow change and a BAA. Its gain, more family history in the chart, is real, but staff-time savings are unmeasured, and a 2026 trial found no shorter counseling time. So it's worse unless a pilot shows time saved or clinical value.",
+   "pushed": "That's why we test it with a cheap pilot first: three 12-week pilots pay their own cost, and if completion is high but nobody pays, we switch buyers."
+  },
+  {
+   "q": "So you've talked to zero practice managers, zero cardiologists and zero relatives?",
+   "who": "Raj",
+   "page": "Step 4b Evidence and what is unproven",
+   "a": "Correct. Our 21 logged interviews come from September diagnosis research: 15 patients, only one a cardiology patient, and 6 clinicians, an internist, a nurse, 2 physician assistants, an ER doctor and a genetics counselor. That's why our verdict says buy is not yet shown. The 5 manager calls due October 23 start to close the gap.",
+   "pushed": "We'd rather show you a zero than a guess; whatever the calls find goes on the board before the PDF."
+  },
+  {
+   "q": "Why pay 500 dollars when intake tools and lab family-tree tools are free?",
+   "who": "Unser",
+   "page": "Step 2a Next best option",
+   "a": "Maybe a practice won't; that's our riskiest claim. Free tools ask yes or no; we get which relative and what age, with sources, into the chart before visit one. We priced at FamGenix's 500 dollar clinician license, not at saved time, which only breaks even. If managers won't pay, we switch buyers: lipid or cardiogenetics clinics, or primary care.",
+   "pushed": "99 dollars a month is a higher price we test on the same card, so the calls tell us which one a manager accepts, if either."
+  },
+  {
+   "q": "How is this different from Phreesia, FamGenix or 23andMe?",
+   "who": "Viha",
+   "page": "Step 2b Closest operations: Phreesia",
+   "a": "Phreesia is general intake; we copy how it sells, but relatives don't contribute there. FamGenix is the closest product: relatives can partly share in its app, at 500 dollars a year per clinician. On 23andMe's tree you type relatives' conditions yourself and only you see them; in Stemma, relatives answer for themselves and every fact keeps who said it.",
+   "pushed": "We haven't tested FamGenix hands-on yet; building one synthetic cardiac family in its free tier is on our test list."
+  },
+  {
+   "q": "What if relatives don't answer, or grandparents can't use a phone?",
+   "who": "Viha",
+   "page": "Mockup screens (2 pages)",
+   "a": "The tree still works: a gap shows as Unknown or Not asked yet, never 'no history'. Relatives are our least-tested step: 29 percent dropped at the invite step in a similar app, and we haven't interviewed a relative. The pilot target is at least 25 percent of patients getting one relative's answer, with a help line for older users.",
+   "pushed": "In MeTree, 26 percent of users needed help, most of them over 60, which is why the help line and usability sessions with adults over 60 are in the plan."
+  },
+  {
+   "q": "Isn't self-reported family history unreliable?",
+   "who": "Viha",
+   "page": "Step 4b Evidence and what is unproven",
+   "a": "Often, yes: self-report caught about 58 of 100 heart attacks in parents and siblings, a sensitivity of 57.6 percent. That's why every fact shows who said it and a status in words, relatives answer for themselves, conflicts show as Reports disagree, and the clinician decides what matters.",
+   "pushed": "A plain yes or no adds little, so we capture who and at what age; we show uncertainty instead of hiding it."
+  },
+  {
+   "q": "Is this HIPAA compliant? Is it a medical device?",
+   "who": "Raj",
+   "page": "Step 5b Operational",
+   "a": "There's no HIPAA certification, and we claim none. Today it's synthetic data only; when a practice pays, we become a HIPAA business associate under signed BAAs, with two-step login, an access log and a breach plan. Patients see facts, gaps and questions, never risk scores; guideline criteria appear only on the care-team copy, for the clinician to decide.",
+   "pushed": "Under FDA's January 2026 guidance any recommendation shown to patients is a device, so the care-team copy goes to the practice by link or QR, and counsel reviews the open question."
+  },
+  {
+   "q": "Does it pull from MyChart, and how does it get into Epic?",
+   "who": "Raj",
+   "page": "Step 5a Technical",
+   "a": "No. Portals don't have to share family history, so a relative shares one condition from their own problem list, read-only, with their own login; today that runs on a public test server, not Epic's. Epic can't write family history from apps into the chart, so the page goes in as a PDF.",
+   "pushed": "A PDF works with every practice; EHR write-back comes only when a paying practice needs it, and we ask every practice which EHR it runs."
+  },
+  {
+   "q": "Isn't the market tiny?",
+   "who": "Unser",
+   "page": "Wedge vs vision",
+   "a": "Independent cardiology alone, yes: 7,699 US independent cardiologists, about 3.8 million dollars a year at 500 dollars, and New York is a pilot, not our market. It's the wedge; growth is larger groups, then genetics and lipid clinics, then primary care.",
+   "pushed": "Markets beyond independent cardiology aren't sized yet, so we don't quote a number for them."
+  },
+  {
+   "q": "Why cardiology? Shouldn't this be for any doctor?",
+   "who": "Raj",
+   "page": "Wedge vs vision",
+   "a": "For the patient, it already is: pick primary care or another specialist and you get a general question set, with no clinician criteria. Only cardiology adds criteria, because criteria need a clinician's sign-off. A wedge needs one buyer who can say yes, and cardiology needs the most detail: which relative, which side, what age.",
+   "pushed": "If fewer than 3 of 5 cardiology managers name a budget owner by October 23, primary care practice managers are our next call list."
+  },
+  {
+   "q": "Walk me through the financials. Can this pay salaries?",
+   "who": "Unser",
+   "page": "Step 5c Financials",
+   "a": "Not yet. Once real data flows it costs about 689 to 834 dollars a month, founders unpaid, and 17 to 21 paying cardiologists cover that. One developer's wage takes about 290 cardiologists, roughly every independent cardiologist in New York. Three pilots pay their own cost; year one still loses up to about 6,500 dollars.",
+   "pushed": "Insurance is an estimate, legal cost is unknown, and founder support time, 1 to 2 hours per practice a month, isn't in the cash cost; the pilot measures it."
+  },
+  {
+   "q": "What's actually new here?",
+   "who": "Viha",
+   "page": "Step 3 New vs old",
+   "a": "Of 88 Post-its, 2 are new: a status on every fact and the data model behind it. 17 are some of each, like relatives answering for themselves and a relative sharing one portal fact. The other 69 are old: every channel to the practice, every revenue stream and every cost line.",
+   "pushed": "Old is on purpose, because it lowers business-model risk; the cost is that the buyer has cheap substitutes, which is why price is our riskiest claim."
+  },
+  {
+   "q": "What exactly is the wedge?",
+   "who": "Raj",
+   "page": "Wedge vs vision",
+   "a": "3 independent New York cardiology groups of 2 to 10 cardiologists, with an EHR that accepts a PDF and willing to sign a BAA. The offer is 1,000 dollars for 12 weeks, credited to year one. The goal: 4 in 10 invited new patients have a reviewed page in the chart before visit one.",
+   "pushed": "Our scores are team judgment; if access scores 2 instead of 4, cardiology ties primary care at 19, so the deciding reason is that cardiology criteria need exactly the fields we capture."
+  },
+  {
+   "q": "What changed since Maker Day 1?",
+   "who": "Viha",
+   "page": "Choices made and open items",
+   "a": "We settled on one price: 1,000 dollars for a 12-week pilot credited to year one, then 500 dollars per cardiologist a year. We rewrote the business logic to name the buyer and the price. And the care-team copy now reaches the practice only by link or QR, and patients can use it for any visit.",
+   "pushed": "Also live since October 12: six tree changes from our audit of 23andMe's family tree, like undo after removing a relative and a 'sudden or unexpected' switch that feeds the sudden-death rule."
+  },
+  {
+   "q": "What will you do next?",
+   "who": "Raj",
+   "page": "Step 5 Verdict",
+   "a": "First, the cheapest tests on the Step 4 verdict page, led by 5 practice-manager calls with the price card by October 23. Then the critical path to a January pilot: a company by November 15, counsel review by December 1, a signed rule table and the pilot backend by December 15, and BAA hosting and insurance by January 5.",
+   "pushed": "Those dates are proposed; each step has an owner role on the operational page, and putting names on them is an open item."
+  },
+  {
+   "q": "How exactly will you test the riskiest claim?",
+   "who": "Unser",
+   "page": "Riskiest claim and its test",
+   "a": "5 independent New York practice managers, a one-page price card at 500 dollars a year and 99 a month, and we ask to see their form and EHR check-in. It passes if 3 of 5 name the budget owner and accept 500 a year in principle, and 1 signs a non-binding letter of intent with a target start month.",
+   "pushed": "A letter of intent isn't payment; the real proof is week 12 of the pilot, when at least 1 of 3 practices has to sign an annual contract."
+  },
+  {
+   "q": "Why should I believe your 4 in 10 goal?",
+   "who": "Viha",
+   "page": "Wedge vs vision",
+   "a": "It's a target, not a result. The closest benchmark is 48.9 percent of new cardiology patients answering a no-login link in Korea, and 57 percent of invited patients finished a short clinic-sent chatbot. Ours needs weeks and relatives, so we set the bar below both and read it at weeks 6 and 12.",
+   "pushed": "We count strictly: invited new patients whose first visit falls in weeks 2 to 12, with a reviewed page in the chart before that visit; under 20 percent, we fix the flow before selling more."
+  }
+ ],
+ "admit": [
+  "None of our 21 logged interviews was a practice manager, a cardiologist or a relative, so payment and clinician value are not yet shown.",
+  "The paying practice scores minus 2 against its next best option, and a 2026 trial found no shorter counseling time with a pre-visit tool, so we don't claim time savings.",
+  "Everything runs on synthetic data, the portal step uses a public test server rather than Epic, and the pilot backend isn't built yet.",
+  "Our 'intake forms take it from memory' claim rests on one 2016 health-system form; we haven't yet collected independent practices' forms.",
+  "At 500 dollars a year, one developer's wage needs about 290 paying cardiologists, roughly every independent cardiologist in New York, so New York is a pilot, not a business."
+ ],
+ "checklist": {
+  "before": [
+   "Agree who drives the live board (the person not speaking clicks; the speaker points) and open it in presentation order: At a glance through Choices.",
+   "Open stemmahealth.vercel.app/tree and /practice on a second laptop with the synthetic-data banner visible; don't demo the portal step unless asked.",
+   "Do one timed run-through with a stopwatch; target 11 minutes; agree that Choices is cut first, then headlines only on any page that runs long.",
+   "Each person says their six drill answers aloud once, 20 seconds each, and their 'pushed' line.",
+   "If any practice-manager calls or the clinician scan test happened, update the board and say: 'We asked [N] practice managers; [M] named a budget owner and [K] would sign a letter of intent.' Never say booked unless booked.",
+   "Name the code owner who can explain the architecture and the AI-assisted build without notes.",
+   "Check the board against the honesty rules: 21 interviews, never 30; the five status words exactly; no 'HIPAA compliant'; the price exactly as on the card.",
+   "Bring the price card, the live board link and the live prototype link."
+  ],
+  "after_pitch": [
+   "Minute 1 (right after the Maker Day 2 pitch): each of us writes down every question and comment we heard, in the asker's words, with who asked.",
+   "Minute 2: sort each one: changes a number or claim, changes a verdict, a new drill question, or nothing.",
+   "Minute 3: pick at most 3 board changes with an owner and a date before the review, add any new question to the drill with an owner, and add one line to 'Choices made and open items' saying what Maker Day 2 feedback changed."
+  ],
+  "export": [
+   "Finish all content first: delete old and duplicate frames, and make every page match the VCA and the deck word for word.",
+   "In the Frames panel, put the frames in page order: At a glance, the canvas, Steps 2a to 5 Verdict, business logic, configuration, wedge, riskiest claim, two mockup pages, choices, sources.",
+   "Export the frames as one PDF, one frame per page, at the highest quality offered.",
+   "Open the PDF on another device: expect 22 pages; check the canvas Post-its are readable when zoomed, the mockup screens show the synthetic-data banner, and nothing is cropped.",
+   "Name it clearly (for example Team709_Stemma_M4.pdf) and upload it before October 23; aim for October 22 to leave a buffer.",
+   "Keep the live board shared with the coach after export."
+  ],
+  "rules": [
+   "Answer in 20 seconds, then stop.",
+   "The topic owner answers; the others stay quiet unless the owner hands over by name.",
+   "Point at the board page before you speak.",
+   "Say 'untested' or 'not yet shown' wherever the board does; never round evidence up.",
+   "Never say HIPAA compliant or certified; say we become a HIPAA business associate under signed BAAs.",
+   "21 logged interviews: 0 practice managers, 0 cardiologists, 0 relatives.",
+   "Status words exactly: Known, Reports disagree, Unknown, Chose not to share, Not asked yet.",
+   "Price exactly: 1,000 dollars for a 12-week pilot, credited to year one, then 500 dollars per cardiologist a year; free to patients; 99 a month is a higher price we test.",
+   "Say 'works for any doctor's visit; clinician criteria start with cardiology', never 'criteria for any physician'.",
+   "Nobody uploads medical records: a relative shares one condition, read-only, from their own portal, a public test server today.",
+   "Patients never see risk scores; criteria are only on the care-team copy.",
+   "If you don't know, say so and name the test that will find out.",
+   "Hand off by name, never 'next slide'."
+  ]
+ }
+}
